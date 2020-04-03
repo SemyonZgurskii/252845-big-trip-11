@@ -1,5 +1,3 @@
-'use strict';
-
 const EVENTS_COUNT = 3;
 
 const createInfoTemplate = () => {
