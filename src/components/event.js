@@ -1,6 +1,6 @@
 import {getFormatTime, getFormatDateTime} from "../utils.js";
 
-const generateOfferMarkup = (title, price) => {
+const generateOptionMarkup = (title, price) => {
   return (
     `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
@@ -10,10 +10,10 @@ const generateOfferMarkup = (title, price) => {
   );
 };
 
-const generateOffersMarkup = (offers) => {
-  if (offers.length > 0) {
-    return offers
-      .map(({title, price}) => generateOfferMarkup(title, price))
+const generateOptionsMarkup = (options) => {
+  if (options.length > 0) {
+    return options
+      .map(({title, price}) => generateOptionMarkup(title, price))
       .join(`\n`);
   }
   return ``;
@@ -37,7 +37,7 @@ const getDuration = (start, end) => {
 };
 
 export const createEventTemplate = (event) => {
-  const {type, city, start, end, price, offers} = event;
+  const {type, city, start, end, price, options} = event;
 
   // const type = `Taxi`;
   // const city = `San Francisko`;
@@ -47,7 +47,7 @@ export const createEventTemplate = (event) => {
   // const endTime = `11:00`;
   // const duration = `30M`;
   // const price = `20`;
-  const offersMarkup = generateOffersMarkup(offers);
+  const offersMarkup = generateOptionsMarkup(options);
 
   const startDateTime = getFormatDateTime(start);
   const startTime = getFormatTime(start);

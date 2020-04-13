@@ -8,12 +8,16 @@ import {createFilterTemplate} from "./components/filter.js";
 import {createSortElement} from "./components/sort.js";
 import {createEventEditTemplate} from "./components/event-edit.js";
 import {createEventTemplate} from "./components/event.js";
+import {generateEvents} from "./mocks/event.js";
 
-const EVENTS_COUNT = 3;
+const EVENTS_COUNT = 20;
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
+
+const events = generateEvents(EVENTS_COUNT);
+console.log(events);
 
 const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
@@ -38,6 +42,10 @@ const eventsContainerElement = daysContainerElement.querySelector(`.trip-events_
 
 render(eventsContainerElement, createEventEditTemplate());
 
-for (let i = 0; i < EVENTS_COUNT; i++) {
-  render(eventsContainerElement, createEventTemplate());
+// for (let i = 0; i < EVENTS_COUNT; i++) {
+//   render(eventsContainerElement, createEventTemplate());
+// }
+
+for (let event of events) {
+  render(eventsContainerElement, createEventTemplate(event));
 }
