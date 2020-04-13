@@ -1,23 +1,59 @@
-const generateOffersMarkup = () => {
+import {getFormatTime, getFormatDateTime} from "../utils.js";
+
+const generateOfferMarkup = (title, price) => {
   return (
     `<li class="event__offer">
-    <span class="event__offer-title">Order Uber</span>
+    <span class="event__offer-title">${title}</span>
     &plus;
-    &euro;&nbsp;<span class="event__offer-price">20</span>
+    &euro;&nbsp;<span class="event__offer-price">${price}</span>
    </li>`
   );
 };
 
-export const createEventTemplate = () => {
-  const type = `Taxi`;
-  const city = `San Francisko`;
-  const startDateTime = `2019-03-18T10:30`;
-  const startTime = `10:30`;
-  const endDateTime = `2019-03-18T11:00`;
-  const endTime = `11:00`;
-  const duration = `30M`;
-  const price = `20`;
-  const offersMarkup = generateOffersMarkup();
+const generateOffersMarkup = (offers) => {
+  if (offers.length > 0) {
+    return offers
+      .map(({title, price}) => generateOfferMarkup(title, price))
+      .join(`\n`);
+  }
+  return ``;
+};
+
+// Менее часа: минуты (например «23M»);
+// Менее суток: часы минуты (например «02H 44M»);
+// Более суток: дни часы минуты (например «01D 02H 30M»);
+
+const getDuration = (start, end) => {
+  const minutes = Math.floor((end.getTime() - start.getTime()) / 1000);
+  const hours = Math.floor(minutes / 60);
+
+  if (hours >= 24) {
+    const days = Math.floor(hours / 24);
+    return days + `D ` + hours + `H ` + minutes + `M`;
+  } else if (hours >= 1) {
+    return hours + `H ` + minutes + `M`;
+  }
+  return minutes + `M`;
+};
+
+export const createEventTemplate = (event) => {
+  const {type, city, start, end, price, offers} = event;
+
+  // const type = `Taxi`;
+  // const city = `San Francisko`;
+  // const startDateTime = `2019-03-18T10:30`;
+  // const startTime = `10:30`;
+  // const endDateTime = `2019-03-18T11:00`;
+  // const endTime = `11:00`;
+  // const duration = `30M`;
+  // const price = `20`;
+  const offersMarkup = generateOffersMarkup(offers);
+
+  const startDateTime = getFormatDateTime(start);
+  const startTime = getFormatTime(start);
+  const endDateTime = getFormatDateTime(end);
+  const endTime = getFormatTime(end);
+  const duration = getDuration(start, end);
 
   return (
     `<li class="trip-events__item">
