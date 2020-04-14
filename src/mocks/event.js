@@ -1,15 +1,12 @@
+import {EVENT_TYPES, CITIES} from "../const.js";
+import {getRandomBoolean} from "../utils.js";
+
+const MAX_PRICE = 10000;
 const MIN_PHOTOS = 1;
 const MAX_PHOTOS = 5;
 const MIN_SENTENCES = 1;
 const MAX_SENTENCES = 5;
-const MAX_TIME_GAP = 1000 * 60 * 60 * 240;
-
-const eventTypes = {
-  transfer: [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`],
-  activity: [`Check-in`, `Sightseeng`, `Restaurant`],
-};
-
-const cities = [`Boston`, `Bolonga`, `Geneva`, `Prague`, `London`, `Wellington`, `Paris`, `San Francisco`];
+const MAX_TIME_GAP = 1000 * 60 * 60 * 29;
 
 const options = [
   {
@@ -32,10 +29,6 @@ const options = [
 
 const descriptionSource = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
-const getRandomBoolean = () => {
-  return Math.random() > 0.5;
-};
-
 const getRandomNumber = (min, max) => {
   const number = min + Math.floor(Math.random() * max);
   return number;
@@ -55,7 +48,7 @@ const separateTextToSentnces = (text) => {
 };
 
 const generateRandomType = () => {
-  const typeCategory = getRandomBoolean ? eventTypes.activity : eventTypes.transfer;
+  const typeCategory = getRandomBoolean ? EVENT_TYPES.activity : EVENT_TYPES.transfer;
   return getRandomArraysElement(typeCategory);
 };
 
@@ -95,12 +88,13 @@ const generateRandomDate = () => {
 const generateEvent = (startDate, endDate) => {
   return {
     type: generateRandomType(),
-    city: getRandomArraysElement(cities),
+    city: getRandomArraysElement(CITIES),
     options: generateOptions(),
     info: {
       description: generateDescription(),
       photos: generatePhotosSrc(),
     },
+    price: Math.floor(Math.random() * MAX_PRICE),
     start: startDate,
     end: endDate,
   };

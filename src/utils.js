@@ -1,13 +1,28 @@
-const getFormatTime = (date) => {
-  return date.getHours() + `:` + date.getMinutes();
+const castTimeFormat = (value) => {
+  return value < 10 ? `0${value}` : String(value);
 };
 
-const getFormatDateTime = (date) => {
-  const year = date.getYear();
+const getFormatTime = (date) => {
+  const hours = castTimeFormat(date.getHours());
+  const minutes = castTimeFormat(date.getMinutes());
+  return hours + `:` + minutes;
+};
+
+const getFormatDate = (date, separator) => {
+  const year = date.getFullYear().toString().slice(2);
   const month = date.getMonth();
   const day = date.getDate();
 
-  return year + `-` + month + `-` + day + `T` + getFormatTime(date);
+  return year + separator + month + separator + day;
 };
 
-export {getFormatTime, getFormatDateTime};
+const getRandomBoolean = () => {
+  return Math.random() > 0.5;
+};
+
+const getMarkupFromArray = (array, elementCreator) => {
+  return array.map((it) => elementCreator(it))
+    .join(`\n`);
+};
+
+export {castTimeFormat, getFormatTime, getFormatDate, getRandomBoolean, getMarkupFromArray};
