@@ -37,16 +37,6 @@ const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
 
 const days = Array.from(new Set(events.map(({start}) => start.getDate())),
     (it) => events.filter((event) => event.start.getDate() === it));
-// const days = daysDates.map((it) => events.filter((event) => event.start.getDate() === it));
-
-// let days = [[events[0]]];
-// events.forEach((it) => {
-//   const currentDay = days[days.length - 1];
-//   if (currentDay[currentDay.length - 1].start.getDate() !== it.start.getDate()) {
-//     days.push([it]);
-//   }
-//   currentDay.push(it);
-// });
 
 days.forEach((it, i) => {
   render(daysContainerElement, createDayTemplate(it[0], i + 1));
