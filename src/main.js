@@ -27,7 +27,7 @@ render(mainHeaderElement, createInfoTemplate(), `afterbegin`);
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
 render(infoElement, createRouteTemplate());
-render(infoElement, createPriceTemplate());
+render(infoElement, createPriceTemplate(events));
 render(mainControlsElement, createMenuTemplate());
 render(mainControlsElement, createFilterTemplate());
 render(mainContentElement, createSortElement());
@@ -35,9 +35,18 @@ render(mainContentElement, createDaysContainerTemplate());
 
 const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
 
-const daysDates = Array.from(new Set(events.map(({start}) => start.getDate())));
-const days = daysDates.map((it) => events.filter((event) => event.start.getDate() === it));
+const days = Array.from(new Set(events.map(({start}) => start.getDate())),
+    (it) => events.filter((event) => event.start.getDate() === it));
+// const days = daysDates.map((it) => events.filter((event) => event.start.getDate() === it));
 
+// let days = [[events[0]]];
+// events.forEach((it) => {
+//   const currentDay = days[days.length - 1];
+//   if (currentDay[currentDay.length - 1].start.getDate() !== it.start.getDate()) {
+//     days.push([it]);
+//   }
+//   currentDay.push(it);
+// });
 
 days.forEach((it, i) => {
   render(daysContainerElement, createDayTemplate(it[0], i + 1));
@@ -47,6 +56,7 @@ const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`)
 daysElements.forEach((it, i) => {
   days[i].forEach((event) => render(it, createEventTemplate(event)));
 });
+
 
 const eventsContainerElement = daysContainerElement.querySelector(`.trip-events__list`);
 render(eventsContainerElement, createEventEditTemplate(events[0]), `afterbegin`);

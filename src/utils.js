@@ -10,8 +10,8 @@ const getFormatTime = (date) => {
 
 const getFormatDate = (date, separator) => {
   const year = date.getFullYear().toString().slice(2);
-  const month = date.getMonth();
-  const day = date.getDate();
+  const month = castTimeFormat(date.getMonth());
+  const day = castTimeFormat(date.getDate());
 
   return year + separator + month + separator + day;
 };
