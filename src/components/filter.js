@@ -1,4 +1,4 @@
-export const createFilterTemplate = () => {
+const createFilterTemplate = () => {
   return (
     `<h2 class="visually-hidden">Filter events</h2>
     <form class="trip-filters" action="#" method="get">
@@ -21,3 +21,6 @@ export const createFilterTemplate = () => {
     </form>`
   );
 };
+
+
+export {createFilterTemplate};
