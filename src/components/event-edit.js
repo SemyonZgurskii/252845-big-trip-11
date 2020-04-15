@@ -33,20 +33,13 @@ const generatePhotosElement = (photo) => {
   return `<img class="event__photo" src="${photo}" alt="Event photo">`;
 };
 
-const generatePhotosMarkup = (photos) => {
-  if (photos.length > 0) {
-    return photos.map((it) => generatePhotosElement(it));
-  }
-  return ``;
-};
-
 export const createEventEditTemplate = (event) => {
   const {city, info, price, options, start, end} = event;
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
   const citiesMarkup = getMarkupFromArray(CITIES, generateCitiesElement);
   const optionsMarkup = getMarkupFromArray(options, generateOptionsElement);
-  const photosMarkup = generatePhotosMarkup(info.photos);
+  const photosMarkup = getMarkupFromArray(info.photos, generatePhotosElement);
 
   const startTime = getFormatDate(start, `/`) + ` ` + getFormatTime(start);
   const endTime = getFormatDate(end, `/`) + ` ` + getFormatTime(end);
