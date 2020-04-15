@@ -36,15 +36,15 @@ render(mainContentElement, createDaysContainerTemplate());
 const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
 
 const days = Array.from(new Set(events.map(({start}) => start.getDate())),
-    (it) => events.filter((event) => event.start.getDate() === it));
+    (date) => events.filter((event) => event.start.getDate() === date));
 
-days.forEach((it, i) => {
-  render(daysContainerElement, createDayTemplate(it[0], i + 1));
+days.forEach((day, i) => {
+  render(daysContainerElement, createDayTemplate(day[0], i + 1));
 });
 
 const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
-daysElements.forEach((it, i) => {
-  days[i].forEach((event) => render(it, createEventTemplate(event)));
+daysElements.forEach((dayElement, i) => {
+  days[i].forEach((event) => render(dayElement, createEventTemplate(event)));
 });
 
 

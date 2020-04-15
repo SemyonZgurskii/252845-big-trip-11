@@ -1,7 +1,7 @@
 const getOverallPrice = (events) => {
-  return events.reduce((summ, it) => {
-    const optionsPrice = it.options.reduce((acc, option) => acc + option.price, 0);
-    return summ + it.price + optionsPrice;
+  return events.reduce((summ, event) => {
+    const optionsPrice = event.options.reduce((acc, option) => acc + option.price, 0);
+    return summ + event.price + optionsPrice;
   }, 0);
 };
 
