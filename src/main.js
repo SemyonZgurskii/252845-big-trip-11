@@ -11,6 +11,32 @@ import EventComponent from "./components/event.js";
 import {generateEvents} from "./mocks/event.js";
 import {render, RenderPosition} from "./utils.js";
 
+const renderEvent = (dayElement, event) => {
+  const eventComponent = new EventComponent(event);
+  const eventEditComponent = new EventEditComponent(event);
+
+  const replaceEventToEdit = () => {
+    dayElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceEditToEvent = () => {
+    dayElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
+  editButton.addEventListener(`click`, () => {
+    replaceEventToEdit();
+  });
+
+  const editForm = eventEditComponent.getElement().querySelector(`form`);
+  editForm.addEventListener(`submit`, () => {
+    replaceEditToEvent();
+  });
+
+  render(dayElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+
 const EVENTS_COUNT = 20;
 
 const events = generateEvents(EVENTS_COUNT).sort((a, b) => a.start.getTime() - b.start.getTime());
@@ -41,9 +67,11 @@ days.forEach((day, i) => {
 
 const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
 daysElements.forEach((dayElement, i) => {
-  days[i].forEach((event) => render(dayElement, new EventComponent(event).getElement(), RenderPosition.BEFOREEND));
+  days[i].forEach((event) => renderEvent(dayElement, event));
 });
+// daysElements.forEach((dayElement, i) => {
+//   days[i].forEach((event) => render(dayElement, new EventComponent(event).getElement(), RenderPosition.BEFOREEND));
+// });
 
-
-const eventsContainerElement = daysContainerElement.querySelector(`.trip-events__list`);
-render(eventsContainerElement, new EventEditComponent(events[0]).getElement(), RenderPosition.AFTERBEGIN);
+// const eventsContainerElement = daysContainerElement.querySelector(`.trip-events__list`);
+// render(eventsContainerElement, new EventEditComponent(events[0]).getElement(), RenderPosition.AFTERBEGIN);
