@@ -1,4 +1,4 @@
-import {castTimeFormat} from "../utils.js";
+import {castTimeFormat, createElement} from "../utils.js";
 import {MonthNumberToString} from "../const.js";
 
 const createDayTemplate = (event, counter) => {
@@ -19,4 +19,27 @@ const createDayTemplate = (event, counter) => {
   );
 };
 
-export {createDayTemplate};
+export default class Day {
+  constructor(event, counter) {
+    this._event = event;
+    this._counter = counter;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createDayTemplate(this._event, this._counter);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

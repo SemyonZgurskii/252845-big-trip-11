@@ -1,4 +1,4 @@
-import {getFormatTime, getFormatDate} from "../utils.js";
+import {getFormatTime, getFormatDate, createElement} from "../utils.js";
 
 const generateOptionsElement = (title, price) => {
   return (
@@ -33,7 +33,7 @@ const getDuration = (start, end) => {
   return minutes + `M`;
 };
 
-export const createEventTemplate = (event) => {
+const createEventTemplate = (event) => {
   const {type, city, start, end, price, options} = event;
 
   const offersMarkup = generateOptionsMarkup(options);
@@ -77,3 +77,27 @@ export const createEventTemplate = (event) => {
   </li>`
   );
 };
+
+export default class Event {
+  constructor(event) {
+    this._event = event;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
