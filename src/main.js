@@ -52,7 +52,7 @@ const renderDays = (events) => {
     render(mainContentElement, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
     return;
   }
-  events.sort((a, b) => a.start.getTime() - b.start.getTime());
+  events.slice().sort((a, b) => a.start.getTime() - b.start.getTime());
 
   render(mainContentElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
   render(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
