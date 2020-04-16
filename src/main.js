@@ -23,9 +23,19 @@ const renderEvent = (dayElement, event) => {
     dayElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
   editButton.addEventListener(`click`, () => {
     replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   const editForm = eventEditComponent.getElement();
