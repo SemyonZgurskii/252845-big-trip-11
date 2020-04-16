@@ -1,5 +1,5 @@
 import {EVENT_TYPES, CITIES} from "../const.js";
-import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from "../utils.js";
+import {createElement, getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from "../utils.js";
 
 const generateEventTypeElement = (eventType) => {
   return (
@@ -33,7 +33,7 @@ const generatePhotosElement = (photo) => {
   return `<img class="event__photo" src="${photo}" alt="Event photo">`;
 };
 
-export const createEventEditTemplate = (event) => {
+const createEventEditTemplate = (event) => {
   const {city, info, price, options, start, end} = event;
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
@@ -125,3 +125,27 @@ export const createEventEditTemplate = (event) => {
   </form>`
   );
 };
+
+export default class EventEdit {
+  constructor(event) {
+    this._event = event;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      return createElement(this.getTemplate());
+    }
+
+    return this._element();
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

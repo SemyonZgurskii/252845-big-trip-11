@@ -6,7 +6,7 @@ import PriceComponent from "./components/price.js";
 import MenuComponent from "./components/menu.js";
 import FilterComponent from "./components/filter.js";
 import SortComponent from "./components/sort.js";
-import {createEventEditTemplate} from "./components/event-edit.js";
+import EventEditComponent from "./components/event-edit.js";
 import {createEventTemplate} from "./components/event.js";
 import {generateEvents} from "./mocks/event.js";
 import {newRender, RenderPosition} from "./utils.js";
@@ -50,4 +50,4 @@ daysElements.forEach((dayElement, i) => {
 
 
 const eventsContainerElement = daysContainerElement.querySelector(`.trip-events__list`);
-render(eventsContainerElement, createEventEditTemplate(events[0]), `afterbegin`);
+newRender(eventsContainerElement, new EventEditComponent(events[0]).getElement(), RenderPosition.AFTERBEGIN);
