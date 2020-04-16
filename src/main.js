@@ -1,4 +1,4 @@
-import {createDaysContainerTemplate} from "./components/days-container.js";
+import DaysContainerComponent from "./components/days-container.js";
 import {createDayTemplate} from "./components/day.js";
 import IfnoComponent from "./components/info.js";
 import RouteComponent from "./components/route.js";
@@ -27,13 +27,12 @@ newRender(mainHeaderElement, new IfnoComponent().getElement(), RenderPosition.AF
 
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
-// render(infoElement, createRouteTemplate());
 newRender(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREEND);
 render(infoElement, createPriceTemplate(events));
 render(mainControlsElement, createMenuTemplate());
 render(mainControlsElement, createFilterTemplate());
 render(mainContentElement, createSortElement());
-render(mainContentElement, createDaysContainerTemplate());
+newRender(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
 
 const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
 
