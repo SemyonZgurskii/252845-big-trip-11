@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const createMenuTemplate = () => {
   return (
     `<h2 class="visually-hidden">Switch trip view</h2>
@@ -8,4 +10,24 @@ const createMenuTemplate = () => {
   );
 };
 
-export {createMenuTemplate};
+export default class Menu {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      return createElement(this.getTemplate());
+    }
+
+    return this._element();
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

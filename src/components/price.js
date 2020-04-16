@@ -18,7 +18,7 @@ const createPriceTemplate = (events) => {
 export default class Price {
   constructor(events) {
     this._events = events;
-    
+
     this._element = null;
   }
 

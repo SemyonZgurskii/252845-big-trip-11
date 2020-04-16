@@ -3,8 +3,8 @@ import DayComponent from "./components/day.js";
 import IfnoComponent from "./components/info.js";
 import RouteComponent from "./components/route.js";
 import PriceComponent from "./components/price.js";
-import {createMenuTemplate} from "./components/menu.js";
-import {createFilterTemplate} from "./components/filter.js";
+import MenuComponent from "./components/menu.js";
+import FilterComponent from "./components/filter.js";
 import {createSortElement} from "./components/sort.js";
 import {createEventEditTemplate} from "./components/event-edit.js";
 import {createEventTemplate} from "./components/event.js";
@@ -28,10 +28,9 @@ newRender(mainHeaderElement, new IfnoComponent().getElement(), RenderPosition.AF
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
 newRender(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREEND);
-// render(infoElement, createPriceTemplate(events));
 newRender(infoElement, new PriceComponent(events).getElement(), RenderPosition.BEFOREEND);
-render(mainControlsElement, createMenuTemplate());
-render(mainControlsElement, createFilterTemplate());
+newRender(mainControlsElement, new MenuComponent().getElement(), RenderPosition.BEFOREEND);
+newRender(mainControlsElement, new FilterComponent().getElement(), RenderPosition.BEFOREEND);
 render(mainContentElement, createSortElement());
 newRender(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
 
