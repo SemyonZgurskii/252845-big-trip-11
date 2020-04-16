@@ -5,7 +5,7 @@ import RouteComponent from "./components/route.js";
 import PriceComponent from "./components/price.js";
 import MenuComponent from "./components/menu.js";
 import FilterComponent from "./components/filter.js";
-import {createSortElement} from "./components/sort.js";
+import SortComponent from "./components/sort.js";
 import {createEventEditTemplate} from "./components/event-edit.js";
 import {createEventTemplate} from "./components/event.js";
 import {generateEvents} from "./mocks/event.js";
@@ -31,7 +31,7 @@ newRender(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREE
 newRender(infoElement, new PriceComponent(events).getElement(), RenderPosition.BEFOREEND);
 newRender(mainControlsElement, new MenuComponent().getElement(), RenderPosition.BEFOREEND);
 newRender(mainControlsElement, new FilterComponent().getElement(), RenderPosition.BEFOREEND);
-render(mainContentElement, createSortElement());
+newRender(mainContentElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
 newRender(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
 
 const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
