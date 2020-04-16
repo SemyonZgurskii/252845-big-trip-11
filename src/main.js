@@ -2,7 +2,7 @@ import DaysContainerComponent from "./components/days-container.js";
 import DayComponent from "./components/day.js";
 import IfnoComponent from "./components/info.js";
 import RouteComponent from "./components/route.js";
-import {createPriceTemplate} from "./components/price.js";
+import PriceComponent from "./components/price.js";
 import {createMenuTemplate} from "./components/menu.js";
 import {createFilterTemplate} from "./components/filter.js";
 import {createSortElement} from "./components/sort.js";
@@ -28,7 +28,8 @@ newRender(mainHeaderElement, new IfnoComponent().getElement(), RenderPosition.AF
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
 newRender(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREEND);
-render(infoElement, createPriceTemplate(events));
+// render(infoElement, createPriceTemplate(events));
+newRender(infoElement, new PriceComponent(events).getElement(), RenderPosition.BEFOREEND);
 render(mainControlsElement, createMenuTemplate());
 render(mainControlsElement, createFilterTemplate());
 render(mainContentElement, createSortElement());
