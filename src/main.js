@@ -1,5 +1,5 @@
 import DaysContainerComponent from "./components/days-container.js";
-import {createDayTemplate} from "./components/day.js";
+import DayComponent from "./components/day.js";
 import IfnoComponent from "./components/info.js";
 import RouteComponent from "./components/route.js";
 import {createPriceTemplate} from "./components/price.js";
@@ -40,7 +40,7 @@ const days = Array.from(new Set(events.map(({start}) => start.getDate())),
     (date) => events.filter((event) => event.start.getDate() === date));
 
 days.forEach((day, i) => {
-  render(daysContainerElement, createDayTemplate(day[0], i + 1));
+  newRender(daysContainerElement, new DayComponent(day[0], i + 1).getElement(), RenderPosition.BEFOREEND);
 });
 
 const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);

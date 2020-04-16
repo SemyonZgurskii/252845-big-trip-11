@@ -7,7 +7,7 @@ const createDaysContainerTemplate = () => {
   );
 };
 
-export default class Info {
+export default class DaysContainer {
   constructor() {
     this._element = null;
   }
