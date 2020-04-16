@@ -7,15 +7,11 @@ import MenuComponent from "./components/menu.js";
 import FilterComponent from "./components/filter.js";
 import SortComponent from "./components/sort.js";
 import EventEditComponent from "./components/event-edit.js";
-import {createEventTemplate} from "./components/event.js";
+import EventComponent from "./components/event.js";
 import {generateEvents} from "./mocks/event.js";
 import {newRender, RenderPosition} from "./utils.js";
 
 const EVENTS_COUNT = 20;
-
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const events = generateEvents(EVENTS_COUNT).sort((a, b) => a.start.getTime() - b.start.getTime());
 
@@ -45,7 +41,7 @@ days.forEach((day, i) => {
 
 const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
 daysElements.forEach((dayElement, i) => {
-  days[i].forEach((event) => render(dayElement, createEventTemplate(event)));
+  days[i].forEach((event) => newRender(dayElement, new EventComponent(event).getElement(), RenderPosition.BEFOREEND));
 });
 
 
