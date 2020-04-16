@@ -9,7 +9,7 @@ import SortComponent from "./components/sort.js";
 import EventEditComponent from "./components/event-edit.js";
 import EventComponent from "./components/event.js";
 import {generateEvents} from "./mocks/event.js";
-import {newRender, RenderPosition} from "./utils.js";
+import {render, RenderPosition} from "./utils.js";
 
 const EVENTS_COUNT = 20;
 
@@ -19,16 +19,16 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 const mainContentElement = document.querySelector(`.trip-events`);
 
-newRender(mainHeaderElement, new IfnoComponent().getElement(), RenderPosition.AFTERBEGIN);
+render(mainHeaderElement, new IfnoComponent().getElement(), RenderPosition.AFTERBEGIN);
 
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
-newRender(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREEND);
-newRender(infoElement, new PriceComponent(events).getElement(), RenderPosition.BEFOREEND);
-newRender(mainControlsElement, new MenuComponent().getElement(), RenderPosition.BEFOREEND);
-newRender(mainControlsElement, new FilterComponent().getElement(), RenderPosition.BEFOREEND);
-newRender(mainContentElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
-newRender(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
+render(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREEND);
+render(infoElement, new PriceComponent(events).getElement(), RenderPosition.BEFOREEND);
+render(mainControlsElement, new MenuComponent().getElement(), RenderPosition.BEFOREEND);
+render(mainControlsElement, new FilterComponent().getElement(), RenderPosition.BEFOREEND);
+render(mainContentElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+render(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
 
 const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
 
@@ -36,14 +36,14 @@ const days = Array.from(new Set(events.map(({start}) => start.getDate())),
     (date) => events.filter((event) => event.start.getDate() === date));
 
 days.forEach((day, i) => {
-  newRender(daysContainerElement, new DayComponent(day[0], i + 1).getElement(), RenderPosition.BEFOREEND);
+  render(daysContainerElement, new DayComponent(day[0], i + 1).getElement(), RenderPosition.BEFOREEND);
 });
 
 const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
 daysElements.forEach((dayElement, i) => {
-  days[i].forEach((event) => newRender(dayElement, new EventComponent(event).getElement(), RenderPosition.BEFOREEND));
+  days[i].forEach((event) => render(dayElement, new EventComponent(event).getElement(), RenderPosition.BEFOREEND));
 });
 
 
 const eventsContainerElement = daysContainerElement.querySelector(`.trip-events__list`);
-newRender(eventsContainerElement, new EventEditComponent(events[0]).getElement(), RenderPosition.AFTERBEGIN);
+render(eventsContainerElement, new EventEditComponent(events[0]).getElement(), RenderPosition.AFTERBEGIN);

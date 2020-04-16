@@ -40,7 +40,7 @@ const createElement = (template) => {
   return fragment;
 };
 
-const newRender = (container, element, position) => {
+const render = (container, element, position) => {
   switch (position) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -51,4 +51,4 @@ const newRender = (container, element, position) => {
   }
 };
 
-export {castTimeFormat, getFormatTime, getFormatDate, getRandomBoolean, getMarkupFromArray, createElement, newRender, RenderPosition};
+export {castTimeFormat, getFormatTime, getFormatDate, getRandomBoolean, getMarkupFromArray, createElement, render, RenderPosition};
