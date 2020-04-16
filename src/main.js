@@ -46,6 +46,15 @@ const renderEvent = (dayElement, event) => {
   render(dayElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
+const renderDays = (events) => {
+
+  if (event.length < 1) {
+    
+    return;
+  }
+  
+}
+
 
 const EVENTS_COUNT = 20;
 
