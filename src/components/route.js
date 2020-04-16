@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const createRouteTemplate = () => {
   return (
     `<div class="trip-info__main">
@@ -8,4 +10,24 @@ const createRouteTemplate = () => {
   );
 };
 
-export {createRouteTemplate};
+export default class Route {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createRouteTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      return createElement(this.getTemplate());
+    }
+
+    return this._element();
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

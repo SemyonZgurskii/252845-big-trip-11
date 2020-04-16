@@ -1,7 +1,7 @@
 import {createDaysContainerTemplate} from "./components/days-container.js";
 import {createDayTemplate} from "./components/day.js";
 import IfnoComponent from "./components/info.js";
-import {createRouteTemplate} from "./components/route.js";
+import RouteComponent from "./components/route.js";
 import {createPriceTemplate} from "./components/price.js";
 import {createMenuTemplate} from "./components/menu.js";
 import {createFilterTemplate} from "./components/filter.js";
@@ -27,7 +27,8 @@ newRender(mainHeaderElement, new IfnoComponent().getElement(), RenderPosition.AF
 
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
-render(infoElement, createRouteTemplate());
+// render(infoElement, createRouteTemplate());
+newRender(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREEND);
 render(infoElement, createPriceTemplate(events));
 render(mainControlsElement, createMenuTemplate());
 render(mainControlsElement, createFilterTemplate());
