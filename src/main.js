@@ -8,6 +8,7 @@ import FilterComponent from "./components/filter.js";
 import SortComponent from "./components/sort.js";
 import EventEditComponent from "./components/event-edit.js";
 import EventComponent from "./components/event.js";
+import NoEventsComponent from "./components/no-events.js";
 import {generateEvents} from "./mocks/event.js";
 import {render, RenderPosition} from "./utils.js";
 
@@ -23,9 +24,19 @@ const renderEvent = (dayElement, event) => {
     dayElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
   editButton.addEventListener(`click`, () => {
     replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   const editForm = eventEditComponent.getElement();
@@ -36,10 +47,35 @@ const renderEvent = (dayElement, event) => {
   render(dayElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
+const renderDays = (events) => {
+  if (events.length < 1) {
+    render(mainContentElement, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+  events.slice().sort((a, b) => a.start.getTime() - b.start.getTime());
+
+  render(mainContentElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+  render(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
+
+  const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
+
+  const days = Array.from(new Set(events.map(({start}) => start.getDate())),
+      (date) => events.filter((event) => event.start.getDate() === date));
+
+  days.forEach((day, i) => {
+    render(daysContainerElement, new DayComponent(day[0], i + 1).getElement(), RenderPosition.BEFOREEND);
+  });
+
+  const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
+  daysElements.forEach((dayElement, i) => {
+    days[i].forEach((event) => renderEvent(dayElement, event));
+  });
+};
+
 
 const EVENTS_COUNT = 20;
 
-const events = generateEvents(EVENTS_COUNT).sort((a, b) => a.start.getTime() - b.start.getTime());
+const events = generateEvents(EVENTS_COUNT);
 
 const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
@@ -53,19 +89,5 @@ render(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREEND)
 render(infoElement, new PriceComponent(events).getElement(), RenderPosition.BEFOREEND);
 render(mainControlsElement, new MenuComponent().getElement(), RenderPosition.BEFOREEND);
 render(mainControlsElement, new FilterComponent().getElement(), RenderPosition.BEFOREEND);
-render(mainContentElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
-render(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
 
-const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
-
-const days = Array.from(new Set(events.map(({start}) => start.getDate())),
-    (date) => events.filter((event) => event.start.getDate() === date));
-
-days.forEach((day, i) => {
-  render(daysContainerElement, new DayComponent(day[0], i + 1).getElement(), RenderPosition.BEFOREEND);
-});
-
-const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
-daysElements.forEach((dayElement, i) => {
-  days[i].forEach((event) => renderEvent(dayElement, event));
-});
+renderDays(events);
