@@ -1,6 +1,6 @@
 import {createDaysContainerTemplate} from "./components/days-container.js";
 import {createDayTemplate} from "./components/day.js";
-import {createInfoTemplate} from "./components/info.js";
+import IfnoComponent from "./components/info.js";
 import {createRouteTemplate} from "./components/route.js";
 import {createPriceTemplate} from "./components/price.js";
 import {createMenuTemplate} from "./components/menu.js";
@@ -9,6 +9,7 @@ import {createSortElement} from "./components/sort.js";
 import {createEventEditTemplate} from "./components/event-edit.js";
 import {createEventTemplate} from "./components/event.js";
 import {generateEvents} from "./mocks/event.js";
+import {newRender, RenderPosition} from "./utils.js";
 
 const EVENTS_COUNT = 20;
 
@@ -22,7 +23,7 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 const mainContentElement = document.querySelector(`.trip-events`);
 
-render(mainHeaderElement, createInfoTemplate(), `afterbegin`);
+newRender(mainHeaderElement, new IfnoComponent().getElement(), RenderPosition.AFTERBEGIN);
 
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
