@@ -91,10 +91,10 @@ export default class Event {
 
   getElement() {
     if (!this._element) {
-      return createElement(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
-    return this._element();
+    return this._element;
   }
 
   removeElement() {

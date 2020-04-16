@@ -32,12 +32,9 @@ const getMarkupFromArray = (array, elementCreator) => {
 
 const createElement = (template) => {
   const newElement = document.createElement(`div`);
-  const fragment = document.createDocumentFragment();
-
   newElement.innerHTML = template;
-  newElement.childNodes.forEach((node) => fragment.appendChild(node));
 
-  return fragment;
+  return newElement.firstChild;
 };
 
 const render = (container, element, position) => {

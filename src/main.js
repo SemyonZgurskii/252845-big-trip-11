@@ -28,7 +28,7 @@ const renderEvent = (dayElement, event) => {
     replaceEventToEdit();
   });
 
-  const editForm = eventEditComponent.getElement().querySelector(`form`);
+  const editForm = eventEditComponent.getElement();
   editForm.addEventListener(`submit`, () => {
     replaceEditToEvent();
   });
@@ -69,9 +69,3 @@ const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`)
 daysElements.forEach((dayElement, i) => {
   days[i].forEach((event) => renderEvent(dayElement, event));
 });
-// daysElements.forEach((dayElement, i) => {
-//   days[i].forEach((event) => render(dayElement, new EventComponent(event).getElement(), RenderPosition.BEFOREEND));
-// });
-
-// const eventsContainerElement = daysContainerElement.querySelector(`.trip-events__list`);
-// render(eventsContainerElement, new EventEditComponent(events[0]).getElement(), RenderPosition.AFTERBEGIN);
