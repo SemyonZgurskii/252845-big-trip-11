@@ -33,14 +33,12 @@ const renderEvent = (dayElement, event) => {
     }
   };
 
-  const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
-  editButton.addEventListener(`click`, () => {
+  eventComponent.setEditButtonHandler(() => {
     replaceEventToEdit();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  const editForm = eventEditComponent.getElement();
-  editForm.addEventListener(`submit`, () => {
+  eventEditComponent.setSubmitHandler(() => {
     replaceEditToEvent();
   });
 
