@@ -1,5 +1,6 @@
 import {EVENT_TYPES, CITIES} from "../const.js";
-import {createElement, getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from "../utils.js";
+import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const generateEventTypeElement = (eventType) => {
   return (
@@ -126,26 +127,14 @@ const createEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEdit {
+export default class EventEdit extends AbstractComponent {
   constructor(event) {
-    this._event = event;
+    super();
 
-    this._element = null;
+    this._event = event;
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component";
 
 const getOverallPrice = (events) => {
   return events.reduce((summ, event) => {
@@ -15,26 +15,14 @@ const createPriceTemplate = (events) => {
   );
 };
 
-export default class Price {
+export default class Price extends AbstractComponent {
   constructor(events) {
-    this._events = events;
+    super();
 
-    this._element = null;
+    this._events = events;
   }
 
   getTemplate() {
     return createPriceTemplate(this._events);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
