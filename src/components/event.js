@@ -1,4 +1,4 @@
-import {getFormatTime, getFormatDate} from "../utils.js";
+import {getFormatTime, getFormatDate} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const generateOptionsElement = (title, price) => {

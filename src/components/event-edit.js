@@ -1,5 +1,5 @@
 import {EVENT_TYPES, CITIES} from "../const.js";
-import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from "../utils.js";
+import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const generateEventTypeElement = (eventType) => {

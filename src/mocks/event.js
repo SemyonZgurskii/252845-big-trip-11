@@ -1,5 +1,5 @@
 import {EVENT_TYPES, CITIES} from "../const.js";
-import {getRandomBoolean} from "../utils.js";
+import {getRandomBoolean} from "../utils/common.js";
 
 const MAX_PRICE = 10000;
 const MIN_PHOTOS = 1;

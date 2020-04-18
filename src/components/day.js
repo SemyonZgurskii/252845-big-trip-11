@@ -1,4 +1,4 @@
-import {castTimeFormat} from "../utils.js";
+import {castTimeFormat} from "../utils/common.js";
 import {MonthNumberToString} from "../const.js";
 import AbstractComponent from "./abstract-component.js";
 
