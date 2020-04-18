@@ -10,7 +10,7 @@ import EventEditComponent from "./components/event-edit.js";
 import EventComponent from "./components/event.js";
 import NoEventsComponent from "./components/no-events.js";
 import {generateEvents} from "./mocks/event.js";
-import {render, RenderPosition} from "./utils.js";
+import {render, RenderPosition} from "./utils/render.js";
 
 const renderEvent = (dayElement, event) => {
   const eventComponent = new EventComponent(event);
@@ -44,18 +44,18 @@ const renderEvent = (dayElement, event) => {
     replaceEditToEvent();
   });
 
-  render(dayElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  render(dayElement, eventComponent, RenderPosition.BEFOREEND);
 };
 
 const renderDays = (events) => {
   if (events.length < 1) {
-    render(mainContentElement, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
+    render(mainContentElement, new NoEventsComponent(), RenderPosition.BEFOREEND);
     return;
   }
   events.slice().sort((a, b) => a.start.getTime() - b.start.getTime());
 
-  render(mainContentElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(mainContentElement, new DaysContainerComponent().getElement(), RenderPosition.BEFOREEND);
+  render(mainContentElement, new SortComponent(), RenderPosition.BEFOREEND);
+  render(mainContentElement, new DaysContainerComponent(), RenderPosition.BEFOREEND);
 
   const daysContainerElement = mainContentElement.querySelector(`.trip-days`);
 
@@ -63,7 +63,7 @@ const renderDays = (events) => {
       (date) => events.filter((event) => event.start.getDate() === date));
 
   days.forEach((day, i) => {
-    render(daysContainerElement, new DayComponent(day[0], i + 1).getElement(), RenderPosition.BEFOREEND);
+    render(daysContainerElement, new DayComponent(day[0], i + 1), RenderPosition.BEFOREEND);
   });
 
   const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
@@ -81,13 +81,13 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 const mainContentElement = document.querySelector(`.trip-events`);
 
-render(mainHeaderElement, new IfnoComponent().getElement(), RenderPosition.AFTERBEGIN);
+render(mainHeaderElement, new IfnoComponent(), RenderPosition.AFTERBEGIN);
 
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
-render(infoElement, new RouteComponent().getElement(), RenderPosition.BEFOREEND);
-render(infoElement, new PriceComponent(events).getElement(), RenderPosition.BEFOREEND);
-render(mainControlsElement, new MenuComponent().getElement(), RenderPosition.BEFOREEND);
-render(mainControlsElement, new FilterComponent().getElement(), RenderPosition.BEFOREEND);
+render(infoElement, new RouteComponent(), RenderPosition.BEFOREEND);
+render(infoElement, new PriceComponent(events), RenderPosition.BEFOREEND);
+render(mainControlsElement, new MenuComponent(), RenderPosition.BEFOREEND);
+render(mainControlsElement, new FilterComponent(), RenderPosition.BEFOREEND);
 
 renderDays(events);
