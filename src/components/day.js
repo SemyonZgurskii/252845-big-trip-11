@@ -1,5 +1,6 @@
-import {castTimeFormat, createElement} from "../utils.js";
+import {castTimeFormat} from "../utils/common.js";
 import {MonthNumberToString} from "../const.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createDayTemplate = (event, counter) => {
   const eventDate = event.start;
@@ -19,27 +20,15 @@ const createDayTemplate = (event, counter) => {
   );
 };
 
-export default class Day {
+export default class Day extends AbstractComponent {
   constructor(event, counter) {
+    super();
+
     this._event = event;
     this._counter = counter;
-
-    this._element = null;
   }
 
   getTemplate() {
     return createDayTemplate(this._event, this._counter);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

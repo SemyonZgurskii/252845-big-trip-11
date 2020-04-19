@@ -1,4 +1,5 @@
-import {getFormatTime, getFormatDate, createElement} from "../utils.js";
+import {getFormatTime, getFormatDate} from "../utils/common.js";
+import AbstractComponent from "./abstract-component.js";
 
 const generateOptionsElement = (title, price) => {
   return (
@@ -78,26 +79,19 @@ const createEventTemplate = (event) => {
   );
 };
 
-export default class Event {
+export default class Event extends AbstractComponent {
   constructor(event) {
-    this._event = event;
+    super();
 
-    this._element = null;
+    this._event = event;
   }
 
   getTemplate() {
     return createEventTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setEditButtonHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
   }
 }
