@@ -1,4 +1,4 @@
-import {getFormatTime, getFormatDate, getDuration} from "../utils/common.js";
+import {getFormatTime, getFormatDate, getFormatDuration, getDuration} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const generateOptionsElement = (title, price) => {
@@ -29,7 +29,7 @@ const createEventTemplate = (event) => {
   const startTime = getFormatTime(start);
   const endDateTime = getFormatDate(end, `-`);
   const endTime = getFormatTime(end);
-  const duration = getDuration(event);
+  const duration = getFormatDuration(getDuration(event));
 
   return (
     `<li class="trip-events__item">

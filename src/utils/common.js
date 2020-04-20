@@ -28,10 +28,14 @@ const getMarkupFromArray = (array, elementCreator) => {
 const getDuration = (event) => {
   const start = event.start;
   const end = event.end;
-  const duration = (end.getTime() - start.getTime()) / (1000 * 60);
-  const days = Math.floor(duration / (60 * 24));
-  const hours = Math.floor((duration % (60 * 24)) / 60);
-  const minutes = Math.floor(((duration % (60 * 24)) % 60));
+  return end.getTime() - start.getTime();
+};
+
+const getFormatDuration = (duration) => {
+  const durationInMinutes = duration / (1000 * 60);
+  const days = Math.floor(durationInMinutes / (60 * 24));
+  const hours = Math.floor((durationInMinutes % (60 * 24)) / 60);
+  const minutes = Math.floor(((durationInMinutes % (60 * 24)) % 60));
 
   if (days > 0) {
     return days + `D ` + hours + `H ` + minutes + `M`;
@@ -42,4 +46,4 @@ const getDuration = (event) => {
 };
 
 
-export {castTimeFormat, getFormatTime, getFormatDate, getRandomBoolean, getMarkupFromArray, getDuration};
+export {castTimeFormat, getFormatTime, getFormatDate, getRandomBoolean, getMarkupFromArray, getDuration, getFormatDuration};
