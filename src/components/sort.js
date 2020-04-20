@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component";
 
-const SortType = {
+export const SortType = {
   TIME_UP: `time-up`,
   PRICE_UP: `price-up`,
   DEFAULT: `default`,
@@ -42,15 +42,21 @@ const createSortElement = () => {
 };
 
 export default class Sort extends AbstractComponent {
+  constructor() {
+    super();
+
+    this._currentSortType = SortType.DEFAULT;
+  }
+
   getTemplate() {
     return createSortElement();
   }
 
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
+      // evt.preventDefault();
 
-      if (evt.target.classList.contains(`trip-sort__btn`)) {
+      if (!evt.target.classList.contains(`trip-sort__btn`)) {
         return;
       }
 

@@ -27,4 +27,4 @@ render(mainControlsElement, new MenuComponent(), RenderPosition.BEFOREEND);
 render(mainControlsElement, new FilterComponent(), RenderPosition.BEFOREEND);
 
 const tripController = new TripController(mainContentElement, events);
-tripController.renderDays();
+tripController.renderEvents();
