@@ -5,6 +5,7 @@ import EventEditComponent from "../components/event-edit.js";
 import EventComponent from "../components/event.js";
 import NoEventsComponent from "../components/no-events.js";
 import {render, RenderPosition} from "../utils/render.js";
+import {getDuration} from "../utils/common.js";
 
 const renderEvent = (dayElement, event) => {
   const eventComponent = new EventComponent(event);
@@ -44,7 +45,7 @@ const getSortedEvents = (events, sortType) => {
 
   switch (sortType) {
     case SortType.TIME_UP:
-      sortedEvents = events.slice().sort((a, b) => b.start.getTime() - a.start.getTime());
+      sortedEvents = events.slice().sort((a, b) => getDuration(b) - getDuration(a));
       break;
     case SortType.PRICE_UP:
       sortedEvents = events.slice().sort((a, b) => b.price - a.price);
