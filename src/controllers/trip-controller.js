@@ -1,44 +1,43 @@
 import DaysContainerComponent from "../components/days-container.js";
 import DayComponent from "../components/day.js";
 import SortComponent, {SortType} from "../components/sort.js";
-import EventEditComponent from "../components/event-edit.js";
-import EventComponent from "../components/event.js";
 import NoEventsComponent from "../components/no-events.js";
+import PointController from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
 
-const renderEvent = (dayElement, event) => {
-  const eventComponent = new EventComponent(event);
-  const eventEditComponent = new EventEditComponent(event);
+// const renderEvent = (dayElement, event) => {
+//   const eventComponent = new EventComponent(event);
+//   const eventEditComponent = new EventEditComponent(event);
 
-  const replaceEventToEdit = () => {
-    dayElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
-  };
+//   const replaceEventToEdit = () => {
+//     dayElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+//   };
 
-  const replaceEditToEvent = () => {
-    dayElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
-  };
+//   const replaceEditToEvent = () => {
+//     dayElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+//   };
 
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+//   const onEscKeyDown = (evt) => {
+//     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
-    if (isEscKey) {
-      replaceEditToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
+//     if (isEscKey) {
+//       replaceEditToEvent();
+//       document.removeEventListener(`keydown`, onEscKeyDown);
+//     }
+//   };
 
-  eventComponent.setEditButtonHandler(() => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
+//   eventComponent.setEditButtonHandler(() => {
+//     replaceEventToEdit();
+//     document.addEventListener(`keydown`, onEscKeyDown);
+//   });
 
-  eventEditComponent.setSubmitHandler(() => {
-    replaceEditToEvent();
-  });
+//   eventEditComponent.setSubmitHandler(() => {
+//     replaceEditToEvent();
+//   });
 
-  render(dayElement, eventComponent, RenderPosition.BEFOREEND);
-};
+//   render(dayElement, eventComponent, RenderPosition.BEFOREEND);
+// };
 
 const getSortedEvents = (events, sortType) => {
   let sortedEvents = [];
@@ -93,7 +92,10 @@ export default class TripControler {
 
       const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
       daysElements.forEach((dayElement, i) => {
-        days[i].forEach((event) => renderEvent(dayElement, event));
+        days[i].forEach((event) => {
+          const newEvent = new PointController(dayElement, event);
+          newEvent.renderEvent();
+        });
       });
     };
 
@@ -106,11 +108,13 @@ export default class TripControler {
       if (sortType === SortType.DEFAULT) {
         renderDays();
       } else {
-        // debugger;
         const sortEvents = getSortedEvents(events, sortType);
         render(daysContainerElement, new DayComponent(), RenderPosition.BEFOREEND);
         const eventsContainer = daysContainerElement.querySelector(`.trip-events__list`);
-        sortEvents.forEach((event) => renderEvent(eventsContainer, event));
+        sortEvents.forEach((event) => {
+          const newEvent = new PointController(eventsContainer, event);
+          newEvent.renderEvent();
+        });
       }
     });
   }
