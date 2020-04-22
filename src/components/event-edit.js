@@ -30,21 +30,15 @@ const generateOptionsElement = (option) => {
   );
 };
 
-const generatePhotosElement = (photo) => {
-  return `<img class="event__photo" src="${photo}" alt="Event photo">`;
-};
-
 const createEventEditTemplate = (event) => {
-  const {city, info, price, options, start, end} = event;
+  const {city, price, options, start, end, isFavorite} = event;
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
   const citiesMarkup = getMarkupFromArray(CITIES, generateCitiesElement);
   const optionsMarkup = getMarkupFromArray(options, generateOptionsElement);
-  const photosMarkup = getMarkupFromArray(info.photos, generatePhotosElement);
 
   const startTime = getFormatDate(start, `/`) + ` ` + getFormatTime(start);
   const endTime = getFormatDate(end, `/`) + ` ` + getFormatTime(end);
-  const description = info.description;
 
   return (
     `<li class="trip-events__item">
@@ -105,7 +99,7 @@ const createEventEditTemplate = (event) => {
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
   
-        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

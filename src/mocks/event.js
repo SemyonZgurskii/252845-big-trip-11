@@ -97,6 +97,7 @@ const generateEvent = (startDate, endDate) => {
     price: Math.floor(Math.random() * MAX_PRICE),
     start: startDate,
     end: endDate,
+    isFavorite: getRandomBoolean(),
   };
 };
 
