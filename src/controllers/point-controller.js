@@ -3,17 +3,16 @@ import EventComponent from "../components/event.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 export default class PontController {
-  constructor(container, event) {
+  constructor(container) {
     this._container = container;
-    this._event = event;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
   }
 
-  renderEvent() {
-    this._eventComponent = new EventComponent(this._event);
-    this._eventEditComponent = new EventEditComponent(this._event);
+  renderEvent(event) {
+    this._eventComponent = new EventComponent(event);
+    this._eventEditComponent = new EventEditComponent(event);
 
     const replaceEventToEdit = () => {
       this._container.replaceChild(this._eventEditComponent.getElement(), this._eventComponent.getElement());

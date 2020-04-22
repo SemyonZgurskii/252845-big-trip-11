@@ -6,39 +6,6 @@ import PointController from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
 
-// const renderEvent = (dayElement, event) => {
-//   const eventComponent = new EventComponent(event);
-//   const eventEditComponent = new EventEditComponent(event);
-
-//   const replaceEventToEdit = () => {
-//     dayElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
-//   };
-
-//   const replaceEditToEvent = () => {
-//     dayElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
-//   };
-
-//   const onEscKeyDown = (evt) => {
-//     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-//     if (isEscKey) {
-//       replaceEditToEvent();
-//       document.removeEventListener(`keydown`, onEscKeyDown);
-//     }
-//   };
-
-//   eventComponent.setEditButtonHandler(() => {
-//     replaceEventToEdit();
-//     document.addEventListener(`keydown`, onEscKeyDown);
-//   });
-
-//   eventEditComponent.setSubmitHandler(() => {
-//     replaceEditToEvent();
-//   });
-
-//   render(dayElement, eventComponent, RenderPosition.BEFOREEND);
-// };
-
 const getSortedEvents = (events, sortType) => {
   let sortedEvents = [];
 
@@ -93,8 +60,8 @@ export default class TripControler {
       const daysElements = daysContainerElement.querySelectorAll(`.trip-events__list`);
       daysElements.forEach((dayElement, i) => {
         days[i].forEach((event) => {
-          const newEvent = new PointController(dayElement, event);
-          newEvent.renderEvent();
+          const newEvent = new PointController(dayElement);
+          newEvent.renderEvent(event);
         });
       });
     };
@@ -112,8 +79,8 @@ export default class TripControler {
         render(daysContainerElement, new DayComponent(), RenderPosition.BEFOREEND);
         const eventsContainer = daysContainerElement.querySelector(`.trip-events__list`);
         sortEvents.forEach((event) => {
-          const newEvent = new PointController(eventsContainer, event);
-          newEvent.renderEvent();
+          const newEvent = new PointController(eventsContainer);
+          newEvent.renderEvent(event);
         });
       }
     });
