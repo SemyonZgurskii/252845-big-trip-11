@@ -1,6 +1,6 @@
 import {EVENT_TYPES, CITIES} from "../const.js";
 import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from "../utils/common.js";
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const generateEventTypeElement = (eventType) => {
   return (
@@ -17,7 +17,7 @@ const generateCitiesElement = (city) => {
   );
 };
 
-const generateOptionsElement = (option) => {
+const generateOptionMarkup = (option) => {
   return (
     `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.title}-1" type="checkbox" name="event-offer-${option.title}" ${getRandomBoolean() ? `checked` : ``}>
@@ -30,8 +30,64 @@ const generateOptionsElement = (option) => {
   );
 };
 
-const generatePhotosElement = (photo) => {
+const generateOptionsElement = (options) => {
+  if (options.length < 1) {
+    return ``;
+  }
+
+  const optionsMarkup = getMarkupFromArray(options, generateOptionMarkup);
+
+  return (
+    `<section class="event__details">
+    <section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <div class="event__available-offers">
+        ${optionsMarkup}
+      </div>
+    </section>`
+  );
+};
+
+const generatePhotoMarkup = (photo) => {
   return `<img class="event__photo" src="${photo}" alt="Event photo">`;
+};
+
+const generatePhotosElement = (photos) => {
+  if (photos.length < 1) {
+    return ``;
+  }
+
+  return (
+    `<div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${getMarkupFromArray(photos, generatePhotoMarkup)}
+      </div>
+    </div>`
+  );
+};
+
+const generateDescriptionElement = (description) => {
+  if (!description) {
+    return ``;
+  }
+
+  return (
+    `<p class="event__destination-description">${description}</p>`
+  );
+};
+
+const generateInfoElement = (info) => {
+  if (info.photos.length < 1 && !!info.description) {
+    return ``;
+  }
+
+  return (
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      ${generateDescriptionElement(info.description)}
+      ${generatePhotosElement(info.photos)}
+    </section>`
+  );
 };
 
 const createEventEditTemplate = (event) => {
@@ -39,12 +95,11 @@ const createEventEditTemplate = (event) => {
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
   const citiesMarkup = getMarkupFromArray(CITIES, generateCitiesElement);
-  const optionsMarkup = getMarkupFromArray(options, generateOptionsElement);
-  const photosMarkup = getMarkupFromArray(info.photos, generatePhotosElement);
+  const optionsMarkup = generateOptionsElement(options);
+  const infoMarkup = generateInfoElement(info);
 
   const startTime = getFormatDate(start, `/`) + ` ` + getFormatTime(start);
   const endTime = getFormatDate(end, `/`) + ` ` + getFormatTime(end);
-  const description = info.description;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -105,28 +160,17 @@ const createEventEditTemplate = (event) => {
       </label>
       
     </header>
-    <section class="event__details">
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        <div class="event__available-offers">
-          ${optionsMarkup}
-        </div>
-      </section>
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-            ${photosMarkup}
-          </div>
-        </div>
-      </section>
+
+    ${optionsMarkup}
+
+    ${infoMarkup}
+      
     </section>
   </form>`
   );
 };
 
-export default class EventEdit extends AbstractComponent {
+export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
 
@@ -144,5 +188,10 @@ export default class EventEdit extends AbstractComponent {
   setFavoriteHandler(handler) {
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, handler);
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler();
+    this.setFavoriteHandler();
   }
 }
