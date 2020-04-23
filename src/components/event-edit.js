@@ -3,10 +3,12 @@ import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const generateEventTypeElement = (eventType) => {
+  const eventTypeTitle = eventType[0].toUpperCase() + eventType.slice(1);
+
   return (
     `<div class="event__type-item">
     <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
-    <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${eventType}</label>
+    <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${eventTypeTitle}</label>
   </div>`
   );
 };
