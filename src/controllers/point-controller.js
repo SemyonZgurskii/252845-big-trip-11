@@ -1,10 +1,11 @@
 import EventEditComponent from "../components/event-edit.js";
 import EventComponent from "../components/event.js";
-import {render, RenderPosition} from "../utils/render.js";
+import {render, RenderPosition, replace} from "../utils/render.js";
 
 export default class PontController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
@@ -13,6 +14,9 @@ export default class PontController {
   }
 
   renderEvent(event) {
+    const oldEventComponent = this._eventComponent;
+    const oldEventEditComponent = this._eventEditComponent;
+
     this._eventComponent = new EventComponent(event);
     this._eventEditComponent = new EventEditComponent(event);
 
@@ -25,7 +29,18 @@ export default class PontController {
       this._replaceEditToEvent();
     });
 
-    render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    this._eventEditComponent.setFavoriteHandler(() => {
+      this._onDataChange(this, event, Object.assign({}, event, {
+        isFavorite: !event.isFavorite,
+      }));
+    });
+
+    if (oldEventComponent && oldEventEditComponent) {
+      replace(this._eventComponent, oldEventComponent);
+      replace(this._eventEditComponent, oldEventEditComponent);
+    } else {
+      render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    }
   }
 
   _replaceEventToEdit() {
