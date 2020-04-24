@@ -45,5 +45,9 @@ const getFormatDuration = (duration) => {
   return minutes + `M`;
 };
 
+const makeFirstLetterUppercase = (word) => {
+  return word[0].toUpperCase() + word.slice(1);
+};
 
-export {castTimeFormat, getFormatTime, getFormatDate, getRandomBoolean, getMarkupFromArray, getDuration, getFormatDuration};
+
+export {castTimeFormat, getFormatTime, getFormatDate, getRandomBoolean, getMarkupFromArray, getDuration, getFormatDuration, makeFirstLetterUppercase};

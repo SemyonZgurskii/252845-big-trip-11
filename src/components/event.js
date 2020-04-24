@@ -1,4 +1,5 @@
-import {getFormatTime, getFormatDate, getFormatDuration, getDuration} from "../utils/common.js";
+import {getFormatTime, getFormatDate, getFormatDuration, getDuration, makeFirstLetterUppercase} from "../utils/common.js";
+import {EVENT_TYPES} from "../const.js";
 import AbstractComponent from "./abstract-component.js";
 
 const generateOptionsElement = (title, price) => {
@@ -30,6 +31,8 @@ const createEventTemplate = (event) => {
   const endDateTime = getFormatDate(end, `-`);
   const endTime = getFormatTime(end);
   const duration = getFormatDuration(getDuration(event));
+  const typeArticle = EVENT_TYPES.transfer.indexOf(type) > 0 ? `to` : `at`;
+  const typeTitle = makeFirstLetterUppercase(type);
 
   return (
     `<li class="trip-events__item">
@@ -37,7 +40,7 @@ const createEventTemplate = (event) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} to ${city}</h3>
+      <h3 class="event__title">${typeTitle} ${typeArticle} ${city}</h3>
 
       <div class="event__schedule">
         <p class="event__time">

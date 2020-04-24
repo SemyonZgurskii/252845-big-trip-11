@@ -1,9 +1,9 @@
 import {EVENT_TYPES, CITIES} from "../const.js";
-import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate} from "../utils/common.js";
+import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const generateEventTypeElement = (eventType) => {
-  const eventTypeTitle = eventType[0].toUpperCase() + eventType.slice(1);
+  const eventTypeTitle = makeFirstLetterUppercase(eventType);
 
   return (
     `<div class="event__type-item">
@@ -93,12 +93,14 @@ const generateInfoElement = (info) => {
 };
 
 const createEventEditTemplate = (event) => {
-  const {city, info, price, options, start, end, isFavorite} = event;
+  const {type, city, info, price, options, start, end, isFavorite} = event;
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
   const citiesMarkup = getMarkupFromArray(CITIES, generateCitiesElement);
   const optionsMarkup = generateOptionsElement(options);
   const infoMarkup = generateInfoElement(info);
+  const typePlaceHolder = makeFirstLetterUppercase(type);
+  const typeArticle = EVENT_TYPES.transfer.indexOf(type) > 0 ? `to` : `at`;
 
   const startTime = getFormatDate(start, `/`) + ` ` + getFormatTime(start);
   const endTime = getFormatDate(end, `/`) + ` ` + getFormatTime(end);
@@ -109,7 +111,7 @@ const createEventEditTemplate = (event) => {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
         <div class="event__type-list">
@@ -125,7 +127,7 @@ const createEventEditTemplate = (event) => {
       </div>
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          Flight to
+          ${typePlaceHolder} ${typeArticle}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
         <datalist id="destination-list-1">
@@ -177,10 +179,18 @@ export default class EventEdit extends AbstractSmartComponent {
     super();
 
     this._event = event;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event);
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler();
+    this.setFavoriteHandler();
+    this._subscribeOnEvents();
   }
 
   setSubmitHandler(handler) {
@@ -192,8 +202,20 @@ export default class EventEdit extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
   }
 
-  recoveryListeners() {
-    this.setSubmitHandler();
-    this.setFavoriteHandler();
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    element.querySelector(`.event__type-wrapper`)
+      .addEventListener(`change`, (evt) => {
+        if (!evt.target.classList.contains(`event__type-input`)) {
+          return;
+        }
+
+        const selectedType = evt.target.value;
+        this._event = Object.assign({}, this._event, {
+          type: selectedType,
+        });
+        this.rerender();
+      });
   }
 }
