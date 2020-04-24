@@ -1,6 +1,7 @@
 import {EVENT_TYPES, CITIES} from "../const.js";
 import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
+import {generatePhotosSrc, generateDescription} from "../mocks/event.js";
 
 const generateEventTypeElement = (eventType) => {
   const eventTypeTitle = makeFirstLetterUppercase(eventType);
@@ -214,6 +215,18 @@ export default class EventEdit extends AbstractSmartComponent {
         const selectedType = evt.target.value;
         this._event = Object.assign({}, this._event, {
           type: selectedType,
+        });
+        this.rerender();
+      });
+
+    element.querySelector(`.event__input--destination`)
+      .addEventListener(`change`, (evt) => {
+        this._event = Object.assign({}, this._event, {
+          info: {
+            photos: generatePhotosSrc(),
+            description: generateDescription(),
+          },
+          city: evt.target.value,
         });
         this.rerender();
       });

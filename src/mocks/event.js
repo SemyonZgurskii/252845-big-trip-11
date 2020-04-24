@@ -116,4 +116,4 @@ const generateEvents = (eventQuantity) => {
   return events;
 };
 
-export {generateEvents};
+export {generateEvents, generatePhotosSrc, generateDescription};
