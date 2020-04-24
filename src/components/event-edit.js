@@ -181,6 +181,9 @@ export default class EventEdit extends AbstractSmartComponent {
 
     this._event = event;
 
+    this._submitHandler = null;
+    this._favoriteHandler = null;
+
     this._subscribeOnEvents();
   }
 
@@ -189,18 +192,22 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    this.setSubmitHandler();
-    this.setFavoriteHandler();
+    this.setSubmitHandler(this._submitHandler);
+    this.setFavoriteHandler(this._favoriteHandler);
     this._subscribeOnEvents();
   }
 
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
   }
 
   setFavoriteHandler(handler) {
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, handler);
+
+    this._favoriteHandler = handler;
   }
 
   _subscribeOnEvents() {
