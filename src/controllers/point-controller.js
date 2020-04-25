@@ -6,7 +6,7 @@ const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
-export default class PontController {
+export default class PointController {
   constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
