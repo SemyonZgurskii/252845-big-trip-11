@@ -1,27 +1,27 @@
-export default class Points {
+export default class Events {
   constructor() {
-    this._points = [];
+    this._events = [];
 
     this._dataChnageHandlers = [];
   }
 
-  getPoints() {
-    return this._points;
+  getEvents() {
+    return this._events;
   }
 
-  setPoints(points) {
-    this._points = Array.from(points);
+  setEvents(events) {
+    this._events = Array.from(events);
     // this._callHandlers(this._dataChangeHandlers);
   }
 
-  updatePoint(id, point) {
-    const index = this._points.findIndex((it) => it.id === id);
+  updateEvent(id, event) {
+    const index = this._events.findIndex((it) => it.id === id);
 
     if (index === -1) {
       return false;
     }
 
-    this._points = [].concat(this._points.slice(0, index), point, this._points.slice(index + 1));
+    this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
 
     this._callHandlers(this._dataChnageHandlers);
 

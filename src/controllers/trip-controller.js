@@ -40,7 +40,7 @@ export default class TripControler {
 
   renderEvents() {
     const container = this._container;
-    const events = this._pointsModel.getPoints();
+    const events = this._pointsModel.getEvents();
 
     if (events.length < 1) {
       render(container, this._noEventsComponent, RenderPosition.BEFOREEND);
@@ -92,7 +92,7 @@ export default class TripControler {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
+    const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
 
     if (isSuccess) {
       pointController.renderEvent(newData);

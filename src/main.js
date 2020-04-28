@@ -4,15 +4,15 @@ import RouteComponent from "./components/route.js";
 import PriceComponent from "./components/price.js";
 import MenuComponent from "./components/menu.js";
 import FilterComponent from "./components/filter.js";
-import PointsModel from "./models/points.js";
+import EventsModel from "./models/events.js";
 import {generateEvents} from "./mocks/event.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const EVENTS_COUNT = 20;
 
 const events = generateEvents(EVENTS_COUNT);
-const pointsModel = new PointsModel();
-pointsModel.setPoints(events);
+const eventsModel = new EventsModel();
+eventsModel.setEvents(events);
 
 const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
@@ -29,5 +29,5 @@ render(infoElement, new PriceComponent(events), RenderPosition.BEFOREEND);
 render(mainControlsElement, new MenuComponent(), RenderPosition.BEFOREEND);
 render(mainControlsElement, new FilterComponent(), RenderPosition.BEFOREEND);
 
-const tripController = new TripController(mainContentElement, pointsModel);
+const tripController = new TripController(mainContentElement, eventsModel);
 tripController.renderEvents();
