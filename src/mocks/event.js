@@ -87,6 +87,7 @@ const generateRandomDate = () => {
 
 const generateEvent = (startDate, endDate) => {
   return {
+    id: String(new Date() + Math.random()),
     type: generateRandomType(),
     city: getRandomArraysElement(CITIES),
     options: generateOptions(),
