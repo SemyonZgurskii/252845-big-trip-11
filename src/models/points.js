@@ -11,7 +11,7 @@ export default class Points {
 
   setPoints(points) {
     this._points = Array.from(points);
-    this._callHandlers(this._dataChangeHandlers);
+    // this._callHandlers(this._dataChangeHandlers);
   }
 
   updatePoint(id, point) {
