@@ -3,7 +3,6 @@ import IfnoComponent from "./components/info.js";
 import RouteComponent from "./components/route.js";
 import PriceComponent from "./components/price.js";
 import MenuComponent from "./components/menu.js";
-// import FilterComponent from "./components/filter.js"
 import EventsModel from "./models/events.js";
 import {generateEvents} from "./mocks/event.js";
 import {render, RenderPosition} from "./utils/render.js";
@@ -28,7 +27,6 @@ const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 render(infoElement, new RouteComponent(), RenderPosition.BEFOREEND);
 render(infoElement, new PriceComponent(events), RenderPosition.BEFOREEND);
 render(mainControlsElement, new MenuComponent(), RenderPosition.BEFOREEND);
-// render(mainControlsElement, new FilterComponent(), RenderPosition.BEFOREEND);
 const filterController = new FilterController(mainControlsElement, eventsModel);
 filterController.render();
 

@@ -8,13 +8,14 @@ const getFilterNameById = (id) => {
 };
 
 const generateFilterMarkup = (filter) => {
-  const filterTitle = makeFirstLetterUppercase(filterName);
-  const {filterName, isChecked} = filter;
+  //debugger;
+  const {name, isChecked} = filter;
+  const filterTitle = makeFirstLetterUppercase(name);
 
   return (
     `<div class="trip-filters__filter">
-      <input id="filter-${filterName}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filterName}" ${isChecked ? `checked` : ``}>
-      <label class="trip-filters__filter-label" for="filter-${filterName}">${filterTitle}</label>
+      <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}" ${isChecked ? `checked` : ``}>
+      <label class="trip-filters__filter-label" for="filter-${name}">${filterTitle}</label>
     </div>`
   );
 };
