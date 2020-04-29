@@ -20,4 +20,10 @@ const MonthNumberToString = {
   [12]: `DEC`,
 };
 
-export {EVENT_TYPES, CITIES, MonthNumberToString};
+const FilterType = {
+  EVERYTHING: `everything`,
+  FUTURE: `future`,
+  PAST: `past`,
+};
+
+export {EVENT_TYPES, CITIES, MonthNumberToString, FilterType};
