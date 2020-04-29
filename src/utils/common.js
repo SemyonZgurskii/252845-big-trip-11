@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
@@ -25,24 +27,22 @@ const getMarkupFromArray = (array, elementCreator) => {
     .join(`\n`);
 };
 
-const getDuration = (event) => {
-  const start = event.start;
-  const end = event.end;
-  return end.getTime() - start.getTime();
+const getDuration = (start, end) => {
+  return moment.duration(moment(end).diff(moment(start)));
 };
 
 const getFormatDuration = (duration) => {
-  const durationInMinutes = duration / (1000 * 60);
-  const days = Math.floor(durationInMinutes / (60 * 24));
-  const hours = Math.floor((durationInMinutes % (60 * 24)) / 60);
-  const minutes = Math.floor(((durationInMinutes % (60 * 24)) % 60));
+  const days = duration.days();
+  const hours = duration.hours();
+  const minutes = duration.minutes();
 
-  if (days > 0) {
+  if (days) {
     return days + `D ` + hours + `H ` + minutes + `M`;
-  } else if (hours >= 1) {
-    return hours + `H ` + minutes + `M`;
+  } else if (hours) {
+    return hours + `H ` + minutes + `M `;
+  } else {
+    return minutes + `M`;
   }
-  return minutes + `M`;
 };
 
 const makeFirstLetterUppercase = (word) => {

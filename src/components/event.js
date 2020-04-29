@@ -30,7 +30,7 @@ const createEventTemplate = (event) => {
   const startTime = getFormatTime(start);
   const endDateTime = getFormatDate(end, `-`);
   const endTime = getFormatTime(end);
-  const duration = getFormatDuration(getDuration(event));
+  const duration = getFormatDuration(getDuration(start, end));
   const typeArticle = EVENT_TYPES.transfer.indexOf(type) > 0 ? `to` : `at`;
   const typeTitle = makeFirstLetterUppercase(type);
 

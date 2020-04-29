@@ -2,6 +2,9 @@ import {EVENT_TYPES, CITIES} from "../const.js";
 import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import {generatePhotosSrc, generateDescription} from "../mocks/event.js";
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
 
 const generateEventTypeElement = (eventType) => {
   const eventTypeTitle = makeFirstLetterUppercase(eventType);
@@ -181,14 +184,22 @@ export default class EventEdit extends AbstractSmartComponent {
 
     this._event = event;
 
+    this._flatpickr = null;
     this._submitHandler = null;
     this._favoriteHandler = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event);
+  }
+
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
   }
 
   recoveryListeners() {
@@ -237,5 +248,29 @@ export default class EventEdit extends AbstractSmartComponent {
         });
         this.rerender();
       });
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    const startDateElement = this.getElement().querySelector(`#event-start-time-1`);
+    const endDateElement = this.getElement().querySelector(`#event-end-time-1`);
+
+    this._flatpickr = flatpickr(startDateElement, {
+      altInput: true,
+      altFormat: `y/m/d`,
+      allowInput: true,
+      defaultDate: this._event.start,
+    });
+
+    this._flatpickr = flatpickr(endDateElement, {
+      altInput: true,
+      altFormat: `y/m/d`,
+      allowInput: true,
+      defaultDate: this._event.end,
+    });
   }
 }
