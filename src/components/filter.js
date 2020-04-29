@@ -7,8 +7,9 @@ const getFilterNameById = (id) => {
   return id.substring(FILTER_ID_PREFIX.length);
 };
 
-const generateFilterMarkup = (filterName, isChecked) => {
+const generateFilterMarkup = (filter) => {
   const filterTitle = makeFirstLetterUppercase(filterName);
+  const {filterName, isChecked} = filter;
 
   return (
     `<div class="trip-filters__filter">
