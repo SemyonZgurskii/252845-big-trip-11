@@ -25,9 +25,9 @@ const getSortedEvents = (events, sortType) => {
 };
 
 export default class TripControler {
-  constructor(container, points) {
+  constructor(container, eventsModel) {
     this._container = container;
-    this._pointsModel = points;
+    this._eventsModel = eventsModel;
     this._pointControllers = [];
 
     this._noEventsComponent = new NoEventsComponent();
@@ -36,11 +36,20 @@ export default class TripControler {
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+
+    this._eventsModel.setFilterChangeHandler(this._onFilterChange);
+  }
+
+  _updateEvents() {
+    // this._removeEvents();
+    // this._renderEvents(this._eventsModel.getEvents());
+    console.log(`lol`);
   }
 
   renderEvents() {
     const container = this._container;
-    const events = this._pointsModel.getEvents();
+    const events = this._eventsModel.getEvents();
 
     if (events.length < 1) {
       render(container, this._noEventsComponent, RenderPosition.BEFOREEND);
@@ -92,7 +101,7 @@ export default class TripControler {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    const isSuccess = this._pointsModel.updateEvent(oldData.id, newData);
+    const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
 
     if (isSuccess) {
       pointController.renderEvent(newData);
@@ -101,5 +110,9 @@ export default class TripControler {
 
   _onViewChange() {
     this._pointControllers.forEach((pointController) => pointController.setDefaultView());
+  }
+
+  _onFilterChange() {
+    this._updateEvents();
   }
 }

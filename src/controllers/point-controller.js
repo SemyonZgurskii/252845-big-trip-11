@@ -48,6 +48,12 @@ export default class PointController {
     }
   }
 
+  // destroy() {
+  //   remove(this._eventComponent);
+  //   remove(this._eventEditComponent);
+  //   document.removeEventListener(`keydown`, this._onEscKeyDown);
+  // }
+
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();

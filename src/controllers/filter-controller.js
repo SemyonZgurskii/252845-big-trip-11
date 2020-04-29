@@ -9,6 +9,7 @@ export default class FilterController {
 
     this._filterComponent = null;
 
+    this._onFilterChange = this._onFilterChange.bind(this);
     this._activeFilterType = FilterType.EVERYTHING;
   }
 
@@ -21,6 +22,7 @@ export default class FilterController {
     });
 
     this._filterComponent = new FilterComponent(filters);
+    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
 
     render(this._container, this._filterComponent, RenderPosition.BEFOREEND);
   }

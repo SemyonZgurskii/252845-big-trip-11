@@ -8,7 +8,7 @@ const getPastEvents = (events) => {
   return events.filter(({start}) => start.getTime() < Date.now());
 };
 
-const filterEvents = (events, filterType) => {
+const getFilteredEvents = (events, filterType) => {
   switch (filterType) {
     case FilterType.EVERYTHING:
       return events;
@@ -17,6 +17,8 @@ const filterEvents = (events, filterType) => {
     case FilterType.PAST:
       return getPastEvents(events);
   }
+
+  return events;
 };
 
-export {filterEvents};
+export {getFilteredEvents};

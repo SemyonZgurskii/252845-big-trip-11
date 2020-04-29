@@ -8,7 +8,6 @@ const getFilterNameById = (id) => {
 };
 
 const generateFilterMarkup = (filter) => {
-  //debugger;
   const {name, isChecked} = filter;
   const filterTitle = makeFirstLetterUppercase(name);
 
@@ -49,7 +48,7 @@ export default class Filter extends AbstractComponent {
 
   setFilterChangeHandler(handler) {
     this.getElement().addEventListener(`change`, (evt) => {
-      const filterName = getFilterNameById(evt.target);
+      const filterName = getFilterNameById(evt.target.id);
       handler(filterName);
     });
   }
