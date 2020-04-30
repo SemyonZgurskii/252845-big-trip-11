@@ -1,6 +1,6 @@
 import EventEditComponent from "../components/event-edit.js";
 import EventComponent from "../components/event.js";
-import {render, RenderPosition, replace} from "../utils/render.js";
+import {render, RenderPosition, replace, remove} from "../utils/render.js";
 
 const Mode = {
   DEFAULT: `default`,
@@ -48,11 +48,11 @@ export default class PointController {
     }
   }
 
-  // destroy() {
-  //   remove(this._eventComponent);
-  //   remove(this._eventEditComponent);
-  //   document.removeEventListener(`keydown`, this._onEscKeyDown);
-  // }
+  destroy() {
+    remove(this._eventComponent);
+    remove(this._eventEditComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
