@@ -99,14 +99,15 @@ export default class TripControler {
   }
 
   _updateEvents() {
-    // debugger;
     this._removeEvents();
-    this._daysContainerComponent.getElement().innerHTML = ``;
     this.renderEvents();
   }
 
   _removeEvents() {
-    // this._pointControllers.forEach((pointController) => pointController.destroy());
+    this._pointControllers.forEach((pointController) => pointController.destroy());
+    this._daysContainerComponent.getElement()
+      .querySelectorAll(`.trip-days__item`)
+      .forEach((day) => day.remove());
     this._pointControllers = [];
   }
 
