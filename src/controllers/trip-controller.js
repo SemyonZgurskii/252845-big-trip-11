@@ -2,7 +2,7 @@ import DaysContainerComponent from "../components/days-container.js";
 import DayComponent from "../components/day.js";
 import SortComponent, {SortType} from "../components/sort.js";
 import NoEventsComponent from "../components/no-events.js";
-import PointController from "../controllers/point-controller.js";
+import PointController, {Mode as PointControllerMode} from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
 
@@ -28,7 +28,9 @@ export default class TripControler {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
+
     this._pointControllers = [];
+    this._creatingEvent = null;
 
     this._noEventsComponent = new NoEventsComponent();
     this._sortComponent = new SortComponent();
@@ -41,6 +43,16 @@ export default class TripControler {
 
     this._eventsModel.setFilterChangeHandler(this._onFilterChange);
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+  }
+
+  createEvent() {
+    if (this._creatingEvent) {
+      return;
+    }
+
+    const daysContainerElement = this._daysContainerComponent.getElement();
+    this._creatingEvent = new PointController(daysContainerElement, this._onDataChange, this._onViewChange);
+    this._creatingEvent.renderEvent(EmptyTask, PointControllerMode.ADDING);
   }
 
   renderEvents() {
@@ -74,7 +86,7 @@ export default class TripControler {
       days[i].forEach((event) => {
         const newEvent = new PointController(dayElement, this._onDataChange, this._onViewChange);
         this._pointControllers.push(newEvent);
-        newEvent.renderEvent(event);
+        newEvent.renderEvent(event, PointControllerMode.DEFAULT);
       });
     });
   }
@@ -93,7 +105,7 @@ export default class TripControler {
       sortEvents.forEach((event) => {
         const newEvent = new PointController(eventsContainer, this._onDataChange, this._onViewChange);
         this._pointControllers.push(newEvent);
-        newEvent.renderEvent(event);
+        newEvent.renderEvent(event, PointControllerMode.DEFAULT);
       });
     }
   }
@@ -111,6 +123,15 @@ export default class TripControler {
     this._pointControllers = [];
   }
 
+  // _onDataChange(pointController, oldData, newData) {
+  //   if (oldData === EmptyTask) {
+  //     this._createTask = null;
+  //     if (newData === null) {
+  //       pointController.destroy();
+  //       this._updateEvents();
+  //     }
+  //   }
+  // }
   _onDataChange(pointController, oldData, newData) {
     const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
 

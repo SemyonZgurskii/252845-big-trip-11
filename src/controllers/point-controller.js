@@ -3,6 +3,7 @@ import EventComponent from "../components/event.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
 
 const Mode = {
+  ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`,
 };
@@ -18,7 +19,7 @@ export default class PointController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  renderEvent(event) {
+  renderEvent(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
 
@@ -40,11 +41,30 @@ export default class PointController {
       }));
     });
 
-    if (oldEventComponent && oldEventEditComponent) {
-      replace(this._eventComponent, oldEventComponent);
-      replace(this._eventEditComponent, oldEventEditComponent);
-    } else {
-      render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    // if (oldEventComponent && oldEventEditComponent) {
+    //   replace(this._eventComponent, oldEventComponent);
+    //   replace(this._eventEditComponent, oldEventEditComponent);
+    // } else {
+    //   render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    // }
+
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldEventComponent && oldEventEditComponent) {
+          replace(this._eventComponent, oldEventComponent);
+          replace(this._eventEditComponent, oldEventEditComponent);
+        } else {
+          render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.ADDING:
+        if (oldEventComponent && oldEventEditComponent) {
+          remove(oldEventComponent);
+          remove(oldEventEditComponent);
+        }
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        render(this._container, this._eventEditComponent, RenderPosition.BEFOREEND);
+        break;
     }
   }
 
@@ -80,3 +100,5 @@ export default class PointController {
     }
   }
 }
+
+export {Mode};

@@ -32,3 +32,8 @@ filterController.render();
 
 const tripController = new TripController(mainContentElement, eventsModel);
 tripController.renderEvents();
+
+mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
+  .addEventListener(`click`, () => {
+    console.log(`yoooo`);
+  });
