@@ -2,7 +2,7 @@ import DaysContainerComponent from "../components/days-container.js";
 import DayComponent from "../components/day.js";
 import SortComponent, {SortType} from "../components/sort.js";
 import NoEventsComponent from "../components/no-events.js";
-import PointController, {Mode as PointControllerMode} from "../controllers/point-controller.js";
+import PointController, {Mode as PointControllerMode, EmptyTask} from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
 

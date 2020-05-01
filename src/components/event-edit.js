@@ -83,7 +83,7 @@ const generateDescriptionElement = (description) => {
 };
 
 const generateInfoElement = (info) => {
-  if (info.photos.length < 1 && !!info.description) {
+  if (!info) {
     return ``;
   }
 

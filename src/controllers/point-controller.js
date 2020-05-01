@@ -7,6 +7,17 @@ const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
+
+const EmptyTask = {
+  type: `flight`,
+  city: ``,
+  options: ``,
+  info: ``,
+  price: ``,
+  start: new Date(),
+  end: new Date(),
+  isFavorite: false,
+};
 export default class PointController {
   constructor(container, onDataChange, onViewChange) {
     this._container = container;
@@ -101,4 +112,4 @@ export default class PointController {
   }
 }
 
-export {Mode};
+export {Mode, EmptyTask};

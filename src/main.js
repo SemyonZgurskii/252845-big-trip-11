@@ -35,5 +35,5 @@ tripController.renderEvents();
 
 mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
   .addEventListener(`click`, () => {
-    console.log(`yoooo`);
+    tripController.createEvent();
   });
