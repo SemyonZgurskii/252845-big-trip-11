@@ -187,6 +187,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this._flatpickr = null;
     this._submitHandler = null;
     this._favoriteHandler = null;
+    this._deleteButtonClickHandler = null;
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
@@ -205,6 +206,7 @@ export default class EventEdit extends AbstractSmartComponent {
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
     this.setFavoriteHandler(this._favoriteHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this._subscribeOnEvents();
   }
 
@@ -219,6 +221,13 @@ export default class EventEdit extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
 
     this._favoriteHandler = handler;
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
   }
 
   _subscribeOnEvents() {

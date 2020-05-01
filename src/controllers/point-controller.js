@@ -52,12 +52,9 @@ export default class PointController {
       }));
     });
 
-    // if (oldEventComponent && oldEventEditComponent) {
-    //   replace(this._eventComponent, oldEventComponent);
-    //   replace(this._eventEditComponent, oldEventEditComponent);
-    // } else {
-    //   render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
-    // }
+    this._eventEditComponent.setDeleteButtonClickHandler(() =>{
+      this._onDataChange(this, event, null);
+    });
 
     switch (mode) {
       case Mode.DEFAULT:
@@ -74,7 +71,7 @@ export default class PointController {
           remove(oldEventEditComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._eventEditComponent, RenderPosition.BEFOREEND);
+        render(this._container, this._eventEditComponent, RenderPosition.AFTERBEGIN);
         break;
     }
   }

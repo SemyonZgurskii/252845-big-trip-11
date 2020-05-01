@@ -123,20 +123,25 @@ export default class TripControler {
     this._pointControllers = [];
   }
 
-  // _onDataChange(pointController, oldData, newData) {
-  //   if (oldData === EmptyTask) {
-  //     this._createTask = null;
-  //     if (newData === null) {
-  //       pointController.destroy();
-  //       this._updateEvents();
-  //     }
-  //   }
-  // }
   _onDataChange(pointController, oldData, newData) {
-    const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
+    if (oldData === EmptyTask) {
+      this._createTask = null;
+      if (newData === null) {
+        pointController.destroy();
+        this._updateEvents();
+      } else {
+        this._eventsModel.addEvent(newData);
+        pointController.render(newData, PointControllerMode.DEFAULT);
+      }
+    } else if (newData === null) {
+      this._eventsModel.removeEvent(oldData.id);
+      this._updateEvents();
+    } else {
+      const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
 
-    if (isSuccess) {
-      pointController.renderEvent(newData);
+      if (isSuccess) {
+        pointController.renderEvent(newData);
+      }
     }
   }
 
