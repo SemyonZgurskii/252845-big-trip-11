@@ -178,6 +178,19 @@ const createEventEditTemplate = (event) => {
   );
 };
 
+const parseFormData = (formData) => {
+  const startDate = formData.get(`event-start-time`);
+  const endDate = formData.get(`event-end-time`);
+
+  return {
+    type: formData.get(`event-type`),
+    city: formData.get(`event-destination`),
+    price: formData.get(`event-price`),
+    start: new Date(startDate),
+    end: new Date(endDate),
+    isFavorite: formData.get(`event-favorite`) ? true : false,
+  };
+};
 export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
@@ -201,6 +214,23 @@ export default class EventEdit extends AbstractSmartComponent {
     super.rerender();
 
     this._applyFlatpickr();
+  }
+
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+
+    const options = Array.from(form.querySelectorAll(`.event__offer-selector`),
+        (option) => {
+          return {
+            title: option.querySelector(`.event__offer-title`).textContent,
+            price: option.querySelector(`.event__offer-price`).textContent,
+          };
+        });
+
+    return Object.assign(parseFormData(formData), {
+      options,
+    });
   }
 
   recoveryListeners() {
@@ -270,14 +300,14 @@ export default class EventEdit extends AbstractSmartComponent {
 
     this._flatpickr = flatpickr(startDateElement, {
       altInput: true,
-      altFormat: `y/m/d`,
+      altFormat: `y/m/d H:i`,
       allowInput: true,
       defaultDate: this._event.start,
     });
 
     this._flatpickr = flatpickr(endDateElement, {
       altInput: true,
-      altFormat: `y/m/d`,
+      altFormat: `y/m/d H:i`,
       allowInput: true,
       defaultDate: this._event.end,
     });
