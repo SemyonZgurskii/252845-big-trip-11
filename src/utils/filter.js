@@ -21,4 +21,6 @@ const getFilteredEvents = (events, filterType) => {
   return events;
 };
 
-export {getFilteredEvents};
+export {
+  getFilteredEvents
+};

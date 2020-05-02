@@ -131,7 +131,6 @@ export default class TripControler {
         this._updateEvents();
       } else {
         this._eventsModel.addEvent(newData);
-        // pointController.renderEvent(newData, PointControllerMode.DEFAULT);
         pointController.destroy();
         this._updateEvents();
       }
@@ -142,7 +141,6 @@ export default class TripControler {
       const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
 
       if (isSuccess) {
-        // pointController.renderEvent(newData, PointControllerMode.DEFAULT);
         pointController.destroy();
         this._updateEvents();
       }

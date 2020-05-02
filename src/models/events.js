@@ -7,7 +7,6 @@ export default class Events {
 
     this._activeFilterType = FilterType.EVERYTHING;
 
-    // this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
   }
 
@@ -21,7 +20,6 @@ export default class Events {
 
   setEvents(events) {
     this._events = Array.from(events);
-    // this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilter(filterType) {
@@ -38,8 +36,6 @@ export default class Events {
 
     this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
 
-    // this._callHandlers(this._dataChangeHandlers);
-
     return true;
   }
 
@@ -52,23 +48,16 @@ export default class Events {
 
     this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
 
-    // this._callHandlers(this._dataChangeHandlers);
-
     return true;
   }
 
   addEvent(event) {
     this._events = [].concat(event, this._events);
-    // this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
   }
-
-  // setDataChangeHandler(handler) {
-  //   this._dataChangeHandlers.push(handler);
-  // }
 
   _callHandlers(handlers) {
     handlers.forEach((handler) => handler());

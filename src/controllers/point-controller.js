@@ -118,4 +118,7 @@ export default class PointController {
   }
 }
 
-export {Mode, EmptyEvent};
+export {
+  Mode,
+  EmptyEvent
+};

@@ -3,6 +3,7 @@ import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, make
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import {generatePhotosSrc, generateDescription} from "../mocks/event.js";
 import flatpickr from "flatpickr";
+import {encode} from "he";
 
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -76,9 +77,10 @@ const generateDescriptionElement = (description) => {
   if (!description) {
     return ``;
   }
+  const encodedDescription = encode(description);
 
   return (
-    `<p class="event__destination-description">${description}</p>`
+    `<p class="event__destination-description">${encodedDescription}</p>`
   );
 };
 
@@ -183,7 +185,6 @@ const parseFormData = (formData) => {
   const endDate = formData.get(`event-end-time`);
 
   return {
-    // type: formData.get(`event-type`),
     city: formData.get(`event-destination`),
     price: formData.get(`event-price`),
     start: new Date(startDate),

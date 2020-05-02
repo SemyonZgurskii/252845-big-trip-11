@@ -26,4 +26,9 @@ const FilterType = {
   PAST: `past`,
 };
 
-export {EVENT_TYPES, CITIES, MonthNumberToString, FilterType};
+export {
+  EVENT_TYPES,
+  CITIES,
+  MonthNumberToString,
+  FilterType
+};
