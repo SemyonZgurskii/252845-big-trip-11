@@ -55,7 +55,8 @@ const generateRandomType = () => {
 const generateDescription = () => {
   const basicTextPieces = separateTextToSentnces(descriptionSource);
   return getRandomLengthArray(MIN_SENTENCES, MAX_SENTENCES)
-    .map(() => getRandomArraysElement(basicTextPieces));
+    .map(() => getRandomArraysElement(basicTextPieces))
+    .join(``);
 };
 
 const generateRandomPhoto = () => {
@@ -87,6 +88,7 @@ const generateRandomDate = () => {
 
 const generateEvent = (startDate, endDate) => {
   return {
+    id: String(new Date() + Math.random()),
     type: generateRandomType(),
     city: getRandomArraysElement(CITIES),
     options: generateOptions(),
@@ -116,4 +118,8 @@ const generateEvents = (eventQuantity) => {
   return events;
 };
 
-export {generateEvents, generatePhotosSrc, generateDescription};
+export {
+  generateEvents,
+  generatePhotosSrc,
+  generateDescription
+};

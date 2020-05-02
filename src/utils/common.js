@@ -50,4 +50,13 @@ const makeFirstLetterUppercase = (word) => {
 };
 
 
-export {castTimeFormat, getFormatTime, getFormatDate, getRandomBoolean, getMarkupFromArray, getDuration, getFormatDuration, makeFirstLetterUppercase};
+export {
+  castTimeFormat,
+  getFormatTime,
+  getFormatDate,
+  getRandomBoolean,
+  getMarkupFromArray,
+  getDuration,
+  getFormatDuration,
+  makeFirstLetterUppercase
+};

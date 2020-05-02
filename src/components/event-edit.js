@@ -3,6 +3,7 @@ import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, make
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import {generatePhotosSrc, generateDescription} from "../mocks/event.js";
 import flatpickr from "flatpickr";
+import {encode} from "he";
 
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -76,14 +77,15 @@ const generateDescriptionElement = (description) => {
   if (!description) {
     return ``;
   }
+  const encodedDescription = encode(description);
 
   return (
-    `<p class="event__destination-description">${description}</p>`
+    `<p class="event__destination-description">${encodedDescription}</p>`
   );
 };
 
 const generateInfoElement = (info) => {
-  if (info.photos.length < 1 && !!info.description) {
+  if (!info) {
     return ``;
   }
 
@@ -178,6 +180,18 @@ const createEventEditTemplate = (event) => {
   );
 };
 
+const parseFormData = (formData) => {
+  const startDate = formData.get(`event-start-time`);
+  const endDate = formData.get(`event-end-time`);
+
+  return {
+    city: formData.get(`event-destination`),
+    price: formData.get(`event-price`),
+    start: new Date(startDate),
+    end: new Date(endDate),
+    isFavorite: formData.get(`event-favorite`) ? true : false,
+  };
+};
 export default class EventEdit extends AbstractSmartComponent {
   constructor(event) {
     super();
@@ -187,6 +201,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this._flatpickr = null;
     this._submitHandler = null;
     this._favoriteHandler = null;
+    this._deleteButtonClickHandler = null;
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
@@ -202,9 +217,46 @@ export default class EventEdit extends AbstractSmartComponent {
     this._applyFlatpickr();
   }
 
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+
+    const options = Array.from(form.querySelectorAll(`.event__offer-selector`),
+        (option) => {
+          return {
+            title: option.querySelector(`.event__offer-title`).textContent,
+            price: option.querySelector(`.event__offer-price`).textContent,
+          };
+        });
+
+    const type = form.querySelector(`.event__type-icon`)
+        .src
+        .split(`/`)
+        .pop()
+        .split(`.`)[0];
+
+    const description = form.querySelector(`.event__destination-description`)
+        .textContent;
+
+    const photos = Array.from(form.querySelectorAll(`.event__photo`),
+        (photo) => photo.src);
+
+    const info = {
+      description,
+      photos,
+    };
+
+    return Object.assign(parseFormData(formData), {
+      options,
+      type,
+      info,
+    });
+  }
+
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
     this.setFavoriteHandler(this._favoriteHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this._subscribeOnEvents();
   }
 
@@ -219,6 +271,13 @@ export default class EventEdit extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
 
     this._favoriteHandler = handler;
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
   }
 
   _subscribeOnEvents() {
@@ -261,14 +320,14 @@ export default class EventEdit extends AbstractSmartComponent {
 
     this._flatpickr = flatpickr(startDateElement, {
       altInput: true,
-      altFormat: `y/m/d`,
+      altFormat: `y/m/d H:i`,
       allowInput: true,
       defaultDate: this._event.start,
     });
 
     this._flatpickr = flatpickr(endDateElement, {
       altInput: true,
-      altFormat: `y/m/d`,
+      altFormat: `y/m/d H:i`,
       allowInput: true,
       defaultDate: this._event.end,
     });
