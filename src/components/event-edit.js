@@ -228,9 +228,12 @@ export default class EventEdit extends AbstractSmartComponent {
           };
         });
 
-    const typeOutput = form.querySelector(`.event__type-output`)
-        .textContent;
-    const type = typeOutput.substring(0, typeOutput.length - 3);
+    const type = form.querySelector(`.event__type-icon`)
+        .src
+        .split(`/`)
+        .pop()
+        .split(`.`)[0];
+    // const type = typeOutput.substring(0, typeOutput.length - 3);
 
     return Object.assign(parseFormData(formData), {
       options,
