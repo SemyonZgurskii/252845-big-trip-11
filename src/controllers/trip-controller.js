@@ -2,7 +2,7 @@ import DaysContainerComponent from "../components/days-container.js";
 import DayComponent from "../components/day.js";
 import SortComponent, {SortType} from "../components/sort.js";
 import NoEventsComponent from "../components/no-events.js";
-import PointController, {Mode as PointControllerMode, EmptyTask} from "../controllers/point-controller.js";
+import PointController, {Mode as PointControllerMode, EmptyEvent} from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
 
@@ -52,7 +52,7 @@ export default class TripControler {
 
     const daysContainerElement = this._daysContainerComponent.getElement();
     this._creatingEvent = new PointController(daysContainerElement, this._onDataChange, this._onViewChange);
-    this._creatingEvent.renderEvent(EmptyTask, PointControllerMode.ADDING);
+    this._creatingEvent.renderEvent(EmptyEvent, PointControllerMode.ADDING);
   }
 
   renderEvents() {
@@ -124,14 +124,15 @@ export default class TripControler {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    if (oldData === EmptyTask) {
-      this._createTask = null;
+    debugger;
+    if (oldData === EmptyEvent) {
+      this._creatingEvent = null;
       if (newData === null) {
         pointController.destroy();
         this._updateEvents();
       } else {
         this._eventsModel.addEvent(newData);
-        pointController.render(newData, PointControllerMode.DEFAULT);
+        pointController.renderEvent(newData, PointControllerMode.DEFAULT);
       }
     } else if (newData === null) {
       this._eventsModel.removeEvent(oldData.id);
@@ -140,7 +141,7 @@ export default class TripControler {
       const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
 
       if (isSuccess) {
-        pointController.renderEvent(newData);
+        pointController.renderEvent(newData, PointControllerMode.DEFAULT);
       }
     }
   }

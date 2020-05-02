@@ -183,7 +183,7 @@ const parseFormData = (formData) => {
   const endDate = formData.get(`event-end-time`);
 
   return {
-    type: formData.get(`event-type`),
+    // type: formData.get(`event-type`),
     city: formData.get(`event-destination`),
     price: formData.get(`event-price`),
     start: new Date(startDate),
@@ -228,8 +228,13 @@ export default class EventEdit extends AbstractSmartComponent {
           };
         });
 
+    const typeOutput = form.querySelector(`.event__type-output`)
+        .textContent;
+    const type = typeOutput.substring(0, typeOutput.length - 3);
+
     return Object.assign(parseFormData(formData), {
       options,
+      type,
     });
   }
 

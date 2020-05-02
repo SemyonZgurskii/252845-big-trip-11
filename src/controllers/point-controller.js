@@ -8,14 +8,14 @@ const Mode = {
   EDIT: `edit`,
 };
 
-const EmptyTask = {
+const EmptyEvent = {
   type: `flight`,
   city: ``,
   options: ``,
   info: ``,
   price: ``,
-  start: new Date(),
-  end: new Date(),
+  start: null,
+  end: null,
   isFavorite: false,
 };
 export default class PointController {
@@ -33,6 +33,7 @@ export default class PointController {
   renderEvent(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
+    this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
     this._eventEditComponent = new EventEditComponent(event);
@@ -42,8 +43,11 @@ export default class PointController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._eventEditComponent.setSubmitHandler(() => {
-      this._replaceEditToEvent();
+    this._eventEditComponent.setSubmitHandler((evt) => {
+      // this._replaceEditToEvent();
+      evt.preventDefault();
+      const data = this._eventEditComponent.getData();
+      this._onDataChange(this, event, data);
     });
 
     this._eventEditComponent.setFavoriteHandler(() => {
@@ -61,6 +65,7 @@ export default class PointController {
         if (oldEventComponent && oldEventEditComponent) {
           replace(this._eventComponent, oldEventComponent);
           replace(this._eventEditComponent, oldEventEditComponent);
+          this._replaceEditToEvent();
         } else {
           render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
         }
@@ -96,6 +101,11 @@ export default class PointController {
 
   _replaceEditToEvent() {
     this._container.replaceChild(this._eventComponent.getElement(), this._eventEditComponent.getElement());
+
+    if (document.contains(this._eventEditComponent.getElement())) {
+      replace(this._eventComponent, this._eventEditComponent);
+    }
+
     this._mode = Mode.DEFAULT;
   }
 
@@ -109,4 +119,4 @@ export default class PointController {
   }
 }
 
-export {Mode, EmptyTask};
+export {Mode, EmptyEvent};
