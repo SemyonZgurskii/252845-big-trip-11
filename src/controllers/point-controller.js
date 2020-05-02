@@ -21,7 +21,6 @@ const EmptyEvent = {
 export default class PointController {
   constructor(container, onDataChange, onViewChange) {
     this._container = container;
-    this._event = null;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
@@ -31,15 +30,10 @@ export default class PointController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  getEvent() {
-    return this._event;
-  }
-
   renderEvent(event, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
     this._mode = mode;
-    this._event = event;
 
     this._eventComponent = new EventComponent(event);
     this._eventEditComponent = new EventEditComponent(event);
@@ -50,7 +44,6 @@ export default class PointController {
     });
 
     this._eventEditComponent.setSubmitHandler((evt) => {
-      // this._replaceEditToEvent();
       evt.preventDefault();
       const data = this._eventEditComponent.getData();
       this._onDataChange(this, event, data);

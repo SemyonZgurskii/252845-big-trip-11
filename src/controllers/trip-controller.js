@@ -59,7 +59,7 @@ export default class TripControler {
     const container = this._container;
     const events = this._eventsModel.getEvents();
 
-    if (events.length < 1) {
+    if (this._eventsModel.getAllEvents().length < 1) {
       render(container, this._noEventsComponent, RenderPosition.BEFOREEND);
       return;
     }
@@ -124,7 +124,6 @@ export default class TripControler {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    debugger;
     if (oldData === EmptyEvent) {
       this._creatingEvent = null;
       if (newData === null) {
@@ -132,7 +131,9 @@ export default class TripControler {
         this._updateEvents();
       } else {
         this._eventsModel.addEvent(newData);
-        pointController.renderEvent(newData, PointControllerMode.DEFAULT);
+        // pointController.renderEvent(newData, PointControllerMode.DEFAULT);
+        pointController.destroy();
+        this._updateEvents();
       }
     } else if (newData === null) {
       this._eventsModel.removeEvent(oldData.id);
@@ -141,7 +142,9 @@ export default class TripControler {
       const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
 
       if (isSuccess) {
-        pointController.renderEvent(newData, PointControllerMode.DEFAULT);
+        // pointController.renderEvent(newData, PointControllerMode.DEFAULT);
+        pointController.destroy();
+        this._updateEvents();
       }
     }
   }
