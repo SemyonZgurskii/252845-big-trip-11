@@ -233,11 +233,22 @@ export default class EventEdit extends AbstractSmartComponent {
         .split(`/`)
         .pop()
         .split(`.`)[0];
-    // const type = typeOutput.substring(0, typeOutput.length - 3);
+
+    const description = form.querySelector(`.event__destination-description`)
+        .textContent;
+
+    const photos = Array.from(form.querySelectorAll(`.event__photo`),
+        (photo) => photo.src);
+
+    const info = {
+      description,
+      photos,
+    };
 
     return Object.assign(parseFormData(formData), {
       options,
       type,
+      info,
     });
   }
 
