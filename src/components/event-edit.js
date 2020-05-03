@@ -319,12 +319,14 @@ export default class EventEdit extends AbstractSmartComponent {
     this._flatpickr = flatpickr(startDateElement, {
       altInput: true,
       altFormat: `y/m/d H:i`,
+      enableTime: true,
       allowInput: true,
       defaultDate: this._event.start,
     });
 
     this._flatpickr = flatpickr(endDateElement, {
       altInput: true,
+      enableTime: true,
       altFormat: `y/m/d H:i`,
       allowInput: true,
       defaultDate: this._event.end,
