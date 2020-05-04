@@ -18,8 +18,8 @@ const createStatisticsTemplate = () => {
       <canvas class="statistics__chart  statistics__chart--time" width="900"></canvas>
     </div>
     </section>`
-  )
-}
+  );
+};
 
 
 export default class Statistics extends AbstractSmartComponent {

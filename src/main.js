@@ -28,7 +28,9 @@ const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
 render(infoElement, new RouteComponent(), RenderPosition.BEFOREEND);
 render(infoElement, new PriceComponent(events), RenderPosition.BEFOREEND);
-render(mainControlsElement, new MenuComponent(), RenderPosition.BEFOREEND);
+
+const menuComponent = new MenuComponent();
+render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 const filterController = new FilterController(mainControlsElement, eventsModel);
 filterController.render();
 
@@ -45,3 +47,4 @@ mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
     tripController.createEvent();
   });
 
+menuComponent.setOnItemClickHandler(console.log);
