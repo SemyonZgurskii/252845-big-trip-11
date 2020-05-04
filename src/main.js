@@ -1,7 +1,7 @@
 import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
 import IfnoComponent from "./components/info.js";
-import MenuComponent from "./components/menu.js";
+import MenuComponent, {MenuItem} from "./components/menu.js";
 import PriceComponent from "./components/price.js";
 import RouteComponent from "./components/route.js";
 import StatistcsComponent from "./components/statistics.js";
@@ -47,4 +47,14 @@ mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
     tripController.createEvent();
   });
 
-menuComponent.setOnItemClickHandler(console.log);
+menuComponent.setOnItemClickHandler((menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      statisticsComponent.hide();
+      tripController.show();
+      break;
+    case MenuItem.STATS:
+      tripController.hide();
+      statisticsComponent.show();
+  }
+});
