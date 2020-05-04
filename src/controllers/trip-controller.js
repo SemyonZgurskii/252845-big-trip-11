@@ -45,6 +45,14 @@ export default class TripControler {
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
+  hide() {
+    this._container.hide();
+  }
+
+  show() {
+    this._container.show();
+  }
+
   createEvent() {
     if (this._creatingEvent) {
       return;
