@@ -196,17 +196,25 @@ export default class EventEdit extends AbstractSmartComponent {
 
     this._event = event;
 
+    this._isPriceValid = true;
+    this._isDestinationValid = true;
+
     this._flatpickr = null;
     this._submitHandler = null;
     this._favoriteHandler = null;
     this._deleteButtonClickHandler = null;
 
     this._applyFlatpickr();
+    this._validateForm();
     this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event);
+  }
+
+  isValid() {
+    return this._isPriceValid && this._isDestinationValid;
   }
 
   rerender() {
@@ -255,6 +263,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this.setSubmitHandler(this._submitHandler);
     this.setFavoriteHandler(this._favoriteHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this._validateForm();
     this._subscribeOnEvents();
   }
 
@@ -296,15 +305,46 @@ export default class EventEdit extends AbstractSmartComponent {
 
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
-        this._event = Object.assign({}, this._event, {
-          info: {
-            photos: generatePhotosSrc(),
-            description: generateDescription(),
-          },
-          city: evt.target.value,
-        });
-        this.rerender();
+        if (this._isDestinationValid) {
+          this._event = Object.assign({}, this._event, {
+            info: {
+              photos: generatePhotosSrc(),
+              description: generateDescription(),
+            },
+            city: evt.target.value,
+          });
+          this.rerender();
+        } else {
+          return;
+        }
       });
+  }
+
+  _validateForm() {
+    const form = this.getElement();
+    const priceInput = form.querySelector(`.event__input--price`);
+    const destinationInput = form.querySelector(`.event__input--destination`);
+
+    priceInput.addEventListener(`input`, () => {
+      priceInput.setCustomValidity(``);
+      if (!isFinite(priceInput.value)) {
+        priceInput.setCustomValidity(`The value must be a number`);
+        this._isPriceValid = false;
+      } else {
+        this._isPriceValid = true;
+      }
+    });
+
+    destinationInput.addEventListener(`input`, () => {
+      destinationInput.setCustomValidity(``);
+      const isMatch = CITIES.some((city) => city === destinationInput.value);
+      if (!isMatch) {
+        destinationInput.setCustomValidity(`You should select one of available destinons`);
+        this._isDestinationValid = false;
+      } else {
+        this._isDestinationValid = true;
+      }
+    });
   }
 
   _applyFlatpickr() {
