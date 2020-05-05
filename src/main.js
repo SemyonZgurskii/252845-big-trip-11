@@ -1,3 +1,4 @@
+import API from "./api.js";
 import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
 import IfnoComponent from "./components/info.js";
@@ -9,6 +10,9 @@ import TripController from "./controllers/trip-controller.js";
 import {generateEvents} from "./mocks/event.js";
 import {render, RenderPosition} from "./utils/render.js";
 
+const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
+const api = new API(AUTHORIZATION);
+const trueEvents = api.getEvents();
 const EVENTS_COUNT = 20;
 
 const events = generateEvents(EVENTS_COUNT);
@@ -58,3 +62,5 @@ menuComponent.setOnItemClickHandler((menuItem) => {
       statisticsComponent.show();
   }
 });
+
+
