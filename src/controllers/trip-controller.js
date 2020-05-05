@@ -48,6 +48,7 @@ export default class TripControler {
 
   hide() {
     this._container.classList.add(HIDDEN_CLASS);
+    this._sortComponent.setDefaultSortHandler(this._onSortTypeChange);
   }
 
   show() {
