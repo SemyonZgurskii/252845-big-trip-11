@@ -26,7 +26,10 @@ const FilterType = {
   PAST: `past`,
 };
 
+const HIDDEN_CLASS = `visually-hidden`;
+
 export {
+  HIDDEN_CLASS,
   EVENT_TYPES,
   CITIES,
   MonthNumberToString,

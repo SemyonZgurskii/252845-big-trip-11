@@ -45,8 +45,10 @@ export default class PointController {
 
     this._eventEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const data = this._eventEditComponent.getData();
-      this._onDataChange(this, event, data);
+      if (this._eventEditComponent.isValid()) {
+        const data = this._eventEditComponent.getData();
+        this._onDataChange(this, event, data);
+      }
     });
 
     this._eventEditComponent.setFavoriteHandler(() => {

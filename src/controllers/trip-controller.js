@@ -5,6 +5,7 @@ import NoEventsComponent from "../components/no-events.js";
 import PointController, {Mode as PointControllerMode, EmptyEvent} from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
+import {HIDDEN_CLASS} from "../const.js";
 
 const getSortedEvents = (events, sortType) => {
   let sortedEvents = [];
@@ -43,6 +44,15 @@ export default class TripControler {
 
     this._eventsModel.setFilterChangeHandler(this._onFilterChange);
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+  }
+
+  hide() {
+    this._container.classList.add(HIDDEN_CLASS);
+    this._sortComponent.setDefaultSortHandler(this._onSortTypeChange);
+  }
+
+  show() {
+    this._container.classList.remove(HIDDEN_CLASS);
   }
 
   createEvent() {
