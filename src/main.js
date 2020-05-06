@@ -8,12 +8,9 @@ import PriceComponent from "./components/price.js";
 import RouteComponent from "./components/route.js";
 import StatistcsComponent from "./components/statistics.js";
 import TripController from "./controllers/trip-controller.js";
-import {generateEvents} from "./mocks/event.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
-const EVENTS_COUNT = 20;
-const events = generateEvents(EVENTS_COUNT);
 const eventsModel = new EventsModel();
 const api = new API(AUTHORIZATION);
 
@@ -32,7 +29,6 @@ render(mainHeaderElement, new IfnoComponent(), RenderPosition.AFTERBEGIN);
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
 render(infoElement, new RouteComponent(), RenderPosition.BEFOREEND);
-render(infoElement, new PriceComponent(events), RenderPosition.BEFOREEND);
 
 const menuComponent = new MenuComponent();
 render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
@@ -66,4 +62,5 @@ api.getEvents()
   .then((trueEvents) => {
     eventsModel.setEvents(trueEvents);
     tripController.renderEvents();
+    render(infoElement, new PriceComponent(trueEvents), RenderPosition.BEFOREEND);
   });
