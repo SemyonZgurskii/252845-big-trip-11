@@ -55,11 +55,11 @@ const generateOptionsElement = (options) => {
 };
 
 const generatePhotoMarkup = (photo) => {
-  return `<img class="event__photo" src="${photo}" alt="Event photo">`;
+  return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
 };
 
 const generatePhotosElement = (photos) => {
-  if (photos.length < 1) {
+  if (!photos) {
     return ``;
   }
 
@@ -82,27 +82,28 @@ const generateDescriptionElement = (description) => {
   );
 };
 
-const generateInfoElement = (info) => {
-  if (!info) {
+const generateInfoElement = (destination) => {
+  if (!destination) {
     return ``;
   }
 
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      ${generateDescriptionElement(info.description)}
-      ${generatePhotosElement(info.photos)}
+      ${generateDescriptionElement(destination.description)}
+      ${generatePhotosElement(destination.photos)}
     </section>`
   );
 };
 
 const createEventEditTemplate = (event) => {
-  const {type, city, info, price, options, start, end, isFavorite} = event;
+  const {type, destination, price, options, start, end, isFavorite} = event;
+  const city = destination.name;
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
   const citiesMarkup = getMarkupFromArray(CITIES, generateCitiesElement);
   const optionsMarkup = generateOptionsElement(options);
-  const infoMarkup = generateInfoElement(info);
+  const infoMarkup = generateInfoElement(destination);
   const typePlaceHolder = makeFirstLetterUppercase(type);
   const typeArticle = EVENT_TYPES.transfer.indexOf(type) > 0 ? `to` : `at`;
 

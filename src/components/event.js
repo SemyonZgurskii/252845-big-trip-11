@@ -22,10 +22,11 @@ const generateOptionsMarkup = (options) => {
 };
 
 const createEventTemplate = (event) => {
-  const {type, city, start, end, price, options} = event;
+  const {type, destination, start, end, price, options} = event;
 
   const offersMarkup = generateOptionsMarkup(options);
 
+  const city = destination.name;
   const startDateTime = getFormatDate(start, `-`);
   const startTime = getFormatTime(start);
   const endDateTime = getFormatDate(end, `-`);
