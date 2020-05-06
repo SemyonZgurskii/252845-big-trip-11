@@ -1,6 +1,7 @@
+import EventModel from "../models/event.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 import {EVENT_TYPES, CITIES} from "../const.js";
 import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
-import AbstractSmartComponent from "./abstract-smart-component.js";
 import {generatePhotosSrc, generateDescription} from "../mocks/event.js";
 import flatpickr from "flatpickr";
 
@@ -184,13 +185,13 @@ const parseFormData = (formData) => {
   const endDate = formData.get(`event-end-time`);
 
   return {
-    destination: {
-      name: formData.get(`event-destination`),
+    "destination": {
+      "name": formData.get(`event-destination`),
     },
-    price: formData.get(`event-price`),
-    start: new Date(startDate),
-    end: new Date(endDate),
-    isFavorite: formData.get(`event-favorite`) ? true : false,
+    "base_price": parseInt(formData.get(`event-price`), 10),
+    "date_from": new Date(startDate).toISOString(),
+    "date_to": new Date(endDate).toISOString(),
+    "is_favorite": formData.get(`event-favorite`) ? true : false,
   };
 };
 export default class EventEdit extends AbstractSmartComponent {
@@ -230,11 +231,11 @@ export default class EventEdit extends AbstractSmartComponent {
     const form = this.getElement();
     const formData = new FormData(form);
 
-    const options = Array.from(form.querySelectorAll(`.event__offer-selector`),
-        (option) => {
+    const offers = Array.from(form.querySelectorAll(`.event__offer-selector`),
+        (offer) => {
           return {
-            title: option.querySelector(`.event__offer-title`).textContent,
-            price: option.querySelector(`.event__offer-price`).textContent,
+            title: offer.querySelector(`.event__offer-title`).textContent,
+            price: parseInt(offer.querySelector(`.event__offer-price`).textContent, 10),
           };
         });
 
@@ -250,21 +251,25 @@ export default class EventEdit extends AbstractSmartComponent {
     const pictures = Array.from(form.querySelectorAll(`.event__photo`),
         (photo) => {
           return {
-            src: photo.src,
-            description: photo.alt,
+            "src": photo.src,
+            "description": photo.alt,
           };
         });
 
-    const destination = {
-      description,
-      pictures,
-    };
+    // const destination = {
+    //   description,
+    //   pictures,
+    // };
 
-    return Object.assign(parseFormData(formData), {
-      options,
+    const newData = Object.assign(parseFormData(formData), {
+      offers,
       type,
-      destination,
     });
+
+    newData.destination.description = description;
+    newData.destination.pictures = pictures;
+
+    return EventModel.parseEvent(newData);
   }
 
   recoveryListeners() {

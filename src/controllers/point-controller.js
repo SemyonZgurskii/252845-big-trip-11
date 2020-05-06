@@ -1,5 +1,6 @@
 import EventEditComponent from "../components/event-edit.js";
 import EventComponent from "../components/event.js";
+import EventModel from "../models/event.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
 
 const Mode = {
@@ -47,7 +48,9 @@ export default class PointController {
       evt.preventDefault();
       if (this._eventEditComponent.isValid()) {
         const data = this._eventEditComponent.getData();
-        this._onDataChange(this, event, data);
+        const dataModel = EventModel.clone(data);
+
+        this._onDataChange(this, event, dataModel);
       }
     });
 

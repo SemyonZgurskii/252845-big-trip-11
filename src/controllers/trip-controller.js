@@ -148,12 +148,15 @@ export default class TripControler {
       this._eventsModel.removeEvent(oldData.id);
       this._updateEvents();
     } else {
-      const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
+      this._api.updateEvent(oldData.id, newData)
+        .then((updatedEvent) => {
+          const isSuccess = this._eventsModel.updateEvent(oldData.id, updatedEvent);
 
-      if (isSuccess) {
-        pointController.destroy();
-        this._updateEvents();
-      }
+          if (isSuccess) {
+            pointController.destroy();
+            this._updateEvents();
+          }
+        });
     }
   }
 
