@@ -1,4 +1,5 @@
 import API from "./api.js";
+import Board from "./components/board.js";
 import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
 import IfnoComponent from "./components/info.js";
@@ -11,21 +12,21 @@ import {generateEvents} from "./mocks/event.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
-const api = new API(AUTHORIZATION);
-const trueEvents = api.getEvents();
 const EVENTS_COUNT = 20;
-
 const events = generateEvents(EVENTS_COUNT);
 const eventsModel = new EventsModel();
-eventsModel.setEvents(events);
+const api = new API(AUTHORIZATION);
 
-const mainElement = document.querySelector(`.page-body__page-main`);
+
+const mainElement = document.querySelector(`.page-body__page-main`)
+  .querySelector(`.page-body__container`);
 const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
-const mainContentElement = document.querySelector(`.trip-events`);
+const board = new Board();
+render(mainElement, board, RenderPosition.BEFOREEND);
 
-
+const tripController = new TripController(board, eventsModel, api);
 render(mainHeaderElement, new IfnoComponent(), RenderPosition.AFTERBEGIN);
 
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
@@ -38,8 +39,7 @@ render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 const filterController = new FilterController(mainControlsElement, eventsModel);
 filterController.render();
 
-const tripController = new TripController(mainContentElement, eventsModel);
-tripController.renderEvents();
+
 
 const statisticsComponent = new StatistcsComponent();
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
@@ -63,4 +63,8 @@ menuComponent.setOnItemClickHandler((menuItem) => {
   }
 });
 
-
+api.getEvents()
+  .then((trueEvents) => {
+    eventsModel.setEvents(trueEvents);
+    tripController.renderEvents();
+  });
