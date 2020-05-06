@@ -54,19 +54,19 @@ const generateOptionsElement = (options) => {
   );
 };
 
-const generatePhotoMarkup = (photo) => {
-  return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
+const generatePhotoMarkup = (picture) => {
+  return `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
 };
 
-const generatePhotosElement = (photos) => {
-  if (!photos) {
+const generatePhotosElement = (pictures) => {
+  if (!pictures) {
     return ``;
   }
 
   return (
     `<div class="event__photos-container">
       <div class="event__photos-tape">
-        ${getMarkupFromArray(photos, generatePhotoMarkup)}
+        ${getMarkupFromArray(pictures, generatePhotoMarkup)}
       </div>
     </div>`
   );
@@ -91,7 +91,7 @@ const generateInfoElement = (destination) => {
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       ${generateDescriptionElement(destination.description)}
-      ${generatePhotosElement(destination.photos)}
+      ${generatePhotosElement(destination.pictures)}
     </section>`
   );
 };
@@ -184,7 +184,9 @@ const parseFormData = (formData) => {
   const endDate = formData.get(`event-end-time`);
 
   return {
-    city: formData.get(`event-destination`),
+    destination: {
+      name: formData.get(`event-destination`),
+    },
     price: formData.get(`event-price`),
     start: new Date(startDate),
     end: new Date(endDate),
@@ -245,18 +247,23 @@ export default class EventEdit extends AbstractSmartComponent {
     const description = form.querySelector(`.event__destination-description`)
         .textContent;
 
-    const photos = Array.from(form.querySelectorAll(`.event__photo`),
-        (photo) => photo.src);
+    const pictures = Array.from(form.querySelectorAll(`.event__photo`),
+        (photo) => {
+          return {
+            src: photo.src,
+            description: photo.alt,
+          };
+        });
 
-    const info = {
+    const destination = {
       description,
-      photos,
+      pictures,
     };
 
     return Object.assign(parseFormData(formData), {
       options,
       type,
-      info,
+      destination,
     });
   }
 

@@ -39,10 +39,9 @@ render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 const filterController = new FilterController(mainControlsElement, eventsModel);
 filterController.render();
 
-
-
 const statisticsComponent = new StatistcsComponent();
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
+statisticsComponent.hide();
 
 mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
   .addEventListener(`click`, () => {
