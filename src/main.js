@@ -21,17 +21,17 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
 const board = new Board();
-render(mainElement, board, RenderPosition.BEFOREEND);
-
 const tripController = new TripController(board, eventsModel, api);
+const menuComponent = new MenuComponent();
+
+render(mainElement, board, RenderPosition.BEFOREEND);
 render(mainHeaderElement, new IfnoComponent(), RenderPosition.AFTERBEGIN);
 
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
 render(infoElement, new RouteComponent(), RenderPosition.BEFOREEND);
-
-const menuComponent = new MenuComponent();
 render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
+
 const filterController = new FilterController(mainControlsElement, eventsModel);
 filterController.render();
 
