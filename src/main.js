@@ -11,8 +11,10 @@ import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
+
 const eventsModel = new EventsModel();
-const api = new API(AUTHORIZATION);
+const api = new API(END_POINT, AUTHORIZATION);
 
 
 const mainElement = document.querySelector(`.page-body__page-main`)
