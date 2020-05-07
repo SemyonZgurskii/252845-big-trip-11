@@ -5,7 +5,6 @@ import NoEventsComponent from "../components/no-events.js";
 import PointController, {Mode as PointControllerMode, EmptyEvent} from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
-import {HIDDEN_CLASS} from "../const.js";
 
 const getSortedEvents = (events, sortType) => {
   let sortedEvents = [];
@@ -26,9 +25,10 @@ const getSortedEvents = (events, sortType) => {
 };
 
 export default class TripControler {
-  constructor(container, eventsModel) {
+  constructor(container, eventsModel, api) {
     this._container = container;
     this._eventsModel = eventsModel;
+    this._api = api;
 
     this._pointControllers = [];
     this._creatingEvent = null;
@@ -47,12 +47,12 @@ export default class TripControler {
   }
 
   hide() {
-    this._container.classList.add(HIDDEN_CLASS);
+    this._container.hide();
     this._sortComponent.setDefaultSortHandler(this._onSortTypeChange);
   }
 
   show() {
-    this._container.classList.remove(HIDDEN_CLASS);
+    this._container.show();
   }
 
   createEvent() {
@@ -66,7 +66,7 @@ export default class TripControler {
   }
 
   renderEvents() {
-    const container = this._container;
+    const container = this._container.getElement();
     const events = this._eventsModel.getEvents();
 
     if (this._eventsModel.getAllEvents().length < 1) {
@@ -148,12 +148,15 @@ export default class TripControler {
       this._eventsModel.removeEvent(oldData.id);
       this._updateEvents();
     } else {
-      const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
+      this._api.updateEvent(oldData.id, newData)
+        .then((updatedEvent) => {
+          const isSuccess = this._eventsModel.updateEvent(oldData.id, updatedEvent);
 
-      if (isSuccess) {
-        pointController.destroy();
-        this._updateEvents();
-      }
+          if (isSuccess) {
+            pointController.destroy();
+            this._updateEvents();
+          }
+        });
     }
   }
 
