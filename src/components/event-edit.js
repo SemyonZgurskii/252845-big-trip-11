@@ -256,11 +256,6 @@ export default class EventEdit extends AbstractSmartComponent {
           };
         });
 
-    // const destination = {
-    //   description,
-    //   pictures,
-    // };
-
     const newData = Object.assign(parseFormData(formData), {
       offers,
       type,
