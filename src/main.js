@@ -1,5 +1,6 @@
 import API from "./api.js";
 import Board from "./components/board.js";
+import DestinationsModel from "./models/destinations.js";
 import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
 import IfnoComponent from "./components/info.js";
@@ -14,6 +15,7 @@ const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const eventsModel = new EventsModel();
+const destinationsModel = new DestinationsModel();
 const api = new API(END_POINT, AUTHORIZATION);
 
 
@@ -60,9 +62,22 @@ menuComponent.setOnItemClickHandler((menuItem) => {
   }
 });
 
-api.getEvents()
+const getEvents = () => {
+  api.getEvents()
   .then((trueEvents) => {
     eventsModel.setEvents(trueEvents);
     tripController.renderEvents();
     render(infoElement, new PriceComponent(trueEvents), RenderPosition.BEFOREEND);
   });
+};
+
+api.getDestinations()
+  .then((destinations) => {
+    destinationsModel.setDestinations(destinations);
+    getEvents();
+  });
+
+// api.getOffers()
+//   .then((offers) => {
+//     console.log(offers);
+//   });
