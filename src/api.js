@@ -1,4 +1,5 @@
 import Event from "./models/event.js";
+import Destination from "./models/destination.js";
 
 const Method = {
   GET: `GET`,
@@ -19,6 +20,14 @@ export default class API {
   constructor(endPoint, authorization) {
     this._authorization = authorization;
     this._endPoint = endPoint;
+  }
+
+  getDestinations() {
+    return this._load({
+      url: `destinations`,
+    })
+      .then((response) => response.json())
+      .then(Destination.parseDestinations);
   }
 
   getEvents() {
