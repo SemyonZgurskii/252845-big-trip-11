@@ -25,7 +25,7 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
 const board = new Board();
-const tripController = new TripController(board, eventsModel, api);
+const tripController = new TripController(board, eventsModel, destinationsModel, api);
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
@@ -62,22 +62,20 @@ menuComponent.setOnItemClickHandler((menuItem) => {
   }
 });
 
-const getEvents = () => {
+Promise.all([
+  api.getDestinations()
+    .then((destinations) => {
+      destinationsModel.setDestinations(destinations);
+    }),
+  api.getOffers()
+    .then((offers) => {
+      console.log(offers);
+    }),
+]).then(() => {
   api.getEvents()
-  .then((trueEvents) => {
-    eventsModel.setEvents(trueEvents);
-    tripController.renderEvents();
-    render(infoElement, new PriceComponent(trueEvents), RenderPosition.BEFOREEND);
-  });
-};
-
-api.getDestinations()
-  .then((destinations) => {
-    destinationsModel.setDestinations(destinations);
-    getEvents();
-  });
-
-// api.getOffers()
-//   .then((offers) => {
-//     console.log(offers);
-//   });
+    .then((trueEvents) => {
+      eventsModel.setEvents(trueEvents);
+      tripController.renderEvents(destinationsModel);
+      render(infoElement, new PriceComponent(trueEvents), RenderPosition.BEFOREEND);
+    });
+});

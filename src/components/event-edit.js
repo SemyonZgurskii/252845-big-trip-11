@@ -1,5 +1,6 @@
-import EventModel from "../models/event.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
+import EventModel from "../models/event.js";
+import DestinationsModel from "../models/destinations.js";
 import {EVENT_TYPES, CITIES} from "../const.js";
 import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
 import {generatePhotosSrc, generateDescription} from "../mocks/event.js";
@@ -97,12 +98,13 @@ const generateInfoElement = (destination) => {
   );
 };
 
-const createEventEditTemplate = (event) => {
+const createEventEditTemplate = (event, destinations) => {
   const {type, destination, price, options, start, end, isFavorite} = event;
   const city = destination.name;
+  const cities = destinations.map((yooo) => yooo.name);
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
-  const citiesMarkup = getMarkupFromArray(CITIES, generateCitiesElement);
+  const citiesMarkup = getMarkupFromArray(cities, generateCitiesElement);
   const optionsMarkup = generateOptionsElement(options);
   const infoMarkup = generateInfoElement(destination);
   const typePlaceHolder = makeFirstLetterUppercase(type);
@@ -195,10 +197,11 @@ const parseFormData = (formData) => {
   };
 };
 export default class EventEdit extends AbstractSmartComponent {
-  constructor(event) {
+  constructor(event, destinations) {
     super();
 
     this._event = event;
+    this._destinations = destinations;
 
     this._isPriceValid = true;
     this._isDestinationValid = true;
@@ -214,7 +217,7 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event);
+    return createEventEditTemplate(this._event, this._destinations);
   }
 
   isValid() {
@@ -313,15 +316,14 @@ export default class EventEdit extends AbstractSmartComponent {
 
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
+        console.log(`lol`);
         if (this._isDestinationValid) {
+          const newDestination = this._destinations.find((destination) => destination.name === evt.target.value);
           this._event = Object.assign({}, this._event, {
-            info: {
-              photos: generatePhotosSrc(),
-              description: generateDescription(),
-            },
-            city: evt.target.value,
+            destination: newDestination,
           });
           this.rerender();
+          console.log(`lol`);
         } else {
           return;
         }
@@ -345,7 +347,8 @@ export default class EventEdit extends AbstractSmartComponent {
 
     destinationInput.addEventListener(`input`, () => {
       destinationInput.setCustomValidity(``);
-      const isMatch = CITIES.some((city) => city === destinationInput.value);
+      const isMatch = this._destinations
+        .some(({name}) => name === destinationInput.value);
       if (!isMatch) {
         destinationInput.setCustomValidity(`You should select one of available destinons`);
         this._isDestinationValid = false;

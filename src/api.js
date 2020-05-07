@@ -30,6 +30,14 @@ export default class API {
       .then(Destination.parseDestinations);
   }
 
+  getOffers() {
+    return this._load({
+      url: `offers`,
+    })
+      .then((response) => response.json())
+      .then(console.log);
+  }
+
   getEvents() {
     return this._load({url: `points`})
       .then(checkStatus)

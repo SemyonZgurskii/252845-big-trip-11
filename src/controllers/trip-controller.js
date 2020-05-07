@@ -25,9 +25,10 @@ const getSortedEvents = (events, sortType) => {
 };
 
 export default class TripControler {
-  constructor(container, eventsModel, api) {
+  constructor(container, eventsModel, destinationsModel, api) {
     this._container = container;
     this._eventsModel = eventsModel;
+    this._destinationsModel = destinationsModel;
     this._api = api;
 
     this._pointControllers = [];
@@ -96,7 +97,7 @@ export default class TripControler {
       days[i].forEach((event) => {
         const newEvent = new PointController(dayElement, this._onDataChange, this._onViewChange);
         this._pointControllers.push(newEvent);
-        newEvent.renderEvent(event, PointControllerMode.DEFAULT);
+        newEvent.renderEvent(event, this._destinationsModel.getDestinations(), PointControllerMode.DEFAULT);
       });
     });
   }
