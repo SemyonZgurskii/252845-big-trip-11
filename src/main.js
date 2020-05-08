@@ -5,6 +5,7 @@ import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
 import IfnoComponent from "./components/info.js";
 import MenuComponent, {MenuItem} from "./components/menu.js";
+import OffersModel from "./models/offers.js";
 import PriceComponent from "./components/price.js";
 import RouteComponent from "./components/route.js";
 import StatistcsComponent from "./components/statistics.js";
@@ -16,6 +17,7 @@ const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 const api = new API(END_POINT, AUTHORIZATION);
 
 
@@ -25,7 +27,7 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
 const board = new Board();
-const tripController = new TripController(board, eventsModel, destinationsModel, api);
+const tripController = new TripController(board, eventsModel, destinationsModel, offersModel, api);
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
@@ -69,13 +71,14 @@ Promise.all([
     }),
   api.getOffers()
     .then((offers) => {
-      console.log(offers);
+      offersModel.setOffers(offers);
     }),
 ]).then(() => {
   api.getEvents()
     .then((trueEvents) => {
       eventsModel.setEvents(trueEvents);
-      tripController.renderEvents(destinationsModel);
+      tripController.renderEvents();
       render(infoElement, new PriceComponent(trueEvents), RenderPosition.BEFOREEND);
     });
 });
+

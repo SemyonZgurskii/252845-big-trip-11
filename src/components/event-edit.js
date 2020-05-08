@@ -1,9 +1,7 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import EventModel from "../models/event.js";
-import DestinationsModel from "../models/destinations.js";
-import {EVENT_TYPES, CITIES} from "../const.js";
-import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
-import {generatePhotosSrc, generateDescription} from "../mocks/event.js";
+import {EVENT_TYPES} from "../const.js";
+import {getMarkupFromArray, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -25,10 +23,10 @@ const generateCitiesElement = (city) => {
   );
 };
 
-const generateOptionMarkup = (option) => {
+const generateOptionMarkup = (option, isChecked) => {
   return (
     `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.title}-1" type="checkbox" name="event-offer-${option.title}" ${getRandomBoolean() ? `checked` : ``}>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.title}-1" type="checkbox" name="event-offer-${option.title}" ${isChecked ? `checked` : ``}>
     <label class="event__offer-label" for="event-offer-${option.title}-1">
       <span class="event__offer-title">${option.title}</span>
       &plus;
@@ -38,12 +36,16 @@ const generateOptionMarkup = (option) => {
   );
 };
 
-const generateOptionsElement = (options) => {
-  if (options.length < 1) {
+const generateOptionsElement = (activeOptions, allOptions) => {
+  if (allOptions.length < 1) {
     return ``;
   }
 
-  const optionsMarkup = getMarkupFromArray(options, generateOptionMarkup);
+  const optionsMarkup = [];
+  allOptions.forEach((option) => {
+    const isChecked = activeOptions.some(({title}) => option.title === title);
+    optionsMarkup.push(generateOptionMarkup(option, isChecked));
+  });
 
   return (
     `<section class="event__details">
@@ -98,14 +100,15 @@ const generateInfoElement = (destination) => {
   );
 };
 
-const createEventEditTemplate = (event, destinations) => {
-  const {type, destination, price, options, start, end, isFavorite} = event;
+const createEventEditTemplate = (event, destinations, offers) => {
+  const {type, destination, price, options: activeOptions, start, end, isFavorite} = event;
   const city = destination.name;
-  const cities = destinations.map((yooo) => yooo.name);
+  const cities = destinations.map(({name}) => name);
+  const allOptions = offers.get(type);
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
   const citiesMarkup = getMarkupFromArray(cities, generateCitiesElement);
-  const optionsMarkup = generateOptionsElement(options);
+  const optionsMarkup = generateOptionsElement(activeOptions, allOptions);
   const infoMarkup = generateInfoElement(destination);
   const typePlaceHolder = makeFirstLetterUppercase(type);
   const typeArticle = EVENT_TYPES.transfer.indexOf(type) > 0 ? `to` : `at`;
@@ -197,11 +200,12 @@ const parseFormData = (formData) => {
   };
 };
 export default class EventEdit extends AbstractSmartComponent {
-  constructor(event, destinations) {
+  constructor(event, destinations, offers) {
     super();
 
     this._event = event;
     this._destinations = destinations;
+    this._offers = offers;
 
     this._isPriceValid = true;
     this._isDestinationValid = true;
@@ -217,7 +221,7 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event, this._destinations);
+    return createEventEditTemplate(this._event, this._destinations, this._offers);
   }
 
   isValid() {
@@ -316,14 +320,12 @@ export default class EventEdit extends AbstractSmartComponent {
 
     element.querySelector(`.event__input--destination`)
       .addEventListener(`change`, (evt) => {
-        console.log(`lol`);
         if (this._isDestinationValid) {
           const newDestination = this._destinations.find((destination) => destination.name === evt.target.value);
           this._event = Object.assign({}, this._event, {
             destination: newDestination,
           });
           this.rerender();
-          console.log(`lol`);
         } else {
           return;
         }

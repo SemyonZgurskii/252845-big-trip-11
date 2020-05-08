@@ -1,5 +1,6 @@
 import Event from "./models/event.js";
 import Destination from "./models/destination.js";
+import Offer from "./models/offer.js";
 
 const Method = {
   GET: `GET`,
@@ -35,7 +36,7 @@ export default class API {
       url: `offers`,
     })
       .then((response) => response.json())
-      .then(console.log);
+      .then((Offer.parseOffers));
   }
 
   getEvents() {

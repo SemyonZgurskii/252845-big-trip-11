@@ -10,10 +10,4 @@ export default class Destinations {
   getDestinations() {
     return this._destinations;
   }
-
-  getInformation(destinationName) {
-    console.log(destinationName);
-    console.log(this._destinations);
-    this._destinations.find((destination) => destination.name === destinationName);
-  }
 }

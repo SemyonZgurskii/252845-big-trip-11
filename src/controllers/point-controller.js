@@ -31,13 +31,13 @@ export default class PointController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  renderEvent(event, destinations, mode) {
+  renderEvent(event, destinations, offers, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
     this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
-    this._eventEditComponent = new EventEditComponent(event, destinations);
+    this._eventEditComponent = new EventEditComponent(event, destinations, offers);
 
     this._eventComponent.setEditButtonHandler(() => {
       this._replaceEventToEdit();
