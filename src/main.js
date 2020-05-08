@@ -5,7 +5,7 @@ import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
 import IfnoComponent from "./components/info.js";
 import MenuComponent, {MenuItem} from "./components/menu.js";
-import OffersModel from "./models/offers.js";
+import OptionsModel from "./models/all-options.js";
 import PriceComponent from "./components/price.js";
 import RouteComponent from "./components/route.js";
 import StatistcsComponent from "./components/statistics.js";
@@ -17,7 +17,7 @@ const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
-const offersModel = new OffersModel();
+const optionsModel = new OptionsModel();
 const api = new API(END_POINT, AUTHORIZATION);
 
 
@@ -27,7 +27,7 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
 const board = new Board();
-const tripController = new TripController(board, eventsModel, destinationsModel, offersModel, api);
+const tripController = new TripController(board, eventsModel, destinationsModel, optionsModel, api);
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
@@ -69,9 +69,9 @@ Promise.all([
     .then((destinations) => {
       destinationsModel.setDestinations(destinations);
     }),
-  api.getOffers()
+  api.getOptions()
     .then((offers) => {
-      offersModel.setOffers(offers);
+      optionsModel.setOptions(offers);
     }),
 ]).then(() => {
   api.getEvents()

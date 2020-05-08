@@ -11,9 +11,8 @@ const Mode = {
 
 const EmptyEvent = {
   type: `flight`,
-  city: ``,
-  options: ``,
-  info: ``,
+  // options: [],
+  // destination: {},
   price: ``,
   start: new Date(),
   end: new Date(),

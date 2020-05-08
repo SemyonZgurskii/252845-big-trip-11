@@ -36,11 +36,10 @@ const generateOptionMarkup = (option, isChecked) => {
   );
 };
 
-const generateOptionsElement = (activeOptions, allOptions) => {
-  if (allOptions.length < 1) {
+const generateOptionsElement = (activeOptions = [], allOptions) => {
+  if (!allOptions) {
     return ``;
   }
-
   const optionsMarkup = [];
   allOptions.forEach((option) => {
     const isChecked = activeOptions.some(({title}) => option.title === title);
@@ -102,13 +101,13 @@ const generateInfoElement = (destination) => {
 
 const createEventEditTemplate = (event, destinations, offers) => {
   const {type, destination, price, options: activeOptions, start, end, isFavorite} = event;
-  const city = destination.name;
+  const city = destination ? destination.name : ``;
   const cities = destinations.map(({name}) => name);
   const allOptions = offers.get(type);
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
   const citiesMarkup = getMarkupFromArray(cities, generateCitiesElement);
-  const optionsMarkup = generateOptionsElement(activeOptions, allOptions);
+  const optionsMarkup = city ? generateOptionsElement(activeOptions, allOptions) : ``;
   const infoMarkup = generateInfoElement(destination);
   const typePlaceHolder = makeFirstLetterUppercase(type);
   const typeArticle = EVENT_TYPES.transfer.indexOf(type) > 0 ? `to` : `at`;

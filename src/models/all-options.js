@@ -1,15 +1,15 @@
-export default class Offers {
+export default class AllOptions {
   constructor() {
     this._offers = new Map();
   }
 
-  setOffers(offers) {
+  setOptions(offers) {
     for (const offer of offers) {
       this._offers.set(offer.type, offer.offers);
     }
   }
 
-  getOffers() {
+  getOptions() {
     return this._offers;
   }
 }

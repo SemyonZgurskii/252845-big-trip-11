@@ -15,7 +15,7 @@ const generateOptionsElement = (title, price) => {
 };
 
 const generateOptionsMarkup = (options) => {
-  if (options.length === 0) {
+  if (!options) {
     return ``;
   }
 
@@ -28,9 +28,8 @@ const generateOptionsMarkup = (options) => {
 const createEventTemplate = (event) => {
   const {type, destination, start, end, price, options} = event;
 
-  const offersMarkup = generateOptionsMarkup(options);
-
-  const city = destination.name;
+  const city = destination ? destination.name : ``;
+  const offersMarkup = city ? generateOptionsMarkup(options) : ``;
   const startDateTime = getFormatDate(start, `-`);
   const startTime = getFormatTime(start);
   const endDateTime = getFormatDate(end, `-`);

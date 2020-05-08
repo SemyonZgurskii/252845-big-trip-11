@@ -1,6 +1,6 @@
 import Event from "./models/event.js";
 import Destination from "./models/destination.js";
-import Offer from "./models/offer.js";
+import TypeOptions from "./models/type-options.js";
 
 const Method = {
   GET: `GET`,
@@ -23,6 +23,17 @@ export default class API {
     this._endPoint = endPoint;
   }
 
+  createEvent(event) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(event.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`}),
+    })
+      .then((response) => response.json())
+      .then(Event.parseEvent);
+  }
+
   getDestinations() {
     return this._load({
       url: `destinations`,
@@ -31,12 +42,12 @@ export default class API {
       .then(Destination.parseDestinations);
   }
 
-  getOffers() {
+  getOptions() {
     return this._load({
       url: `offers`,
     })
       .then((response) => response.json())
-      .then((Offer.parseOffers));
+      .then((TypeOptions.parseTypesOptions));
   }
 
   getEvents() {

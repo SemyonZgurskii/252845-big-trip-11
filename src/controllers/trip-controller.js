@@ -25,11 +25,11 @@ const getSortedEvents = (events, sortType) => {
 };
 
 export default class TripControler {
-  constructor(container, eventsModel, destinationsModel, offersModel, api) {
+  constructor(container, eventsModel, destinationsModel, optionsModel, api) {
     this._container = container;
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
-    this._offersModel = offersModel;
+    this._offersModel = optionsModel;
     this._api = api;
 
     this._pointControllers = [];
@@ -61,10 +61,12 @@ export default class TripControler {
     if (this._creatingEvent) {
       return;
     }
+    const destinations = this._destinationsModel.getDestinations();
+    const offers = this._offersModel.getOptions();
 
     const daysContainerElement = this._daysContainerComponent.getElement();
     this._creatingEvent = new PointController(daysContainerElement, this._onDataChange, this._onViewChange);
-    this._creatingEvent.renderEvent(EmptyEvent, PointControllerMode.ADDING);
+    this._creatingEvent.renderEvent(EmptyEvent, destinations, offers, PointControllerMode.ADDING);
   }
 
   renderEvents() {
@@ -86,7 +88,7 @@ export default class TripControler {
   renderDays() {
     const events = this._eventsModel.getEvents();
     const destinations = this._destinationsModel.getDestinations();
-    const offers = this._offersModel.getOffers();
+    const offers = this._offersModel.getOptions();
 
     const days = Array.from(new Set(events.map(({start}) => start.getDate())),
         (date) => events.filter((event) => event.start.getDate() === date));
@@ -144,9 +146,12 @@ export default class TripControler {
         pointController.destroy();
         this._updateEvents();
       } else {
-        this._eventsModel.addEvent(newData);
-        pointController.destroy();
-        this._updateEvents();
+        this._api.createEvent(newData)
+          .then((eventModel) => {
+            this._eventsModel.addEvent(eventModel);
+            pointController.destroy();
+            this._updateEvents();
+          });
       }
     } else if (newData === null) {
       this._eventsModel.removeEvent(oldData.id);
