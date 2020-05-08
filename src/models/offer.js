@@ -1,15 +1,14 @@
 export default class Offer {
   constructor(data) {
-    this.name = data.name;
-    this.pictures = data.pictures;
-    this.description = data.description;
+    this.type = data.type;
+    this.offer = data.offer;
   }
 
-  static parseDestination(data) {
-    return new Destination(data);
+  static parseOffer(data) {
+    return new Offer(data);
   }
 
-  static parseDestinations(data) {
-    return data.map(Destination.parseDestination);
+  static parseOffer(data) {
+    return data.map(Offer.parseOffer);
   }
 }
