@@ -237,13 +237,22 @@ export default class EventEdit extends AbstractSmartComponent {
     const form = this.getElement();
     const formData = new FormData(form);
 
-    const offers = Array.from(form.querySelectorAll(`.event__offer-selector`),
-        (offer) => {
-          return {
-            title: offer.querySelector(`.event__offer-title`).textContent,
-            price: parseInt(offer.querySelector(`.event__offer-price`).textContent, 10),
-          };
-        });
+    const offers = Array.from(form.querySelectorAll(`.event__offer-checkbox`))
+      .filter((offer) => offer.checked === true)
+      .map((offer) => {
+        return {
+          title: offer.parentNode.querySelector(`.event__offer-title`).textContent,
+          price: parseInt(offer.parentNode.querySelector(`.event__offer-price`).textContent, 10),
+        };
+      });
+
+    // const offers = Array.from(form.querySelectorAll(`.event__offer-label`),
+    //     (offer) => {
+    //       return {
+    //         title: offer.querySelector(`.event__offer-title`).textContent,
+    //         price: parseInt(offer.querySelector(`.event__offer-price`).textContent, 10),
+    //       };
+    //     });
 
     const type = form.querySelector(`.event__type-icon`)
         .src
@@ -301,61 +310,95 @@ export default class EventEdit extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
   }
 
+  priceValidation() {
+    const priceInput = this.getElement().querySelector(`.event__input--price`);
+    const priceValue = parseFloat(priceInput.value);
+
+    priceInput.setCustomValidity(``);
+    if (isNaN(priceValue)) {
+      priceInput.setCustomValidity(`The value must be a number`);
+      this._isPriceValid = false;
+    } else {
+      this._isPriceValid = true;
+    }
+  }
+
+  destinationNameValidation() {
+    const destinationNameInput = this.getElement().querySelector(`.event__input--destination`);
+
+    destinationNameInput.setCustomValidity(``);
+    const isMatch = this._destinations
+      .some(({name}) => name === destinationNameInput.value);
+    if (!isMatch) {
+      destinationNameInput.setCustomValidity(`You should select one of available destinons`);
+      this._isDestinationValid = false;
+    } else {
+      this._isDestinationValid = true;
+    }
+  }
+
+  checkValidity() {
+    this.priceValidation();
+    this.destinationNameValidation();
+  }
+
   _subscribeOnEvents() {
     const element = this.getElement();
+    const typesContainer = element.querySelector(`.event__type-wrapper`);
+    const destinationNameInput = element.querySelector(`.event__input--destination`);
+    const optionsContainer = element.querySelector(`.event__section--offers`);
 
-    element.querySelector(`.event__type-wrapper`)
-      .addEventListener(`change`, (evt) => {
-        if (!evt.target.classList.contains(`event__type-input`)) {
-          return;
-        }
+    typesContainer.addEventListener(`change`, (evt) => {
+      if (!evt.target.classList.contains(`event__type-input`)) {
+        return;
+      }
 
-        const selectedType = evt.target.value;
+      const selectedType = evt.target.value;
+      this._event = Object.assign({}, this._event, {
+        type: selectedType,
+      });
+      this.rerender();
+    });
+
+    destinationNameInput.addEventListener(`change`, (evt) => {
+      if (this._isDestinationValid) {
+        const newDestination = this._destinations.find((destination) => destination.name === evt.target.value);
         this._event = Object.assign({}, this._event, {
-          type: selectedType,
+          destination: newDestination,
         });
         this.rerender();
-      });
+      } else {
+        return;
+      }
+    });
 
-    element.querySelector(`.event__input--destination`)
-      .addEventListener(`change`, (evt) => {
-        if (this._isDestinationValid) {
-          const newDestination = this._destinations.find((destination) => destination.name === evt.target.value);
-          this._event = Object.assign({}, this._event, {
-            destination: newDestination,
-          });
-          this.rerender();
-        } else {
-          return;
-        }
-      });
+    optionsContainer.addEventListener(`click`, (evt) => {
+      if (!evt.target.classList.contains(`event__offer-checkbox`)) {
+        return;
+      }
+
+      console.log(`aoeuaouoe`, evt.target.checked);
+      // evt.target.checked = !evt.target.checked;
+    });
   }
 
   _validateForm() {
     const form = this.getElement();
     const priceInput = form.querySelector(`.event__input--price`);
-    const destinationInput = form.querySelector(`.event__input--destination`);
+    const destinationNameInput = form.querySelector(`.event__input--destination`);
+    const submitButton = form.querySelector(`.event__save-btn`);
 
     priceInput.addEventListener(`input`, () => {
-      priceInput.setCustomValidity(``);
-      if (!isFinite(priceInput.value)) {
-        priceInput.setCustomValidity(`The value must be a number`);
-        this._isPriceValid = false;
-      } else {
-        this._isPriceValid = true;
-      }
+      this.priceValidation();
     });
 
-    destinationInput.addEventListener(`input`, () => {
-      destinationInput.setCustomValidity(``);
-      const isMatch = this._destinations
-        .some(({name}) => name === destinationInput.value);
-      if (!isMatch) {
-        destinationInput.setCustomValidity(`You should select one of available destinons`);
-        this._isDestinationValid = false;
-      } else {
-        this._isDestinationValid = true;
-      }
+    destinationNameInput.addEventListener(`input`, () => {
+      this.destinationNameValidation();
+    });
+
+    submitButton.addEventListener(`click`, () => {
+      this.priceValidation();
+      this.destinationNameValidation();
     });
   }
 

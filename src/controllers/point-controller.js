@@ -11,8 +11,6 @@ const Mode = {
 
 const EmptyEvent = {
   type: `flight`,
-  // options: [],
-  // destination: {},
   price: ``,
   start: new Date(),
   end: new Date(),
@@ -45,6 +43,8 @@ export default class PointController {
 
     this._eventEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
+      this._eventEditComponent.checkValidity();
+      console.log(this._eventEditComponent.isValid());
       if (this._eventEditComponent.isValid()) {
         const data = this._eventEditComponent.getData();
         const dataModel = EventModel.clone(data);
