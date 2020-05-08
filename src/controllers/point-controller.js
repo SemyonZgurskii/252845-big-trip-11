@@ -54,9 +54,10 @@ export default class PointController {
     });
 
     this._eventEditComponent.setFavoriteHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite,
-      }));
+      const dataModel = EventModel.clone(event);
+      dataModel.isFavorite = !event.isFavorite;
+
+      this._onDataChange(this, event, dataModel);
     });
 
     this._eventEditComponent.setDeleteButtonClickHandler(() =>{
