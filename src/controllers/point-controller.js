@@ -3,6 +3,8 @@ import EventComponent from "../components/event.js";
 import EventModel from "../models/event.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
@@ -95,6 +97,11 @@ export default class PointController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
     }
+  }
+
+  shake() {
+    this._eventComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._eventEditComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
   }
 
   _replaceEventToEdit() {
