@@ -37,7 +37,7 @@ const generateOptionMarkup = (option, isChecked) => {
 };
 
 const generateOptionsElement = (activeOptions = [], allOptions) => {
-  if (!allOptions) {
+  if (!allOptions || allOptions.length < 1) {
     return ``;
   }
   const optionsMarkup = [];
@@ -246,14 +246,6 @@ export default class EventEdit extends AbstractSmartComponent {
         };
       });
 
-    // const offers = Array.from(form.querySelectorAll(`.event__offer-label`),
-    //     (offer) => {
-    //       return {
-    //         title: offer.querySelector(`.event__offer-title`).textContent,
-    //         price: parseInt(offer.querySelector(`.event__offer-price`).textContent, 10),
-    //       };
-    //     });
-
     const type = form.querySelector(`.event__type-icon`)
         .src
         .split(`/`)
@@ -346,7 +338,6 @@ export default class EventEdit extends AbstractSmartComponent {
     const element = this.getElement();
     const typesContainer = element.querySelector(`.event__type-wrapper`);
     const destinationNameInput = element.querySelector(`.event__input--destination`);
-    const optionsContainer = element.querySelector(`.event__section--offers`);
 
     typesContainer.addEventListener(`change`, (evt) => {
       if (!evt.target.classList.contains(`event__type-input`)) {
@@ -370,15 +361,6 @@ export default class EventEdit extends AbstractSmartComponent {
       } else {
         return;
       }
-    });
-
-    optionsContainer.addEventListener(`click`, (evt) => {
-      if (!evt.target.classList.contains(`event__offer-checkbox`)) {
-        return;
-      }
-
-      console.log(`aoeuaouoe`, evt.target.checked);
-      // evt.target.checked = !evt.target.checked;
     });
   }
 
