@@ -50,6 +50,7 @@ export default class PointController {
         const data = this._eventEditComponent.getData();
         const dataModel = EventModel.clone(data);
 
+        // this._eventEditComponent.getElement().classList.remove(`send-error`);
         this._eventEditComponent.setButtonsText({
           saveButton: `Saving...`,
         });
@@ -71,6 +72,7 @@ export default class PointController {
         deleteButton: `Deleting...`,
       });
       this._eventEditComponent.disableInputs();
+      // this._eventEditComponent.getElement().classList.remove(`send-error`);
 
       this._onDataChange(this, event, null);
     });
@@ -109,12 +111,15 @@ export default class PointController {
   }
 
   shake() {
-    this._eventComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    this._eventEditComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    const eventElement = this._eventComponent.getElement();
+    const eventEditElement = this._eventEditComponent.getElement();
+
+    eventElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    eventEditElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
 
     setTimeout(() => {
-      this._eventComponent.getElement().style.animation = ``;
-      this._eventEditComponent.getElement().style.animation = ``;
+      eventElement.style.animation = ``;
+      eventEditElement.style.animation = ``;
 
       this._eventEditComponent.setButtonsText({
         saveButton: `Save`,
@@ -122,6 +127,7 @@ export default class PointController {
       });
 
       this._eventEditComponent.enableInputs();
+      this._eventEditComponent.getElement().classList.add(`send-error`);
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
