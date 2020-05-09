@@ -34,6 +34,13 @@ export default class API {
       .then(Event.parseEvent);
   }
 
+  deleteEvent(id) {
+    return this._load({
+      url: `points/${id}`,
+      method: Method.DELETE,
+    });
+  }
+
   getDestinations() {
     return this._load({
       url: `destinations`,
