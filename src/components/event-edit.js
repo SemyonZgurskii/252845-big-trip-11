@@ -6,6 +6,11 @@ import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
+const DefaultButtonNames = {
+  deleteButton: `Delete`,
+  saveButton: `Save`,
+};
+
 const generateEventTypeElement = (eventType) => {
   const eventTypeTitle = makeFirstLetterUppercase(eventType);
 
@@ -99,7 +104,7 @@ const generateInfoElement = (destination) => {
   );
 };
 
-const createEventEditTemplate = (event, destinations, offers) => {
+const createEventEditTemplate = (event, destinations, offers, buttonsNames) => {
   const {type, destination, price, options: activeOptions, start, end, isFavorite} = event;
   const city = destination ? destination.name : ``;
   const cities = destinations.map(({name}) => name);
@@ -114,6 +119,9 @@ const createEventEditTemplate = (event, destinations, offers) => {
 
   const startTime = getFormatDate(start, `/`) + ` ` + getFormatTime(start);
   const endTime = getFormatDate(end, `/`) + ` ` + getFormatTime(end);
+
+  const saveButtonText = buttonsNames.saveButton;
+  const deleteButtonText = buttonsNames.deleteButton;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -162,8 +170,8 @@ const createEventEditTemplate = (event, destinations, offers) => {
         </label>
         <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
       </div>
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
+      <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
 
       <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-1">
@@ -205,6 +213,7 @@ export default class EventEdit extends AbstractSmartComponent {
     this._event = event;
     this._destinations = destinations;
     this._offers = offers;
+    this._buttonsNames = DefaultButtonNames;
 
     this._isPriceValid = true;
     this._isDestinationValid = true;
@@ -220,7 +229,12 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event, this._destinations, this._offers);
+    return createEventEditTemplate(this._event, this._destinations, this._offers, this._buttonsNames);
+  }
+
+  setButtonsText(text) {
+    this._buttonsNames = Object.assign(this._buttonsNames, text);
+    this.rerender();
   }
 
   isValid() {
@@ -332,6 +346,20 @@ export default class EventEdit extends AbstractSmartComponent {
   checkValidity() {
     this.priceValidation();
     this.destinationNameValidation();
+  }
+
+  disableInputs() {
+    this.getElement().querySelectorAll(`input`)
+      .forEach((input) => {
+        input.disabled = true;
+      });
+  }
+
+  enableInputs() {
+    this.getElement().querySelectorAll(`input`)
+      .forEach((input) => {
+        input.disabled = false;
+      });
   }
 
   _subscribeOnEvents() {

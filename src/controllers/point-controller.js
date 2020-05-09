@@ -46,10 +46,14 @@ export default class PointController {
     this._eventEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       this._eventEditComponent.checkValidity();
-      console.log(this._eventEditComponent.isValid());
       if (this._eventEditComponent.isValid()) {
         const data = this._eventEditComponent.getData();
         const dataModel = EventModel.clone(data);
+
+        this._eventEditComponent.setButtonsText({
+          saveButton: `Saving...`,
+        });
+        this._eventEditComponent.disableInputs();
 
         this._onDataChange(this, event, dataModel);
       }
@@ -63,6 +67,11 @@ export default class PointController {
     });
 
     this._eventEditComponent.setDeleteButtonClickHandler(() =>{
+      this._eventEditComponent.setButtonsText({
+        deleteButton: `Deleting...`,
+      });
+      this._eventEditComponent.disableInputs();
+
       this._onDataChange(this, event, null);
     });
 
@@ -102,6 +111,18 @@ export default class PointController {
   shake() {
     this._eventComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     this._eventEditComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._eventComponent.getElement().style.animation = ``;
+      this._eventEditComponent.getElement().style.animation = ``;
+
+      this._eventEditComponent.setButtonsText({
+        saveButton: `Save`,
+        deleteButton: `Delete`,
+      });
+
+      this._eventEditComponent.enableInputs();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _replaceEventToEdit() {

@@ -151,6 +151,9 @@ export default class TripControler {
             this._eventsModel.addEvent(eventModel);
             pointController.destroy();
             this._updateEvents();
+          })
+          .catch(() => {
+            pointController.shake();
           });
       }
     } else if (newData === null) {
@@ -158,6 +161,9 @@ export default class TripControler {
         .then(() => {
           this._eventsModel.removeEvent(oldData.id);
           this._updateEvents();
+        })
+        .catch(() => {
+          pointController.shake();
         });
     } else {
       this._api.updateEvent(oldData.id, newData)
@@ -168,6 +174,9 @@ export default class TripControler {
             pointController.destroy();
             this._updateEvents();
           }
+        })
+        .catch(() => {
+          pointController.shake();
         });
     }
   }
