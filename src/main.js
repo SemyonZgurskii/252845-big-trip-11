@@ -48,6 +48,7 @@ statisticsComponent.hide();
 mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
   .addEventListener(`click`, () => {
     statisticsComponent.hide();
+    menuComponent.setDefault();
     tripController.show();
     tripController.createEvent();
   });
