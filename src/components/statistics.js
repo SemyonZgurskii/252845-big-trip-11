@@ -1,7 +1,8 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-
+import moment from "moment";
+import {TypeToIcon} from '../const.js';
 
 const createStatisticsTemplate = () => {
   return (
@@ -23,24 +24,55 @@ const createStatisticsTemplate = () => {
   );
 };
 
-// const moneyCtx = document.querySelector(`.statistic__money`);
-// const transportCtx = document.querySelector(`.statistic__transport`);
-// const timeSpendCtx = document.querySelector(`.statistic__time-spend`);
+const addTypeIcon = (type) => {
+  return TypeToIcon[type] + ` ` + type;
+};
 
-// // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
-// const BAR_HEIGHT = 55;
-// moneyCtx.height = BAR_HEIGHT * 6;
-// transportCtx.height = BAR_HEIGHT * 4;
-// timeSpendCtx.height = BAR_HEIGHT * 4;
+const getData = (events) => {
+  const types = new Set(events.map(({type}) => type));
+  const typesStatistics = {};
 
-const renderMoneyChart = (moneyCtx) => {
+  types.forEach((type) => {
+    const statistic = {
+      price: 0,
+      transport: 0,
+      time: 0,
+    };
+
+    for (const event of events) {
+      if (event.type !== type) {
+        continue;
+      }
+
+      statistic.price += event.price;
+      statistic.transport += 1;
+      statistic.time += event.end.getTime() - event.start.getTime();
+    }
+
+    statistic.transport = statistic.transport + `x`;
+    statistic.time = moment.duration(statistic.time, `h`);
+
+    typesStatistics[type.toUpperCase()] = statistic;
+  });
+  return typesStatistics;
+};
+
+const renderMoneyChart = (moneyCtx, statistics, types) => {
+  const prices = [];
+  const typesWithIcons = [];
+
+  types.forEach((type) => {
+    prices.push(statistics[type].price);
+    typesWithIcons.push(addTypeIcon(type));
+  });
+
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
-      labels: [`FLY`, `STAY`, `DRIVE`, `LOOK`, `RIDE`],
+      labels: typesWithIcons,
       datasets: [{
-        data: [400, 300, 200, 160, 100],
+        data: prices,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
         anchor: `start`
@@ -170,29 +202,38 @@ const renderTransportChart = (transportCtx) => {
 
 
 export default class Statistics extends AbstractSmartComponent {
-  constructor() {
+  constructor(eventsModel) {
     super();
 
-    this._renderChart();
+    this._eventsModel = eventsModel;
+    // this._renderChart();
   }
 
   getTemplate() {
     return createStatisticsTemplate();
   }
 
+  show() {
+    super.show();
+
+    this._renderChart();
+  }
+
   _renderChart() {
-    // debugger;
+    const events = this._eventsModel.getAllEvents();
+    const statistics = getData(events);
+    const types = Object.keys(statistics);
+
     const moneyCtx = this.getElement().querySelector(`.statistics__chart--money`);
     const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
     const timeSpendCtx = this.getElement().querySelector(`.statistics__chart--time`);
 
-    // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
     const BAR_HEIGHT = 55;
-    moneyCtx.height = BAR_HEIGHT * 6;
+    moneyCtx.height = BAR_HEIGHT * types.length;
     transportCtx.height = BAR_HEIGHT * 4;
     timeSpendCtx.height = BAR_HEIGHT * 4;
 
-    renderMoneyChart(moneyCtx);
+    renderMoneyChart(moneyCtx, statistics, types);
     renderTransportChart(transportCtx);
   }
 }

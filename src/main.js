@@ -41,7 +41,7 @@ render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 const filterController = new FilterController(mainControlsElement, eventsModel);
 filterController.render();
 
-const statisticsComponent = new StatistcsComponent();
+const statisticsComponent = new StatistcsComponent(eventsModel);
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 

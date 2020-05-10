@@ -20,6 +20,19 @@ const MonthNumberToString = {
   [12]: `DEC`,
 };
 
+const TypeToIcon = {
+  "TAXI": `🚕`,
+  "BUS": `🚌`,
+  "TRAIN": `🚂`,
+  "SHIP": `🚢`,
+  "TRANSPORT": `🚆`,
+  "DRIVE": `🚗`,
+  "FLIGHT": `✈️`,
+  "CHECK-IN": `🏨`,
+  "SIGHTSEEING": `🏛`,
+  "RESTAURANT": `🍴`,
+};
+
 const FilterType = {
   EVERYTHING: `everything`,
   FUTURE: `future`,
@@ -33,5 +46,6 @@ export {
   EVENT_TYPES,
   CITIES,
   MonthNumberToString,
-  FilterType
+  FilterType,
+  TypeToIcon,
 };

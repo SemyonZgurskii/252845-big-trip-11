@@ -50,7 +50,7 @@ export default class PointController {
         const data = this._eventEditComponent.getData();
         const dataModel = EventModel.clone(data);
 
-        // this._eventEditComponent.getElement().classList.remove(`send-error`);
+        this._eventEditComponent.getElement().classList.remove(`send-error`);
         this._eventEditComponent.setButtonsText({
           saveButton: `Saving...`,
         });
@@ -72,7 +72,7 @@ export default class PointController {
         deleteButton: `Deleting...`,
       });
       this._eventEditComponent.disableInputs();
-      // this._eventEditComponent.getElement().classList.remove(`send-error`);
+      this._eventEditComponent.getElement().classList.remove(`send-error`);
 
       this._onDataChange(this, event, null);
     });
