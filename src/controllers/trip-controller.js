@@ -29,7 +29,7 @@ export default class TripControler {
     this._container = container;
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
-    this._offersModel = optionsModel;
+    this._optionsModel = optionsModel;
     this._api = api;
 
     this._pointControllers = [];
@@ -63,7 +63,7 @@ export default class TripControler {
     }
     this._onViewChange();
     const destinations = this._destinationsModel.getDestinations();
-    const offers = this._offersModel.getOptions();
+    const offers = this._optionsModel.getOptions();
 
     const daysContainerElement = this._daysContainerComponent.getElement();
     this._creatingEvent = new PointController(daysContainerElement, this._onDataChange, this._onViewChange);
@@ -89,7 +89,7 @@ export default class TripControler {
   renderDays() {
     const events = this._eventsModel.getEvents();
     const destinations = this._destinationsModel.getDestinations();
-    const offers = this._offersModel.getOptions();
+    const offers = this._optionsModel.getOptions();
 
     const days = Array.from(new Set(events.map(({start}) => start.getDate())),
         (date) => events.filter((event) => event.start.getDate() === date));
@@ -110,6 +110,8 @@ export default class TripControler {
 
   _onSortTypeChange(sortType) {
     const daysContainerElement = this._daysContainerComponent.getElement();
+    const destinations = this._destinationsModel.getDestinations();
+    const options = this._optionsModel.getOptions();
 
     daysContainerElement.innerHTML = ``;
 
@@ -122,7 +124,7 @@ export default class TripControler {
       sortEvents.forEach((event) => {
         const newEvent = new PointController(eventsContainer, this._onDataChange, this._onViewChange);
         this._pointControllers.push(newEvent);
-        newEvent.renderEvent(event, PointControllerMode.DEFAULT);
+        newEvent.renderEvent(event, destinations, options, PointControllerMode.DEFAULT);
       });
     }
   }
