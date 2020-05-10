@@ -72,7 +72,9 @@ const renderMoneyChart = (moneyCtx, statistics, types) => {
         data: prices,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50,
       }]
     },
     options: {
@@ -105,7 +107,6 @@ const renderMoneyChart = (moneyCtx, statistics, types) => {
             display: false,
             drawBorder: false
           },
-          barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -116,7 +117,6 @@ const renderMoneyChart = (moneyCtx, statistics, types) => {
             display: false,
             drawBorder: false
           },
-          minBarLength: 50
         }],
       },
       legend: {
@@ -148,7 +148,9 @@ const renderTransportChart = (transportCtx, statistics, transportTypes) => {
         data: usesCount,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50,
       }]
     },
     options: {
@@ -181,7 +183,6 @@ const renderTransportChart = (transportCtx, statistics, transportTypes) => {
             display: false,
             drawBorder: false
           },
-          barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -192,7 +193,6 @@ const renderTransportChart = (transportCtx, statistics, transportTypes) => {
             display: false,
             drawBorder: false
           },
-          minBarLength: 50
         }],
       },
       legend: {
@@ -223,7 +223,9 @@ const renderTimeSpentChart = (timeSpendCtx, statistics, types) => {
         data: hours,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50,
       }]
     },
     options: {
@@ -256,7 +258,6 @@ const renderTimeSpentChart = (timeSpendCtx, statistics, types) => {
             display: false,
             drawBorder: false
           },
-          barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -267,7 +268,6 @@ const renderTimeSpentChart = (timeSpendCtx, statistics, types) => {
             display: false,
             drawBorder: false
           },
-          minBarLength: 50
         }],
       },
       legend: {
@@ -286,7 +286,10 @@ export default class Statistics extends AbstractSmartComponent {
     super();
 
     this._eventsModel = eventsModel;
-    // this._renderChart();
+
+    this._moneyChart = null;
+    this._transportChart = null;
+    this._timeSpentChart = null;
   }
 
   getTemplate() {
@@ -296,10 +299,29 @@ export default class Statistics extends AbstractSmartComponent {
   show() {
     super.show();
 
-    this._renderChart();
+    this._renderCharts();
   }
 
-  _renderChart() {
+  recoveryListeners() {}
+
+  _resetCharts() {
+    if (this._moneyChart) {
+      this._moneyChart.destroy();
+      this._moneyChart = null;
+    }
+
+    if (this._transportChart) {
+      this._transportChart.destroy();
+      this._transportChart = null;
+    }
+
+    if (this._timeSpentChart) {
+      this._timeSpentChart.destroy();
+      this._timeSpentChart.destroy();
+    }
+  }
+
+  _renderCharts() {
     const events = this._eventsModel.getAllEvents();
     const statistics = getData(events);
     const types = Object.keys(statistics);
@@ -316,8 +338,10 @@ export default class Statistics extends AbstractSmartComponent {
     transportCtx.height = BAR_HEIGHT * transportTypes.length;
     timeSpendCtx.height = BAR_HEIGHT * types.length;
 
-    renderMoneyChart(moneyCtx, statistics, types);
-    renderTransportChart(transportCtx, statistics, transportTypes);
-    renderTimeSpentChart(timeSpendCtx, statistics, types);
+    this._resetCharts();
+
+    this._moneyChart = renderMoneyChart(moneyCtx, statistics, types);
+    this._transportChart = renderTransportChart(transportCtx, statistics, transportTypes);
+    this._timeSpentChart = renderTimeSpentChart(timeSpendCtx, statistics, types);
   }
 }
