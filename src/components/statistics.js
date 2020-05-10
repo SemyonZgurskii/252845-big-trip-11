@@ -2,7 +2,7 @@ import AbstractSmartComponent from "./abstract-smart-component";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import moment from "moment";
-import {TypeToIcon} from '../const.js';
+import {TypeToIcon, EVENT_TYPES} from '../const.js';
 
 const createStatisticsTemplate = () => {
   return (
@@ -48,9 +48,6 @@ const getData = (events) => {
       statistic.transport += 1;
       statistic.time += event.end.getTime() - event.start.getTime();
     }
-
-    statistic.transport = statistic.transport + `x`;
-    statistic.time = moment.duration(statistic.time, `h`);
 
     typesStatistics[type.toUpperCase()] = statistic;
   });
@@ -133,14 +130,22 @@ const renderMoneyChart = (moneyCtx, statistics, types) => {
 };
 
 
-const renderTransportChart = (transportCtx) => {
+const renderTransportChart = (transportCtx, statistics, transportTypes) => {
+  const usesCount = [];
+  const transportTypesWithIcon = [];
+
+  transportTypes.forEach((type) => {
+    usesCount.push(statistics[type].transport);
+    transportTypesWithIcon.push(addTypeIcon(type));
+  });
+
   return new Chart(transportCtx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
-      labels: [`FLY`, `DRIVE`, `RIDE`],
+      labels: transportTypesWithIcon,
       datasets: [{
-        data: [4, 2, 1],
+        data: usesCount,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
         anchor: `start`
@@ -161,6 +166,81 @@ const renderTransportChart = (transportCtx) => {
       title: {
         display: true,
         text: `TRANSPORT`,
+        fontColor: `#000000`,
+        fontSize: 23,
+        position: `left`
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: `#000000`,
+            padding: 5,
+            fontSize: 13,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          barThickness: 44,
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          minBarLength: 50
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false,
+      }
+    }
+  });
+};
+
+const renderTimeSpentChart = (timeSpendCtx, statistics, types) => {
+  const hours = [];
+  const typesWithIcons = [];
+
+  types.forEach((type) => {
+    hours.push(moment.duration(statistics[type].time).hours());
+    typesWithIcons.push(addTypeIcon(type));
+  });
+
+  return new Chart(timeSpendCtx, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    data: {
+      labels: typesWithIcons,
+      datasets: [{
+        data: hours,
+        backgroundColor: `#ffffff`,
+        hoverBackgroundColor: `#ffffff`,
+        anchor: `start`
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 13
+          },
+          color: `#000000`,
+          anchor: `end`,
+          align: `start`,
+          formatter: (val) => `${val}H`
+        }
+      },
+      title: {
+        display: true,
+        text: `TIME-SPENT`,
         fontColor: `#000000`,
         fontSize: 23,
         position: `left`
@@ -223,6 +303,9 @@ export default class Statistics extends AbstractSmartComponent {
     const events = this._eventsModel.getAllEvents();
     const statistics = getData(events);
     const types = Object.keys(statistics);
+    const transportTypes = types.filter((type) => {
+      return EVENT_TYPES.transfer.some((transferType) => transferType.toUpperCase() === type);
+    });
 
     const moneyCtx = this.getElement().querySelector(`.statistics__chart--money`);
     const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
@@ -230,10 +313,11 @@ export default class Statistics extends AbstractSmartComponent {
 
     const BAR_HEIGHT = 55;
     moneyCtx.height = BAR_HEIGHT * types.length;
-    transportCtx.height = BAR_HEIGHT * 4;
-    timeSpendCtx.height = BAR_HEIGHT * 4;
+    transportCtx.height = BAR_HEIGHT * transportTypes.length;
+    timeSpendCtx.height = BAR_HEIGHT * types.length;
 
     renderMoneyChart(moneyCtx, statistics, types);
-    renderTransportChart(transportCtx);
+    renderTransportChart(transportCtx, statistics, transportTypes);
+    renderTimeSpentChart(timeSpendCtx, statistics, types);
   }
 }
