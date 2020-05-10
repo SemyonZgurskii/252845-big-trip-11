@@ -210,7 +210,8 @@ const renderTimeSpentChart = (timeSpendCtx, statistics, types) => {
   const typesWithIcons = [];
 
   types.forEach((type) => {
-    hours.push(moment.duration(statistics[type].time).hours());
+    const typeDuration = moment.duration(statistics[type].time).asHours();
+    hours.push(Math.floor(typeDuration));
     typesWithIcons.push(addTypeIcon(type));
   });
 
