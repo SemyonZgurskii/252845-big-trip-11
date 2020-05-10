@@ -61,6 +61,7 @@ export default class TripControler {
     if (this._creatingEvent) {
       return;
     }
+    this._onViewChange();
     const destinations = this._destinationsModel.getDestinations();
     const offers = this._offersModel.getOptions();
 
