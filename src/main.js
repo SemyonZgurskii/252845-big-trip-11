@@ -7,6 +7,7 @@ import IfnoComponent from "./components/info.js";
 import MenuComponent, {MenuItem} from "./components/menu.js";
 import OptionsModel from "./models/all-options.js";
 import PriceComponent from "./components/price.js";
+import Provider from "./api/provider.js";
 import RouteComponent from "./components/route.js";
 import StatistcsComponent from "./components/statistics.js";
 import TripController from "./controllers/trip-controller.js";
@@ -19,6 +20,7 @@ const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const optionsModel = new OptionsModel();
 const api = new API(END_POINT, AUTHORIZATION);
+const apiWithProvider = new Provider(api);
 
 
 const mainElement = document.querySelector(`.page-body__page-main`)
@@ -27,7 +29,7 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
 const board = new Board();
-const tripController = new TripController(board, eventsModel, destinationsModel, optionsModel, api);
+const tripController = new TripController(board, eventsModel, destinationsModel, optionsModel, apiWithProvider);
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
@@ -66,16 +68,16 @@ menuComponent.setOnItemClickHandler((menuItem) => {
 });
 
 Promise.all([
-  api.getDestinations()
+  apiWithProvider.getDestinations()
     .then((destinations) => {
       destinationsModel.setDestinations(destinations);
     }),
-  api.getOptions()
+  apiWithProvider.getOptions()
     .then((offers) => {
       optionsModel.setOptions(offers);
     }),
 ]).then(() => {
-  api.getEvents()
+  apiWithProvider.getEvents()
     .then((trueEvents) => {
       eventsModel.setEvents(trueEvents);
       tripController.renderEvents();
