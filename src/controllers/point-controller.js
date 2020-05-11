@@ -85,6 +85,10 @@ export default class PointController {
           this._replaceEditToEvent();
         } else {
           render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+          this._eventEditComponent.setButtonsText({
+            saveButton: `Save`,
+            deleteButton: `Delete`,
+          });
         }
         break;
       case Mode.ADDING:
@@ -94,6 +98,7 @@ export default class PointController {
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
         render(this._container, this._eventEditComponent, RenderPosition.AFTERBEGIN);
+        this._eventEditComponent.setButtonsText({deleteButton: `Cancel`});
         break;
     }
   }
