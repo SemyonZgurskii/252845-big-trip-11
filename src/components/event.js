@@ -1,6 +1,8 @@
+import AbstractComponent from "./abstract-component.js";
 import {getFormatTime, getFormatDate, getFormatDuration, getDuration, makeFirstLetterUppercase} from "../utils/common.js";
 import {EVENT_TYPES} from "../const.js";
-import AbstractComponent from "./abstract-component.js";
+
+const MAX_OPTIONS = 5;
 
 const generateOptionsElement = (title, price) => {
   return (
@@ -13,20 +15,21 @@ const generateOptionsElement = (title, price) => {
 };
 
 const generateOptionsMarkup = (options) => {
-  if (options.length > 0) {
-    return options
-      .map(({title, price}) => generateOptionsElement(title, price))
-      .join(`\n`);
+  if (!options) {
+    return ``;
   }
-  return ``;
+
+  return options
+    .map(({title, price}) => generateOptionsElement(title, price))
+    .slice(0, MAX_OPTIONS)
+    .join(`\n`);
 };
 
 const createEventTemplate = (event) => {
   const {type, destination, start, end, price, options} = event;
 
-  const offersMarkup = generateOptionsMarkup(options);
-
-  const city = destination.name;
+  const city = destination ? destination.name : ``;
+  const offersMarkup = city ? generateOptionsMarkup(options) : ``;
   const startDateTime = getFormatDate(start, `-`);
   const startTime = getFormatTime(start);
   const endDateTime = getFormatDate(end, `-`);

@@ -3,6 +3,8 @@ import EventComponent from "../components/event.js";
 import EventModel from "../models/event.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
@@ -11,9 +13,6 @@ const Mode = {
 
 const EmptyEvent = {
   type: `flight`,
-  city: ``,
-  options: ``,
-  info: ``,
   price: ``,
   start: new Date(),
   end: new Date(),
@@ -31,13 +30,13 @@ export default class PointController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  renderEvent(event, mode) {
+  renderEvent(event, destinations, offers, mode) {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
     this._mode = mode;
 
     this._eventComponent = new EventComponent(event);
-    this._eventEditComponent = new EventEditComponent(event);
+    this._eventEditComponent = new EventEditComponent(event, destinations, offers);
 
     this._eventComponent.setEditButtonHandler(() => {
       this._replaceEventToEdit();
@@ -46,21 +45,35 @@ export default class PointController {
 
     this._eventEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
+      this._eventEditComponent.checkValidity();
       if (this._eventEditComponent.isValid()) {
         const data = this._eventEditComponent.getData();
         const dataModel = EventModel.clone(data);
+
+        this._eventEditComponent.getElement().classList.remove(`send-error`);
+        this._eventEditComponent.setButtonsText({
+          saveButton: `Saving...`,
+        });
+        this._eventEditComponent.disableInputs();
 
         this._onDataChange(this, event, dataModel);
       }
     });
 
     this._eventEditComponent.setFavoriteHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite,
-      }));
+      const dataModel = EventModel.clone(event);
+      dataModel.isFavorite = !event.isFavorite;
+
+      this._onDataChange(this, event, dataModel);
     });
 
     this._eventEditComponent.setDeleteButtonClickHandler(() =>{
+      this._eventEditComponent.setButtonsText({
+        deleteButton: `Deleting...`,
+      });
+      this._eventEditComponent.disableInputs();
+      this._eventEditComponent.getElement().classList.remove(`send-error`);
+
       this._onDataChange(this, event, null);
     });
 
@@ -72,6 +85,10 @@ export default class PointController {
           this._replaceEditToEvent();
         } else {
           render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+          this._eventEditComponent.setButtonsText({
+            saveButton: `Save`,
+            deleteButton: `Delete`,
+          });
         }
         break;
       case Mode.ADDING:
@@ -81,6 +98,7 @@ export default class PointController {
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
         render(this._container, this._eventEditComponent, RenderPosition.AFTERBEGIN);
+        this._eventEditComponent.setButtonsText({deleteButton: `Cancel`});
         break;
     }
   }
@@ -97,6 +115,27 @@ export default class PointController {
     }
   }
 
+  shake() {
+    const eventElement = this._eventComponent.getElement();
+    const eventEditElement = this._eventEditComponent.getElement();
+
+    eventElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    eventEditElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      eventElement.style.animation = ``;
+      eventEditElement.style.animation = ``;
+
+      this._eventEditComponent.setButtonsText({
+        saveButton: `Save`,
+        deleteButton: `Delete`,
+      });
+
+      this._eventEditComponent.enableInputs();
+      this._eventEditComponent.getElement().classList.add(`send-error`);
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
   _replaceEventToEdit() {
     this._onViewChange();
     this._container.replaceChild(this._eventEditComponent.getElement(), this._eventComponent.getElement());
@@ -104,6 +143,7 @@ export default class PointController {
   }
 
   _replaceEditToEvent() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._container.replaceChild(this._eventComponent.getElement(), this._eventEditComponent.getElement());
 
     if (document.contains(this._eventEditComponent.getElement())) {
@@ -117,7 +157,11 @@ export default class PointController {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      this._replaceEditToEvent();
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyEvent, null);
+      } else {
+        this._replaceEditToEvent();
+      }
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }

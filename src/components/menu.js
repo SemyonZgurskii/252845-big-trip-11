@@ -24,6 +24,17 @@ export default class Menu extends AbstractComponent {
     return createMenuTemplate();
   }
 
+  setDefault() {
+    this._deleteActiveClass();
+
+    this.getElement().querySelectorAll(`.trip-tabs__btn`)
+      .forEach((menuItem) => {
+        if (menuItem.textContent === MenuItem.TABLE) {
+          menuItem.classList.add(ACTIVE_CLASS);
+        }
+      });
+  }
+
   setOnItemClickHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       if (evt.target.tagName !== `A`) {

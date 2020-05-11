@@ -1,11 +1,15 @@
-import EventModel from "../models/event.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {EVENT_TYPES, CITIES} from "../const.js";
-import {getMarkupFromArray, getRandomBoolean, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
-import {generatePhotosSrc, generateDescription} from "../mocks/event.js";
+import EventModel from "../models/event.js";
+import {EVENT_TYPES} from "../const.js";
+import {getMarkupFromArray, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
+
+const DefaultButtonNames = {
+  deleteButton: `Delete`,
+  saveButton: `Save`,
+};
 
 const generateEventTypeElement = (eventType) => {
   const eventTypeTitle = makeFirstLetterUppercase(eventType);
@@ -24,10 +28,10 @@ const generateCitiesElement = (city) => {
   );
 };
 
-const generateOptionMarkup = (option) => {
+const generateOptionMarkup = (option, isChecked) => {
   return (
     `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.title}-1" type="checkbox" name="event-offer-${option.title}" ${getRandomBoolean() ? `checked` : ``}>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.title}-1" type="checkbox" name="event-offer-${option.title}" ${isChecked ? `checked` : ``}>
     <label class="event__offer-label" for="event-offer-${option.title}-1">
       <span class="event__offer-title">${option.title}</span>
       &plus;
@@ -37,12 +41,15 @@ const generateOptionMarkup = (option) => {
   );
 };
 
-const generateOptionsElement = (options) => {
-  if (options.length < 1) {
+const generateOptionsElement = (activeOptions = [], allOptions) => {
+  if (!allOptions || allOptions.length < 1) {
     return ``;
   }
-
-  const optionsMarkup = getMarkupFromArray(options, generateOptionMarkup);
+  const optionsMarkup = [];
+  allOptions.forEach((option) => {
+    const isChecked = activeOptions.some(({title}) => option.title === title);
+    optionsMarkup.push(generateOptionMarkup(option, isChecked));
+  });
 
   return (
     `<section class="event__details">
@@ -97,19 +104,24 @@ const generateInfoElement = (destination) => {
   );
 };
 
-const createEventEditTemplate = (event) => {
-  const {type, destination, price, options, start, end, isFavorite} = event;
-  const city = destination.name;
+const createEventEditTemplate = (event, destinations, offers, buttonsNames) => {
+  const {type, destination, price, options: activeOptions, start, end, isFavorite} = event;
+  const city = destination ? destination.name : ``;
+  const cities = destinations.map(({name}) => name);
+  const allOptions = offers.get(type);
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
   const activityTypesMarkup = getMarkupFromArray(EVENT_TYPES.activity, generateEventTypeElement);
-  const citiesMarkup = getMarkupFromArray(CITIES, generateCitiesElement);
-  const optionsMarkup = generateOptionsElement(options);
+  const citiesMarkup = getMarkupFromArray(cities, generateCitiesElement);
+  const optionsMarkup = city ? generateOptionsElement(activeOptions, allOptions) : ``;
   const infoMarkup = generateInfoElement(destination);
   const typePlaceHolder = makeFirstLetterUppercase(type);
   const typeArticle = EVENT_TYPES.transfer.indexOf(type) > 0 ? `to` : `at`;
 
   const startTime = getFormatDate(start, `/`) + ` ` + getFormatTime(start);
   const endTime = getFormatDate(end, `/`) + ` ` + getFormatTime(end);
+
+  const saveButtonText = buttonsNames.saveButton;
+  const deleteButtonText = buttonsNames.deleteButton;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -158,8 +170,8 @@ const createEventEditTemplate = (event) => {
         </label>
         <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
       </div>
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
+      <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
 
       <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-1">
@@ -195,10 +207,13 @@ const parseFormData = (formData) => {
   };
 };
 export default class EventEdit extends AbstractSmartComponent {
-  constructor(event) {
+  constructor(event, destinations, offers) {
     super();
 
     this._event = event;
+    this._destinations = destinations;
+    this._offers = offers;
+    this._buttonsNames = DefaultButtonNames;
 
     this._isPriceValid = true;
     this._isDestinationValid = true;
@@ -214,7 +229,12 @@ export default class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event);
+    return createEventEditTemplate(this._event, this._destinations, this._offers, this._buttonsNames);
+  }
+
+  setButtonsText(text) {
+    this._buttonsNames = Object.assign(this._buttonsNames, text);
+    this.rerender();
   }
 
   isValid() {
@@ -231,13 +251,14 @@ export default class EventEdit extends AbstractSmartComponent {
     const form = this.getElement();
     const formData = new FormData(form);
 
-    const offers = Array.from(form.querySelectorAll(`.event__offer-selector`),
-        (offer) => {
-          return {
-            title: offer.querySelector(`.event__offer-title`).textContent,
-            price: parseInt(offer.querySelector(`.event__offer-price`).textContent, 10),
-          };
-        });
+    const offers = Array.from(form.querySelectorAll(`.event__offer-checkbox`))
+      .filter((offer) => offer.checked === true)
+      .map((offer) => {
+        return {
+          title: offer.parentNode.querySelector(`.event__offer-title`).textContent,
+          price: parseInt(offer.parentNode.querySelector(`.event__offer-price`).textContent, 10),
+        };
+      });
 
     const type = form.querySelector(`.event__type-icon`)
         .src
@@ -295,63 +316,99 @@ export default class EventEdit extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
   }
 
+  priceValidation() {
+    const priceInput = this.getElement().querySelector(`.event__input--price`);
+    const priceValue = parseFloat(priceInput.value);
+
+    priceInput.setCustomValidity(``);
+    if (isNaN(priceValue)) {
+      priceInput.setCustomValidity(`The value must be a number`);
+      this._isPriceValid = false;
+    } else {
+      this._isPriceValid = true;
+    }
+  }
+
+  destinationNameValidation() {
+    const destinationNameInput = this.getElement().querySelector(`.event__input--destination`);
+
+    destinationNameInput.setCustomValidity(``);
+    const isMatch = this._destinations
+      .some(({name}) => name === destinationNameInput.value);
+    if (!isMatch) {
+      destinationNameInput.setCustomValidity(`You should select one of available destinons`);
+      this._isDestinationValid = false;
+    } else {
+      this._isDestinationValid = true;
+    }
+  }
+
+  checkValidity() {
+    this.priceValidation();
+    this.destinationNameValidation();
+  }
+
+  disableInputs() {
+    this.getElement().querySelectorAll(`input`)
+      .forEach((input) => {
+        input.disabled = true;
+      });
+  }
+
+  enableInputs() {
+    this.getElement().querySelectorAll(`input`)
+      .forEach((input) => {
+        input.disabled = false;
+      });
+  }
+
   _subscribeOnEvents() {
     const element = this.getElement();
+    const typesContainer = element.querySelector(`.event__type-wrapper`);
+    const destinationNameInput = element.querySelector(`.event__input--destination`);
 
-    element.querySelector(`.event__type-wrapper`)
-      .addEventListener(`change`, (evt) => {
-        if (!evt.target.classList.contains(`event__type-input`)) {
-          return;
-        }
+    typesContainer.addEventListener(`change`, (evt) => {
+      if (!evt.target.classList.contains(`event__type-input`)) {
+        return;
+      }
 
-        const selectedType = evt.target.value;
+      const selectedType = evt.target.value;
+      this._event = Object.assign({}, this._event, {
+        type: selectedType,
+      });
+      this.rerender();
+    });
+
+    destinationNameInput.addEventListener(`change`, (evt) => {
+      if (this._isDestinationValid) {
+        const newDestination = this._destinations.find((destination) => destination.name === evt.target.value);
         this._event = Object.assign({}, this._event, {
-          type: selectedType,
+          destination: newDestination,
         });
         this.rerender();
-      });
-
-    element.querySelector(`.event__input--destination`)
-      .addEventListener(`change`, (evt) => {
-        if (this._isDestinationValid) {
-          this._event = Object.assign({}, this._event, {
-            info: {
-              photos: generatePhotosSrc(),
-              description: generateDescription(),
-            },
-            city: evt.target.value,
-          });
-          this.rerender();
-        } else {
-          return;
-        }
-      });
+      } else {
+        return;
+      }
+    });
   }
 
   _validateForm() {
     const form = this.getElement();
     const priceInput = form.querySelector(`.event__input--price`);
-    const destinationInput = form.querySelector(`.event__input--destination`);
+    const destinationNameInput = form.querySelector(`.event__input--destination`);
+    const submitButton = form.querySelector(`.event__save-btn`);
 
     priceInput.addEventListener(`input`, () => {
-      priceInput.setCustomValidity(``);
-      if (!isFinite(priceInput.value)) {
-        priceInput.setCustomValidity(`The value must be a number`);
-        this._isPriceValid = false;
-      } else {
-        this._isPriceValid = true;
-      }
+      this.priceValidation();
     });
 
-    destinationInput.addEventListener(`input`, () => {
-      destinationInput.setCustomValidity(``);
-      const isMatch = CITIES.some((city) => city === destinationInput.value);
-      if (!isMatch) {
-        destinationInput.setCustomValidity(`You should select one of available destinons`);
-        this._isDestinationValid = false;
-      } else {
-        this._isDestinationValid = true;
-      }
+    destinationNameInput.addEventListener(`input`, () => {
+      this.destinationNameValidation();
+    });
+
+    submitButton.addEventListener(`click`, () => {
+      this.priceValidation();
+      this.destinationNameValidation();
     });
   }
 

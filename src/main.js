@@ -1,9 +1,11 @@
 import API from "./api.js";
 import Board from "./components/board.js";
+import DestinationsModel from "./models/destinations.js";
 import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
 import IfnoComponent from "./components/info.js";
 import MenuComponent, {MenuItem} from "./components/menu.js";
+import OptionsModel from "./models/all-options.js";
 import PriceComponent from "./components/price.js";
 import RouteComponent from "./components/route.js";
 import StatistcsComponent from "./components/statistics.js";
@@ -11,8 +13,12 @@ import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
+
 const eventsModel = new EventsModel();
-const api = new API(AUTHORIZATION);
+const destinationsModel = new DestinationsModel();
+const optionsModel = new OptionsModel();
+const api = new API(END_POINT, AUTHORIZATION);
 
 
 const mainElement = document.querySelector(`.page-body__page-main`)
@@ -21,7 +27,7 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
 const board = new Board();
-const tripController = new TripController(board, eventsModel, api);
+const tripController = new TripController(board, eventsModel, destinationsModel, optionsModel, api);
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
@@ -35,13 +41,14 @@ render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 const filterController = new FilterController(mainControlsElement, eventsModel);
 filterController.render();
 
-const statisticsComponent = new StatistcsComponent();
+const statisticsComponent = new StatistcsComponent(eventsModel);
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 
 mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
   .addEventListener(`click`, () => {
     statisticsComponent.hide();
+    menuComponent.setDefault();
     tripController.show();
     tripController.createEvent();
   });
@@ -58,9 +65,21 @@ menuComponent.setOnItemClickHandler((menuItem) => {
   }
 });
 
-api.getEvents()
-  .then((trueEvents) => {
-    eventsModel.setEvents(trueEvents);
-    tripController.renderEvents();
-    render(infoElement, new PriceComponent(trueEvents), RenderPosition.BEFOREEND);
-  });
+Promise.all([
+  api.getDestinations()
+    .then((destinations) => {
+      destinationsModel.setDestinations(destinations);
+    }),
+  api.getOptions()
+    .then((offers) => {
+      optionsModel.setOptions(offers);
+    }),
+]).then(() => {
+  api.getEvents()
+    .then((trueEvents) => {
+      eventsModel.setEvents(trueEvents);
+      tripController.renderEvents();
+      render(infoElement, new PriceComponent(trueEvents), RenderPosition.BEFOREEND);
+    });
+});
+
