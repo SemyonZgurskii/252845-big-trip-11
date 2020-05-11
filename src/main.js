@@ -1,4 +1,4 @@
-import API from "./api.js";
+import API from "./api/index.js";
 import Board from "./components/board.js";
 import DestinationsModel from "./models/destinations.js";
 import EventsModel from "./models/events.js";
