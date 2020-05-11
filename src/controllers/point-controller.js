@@ -143,6 +143,7 @@ export default class PointController {
   }
 
   _replaceEditToEvent() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._container.replaceChild(this._eventComponent.getElement(), this._eventEditComponent.getElement());
 
     if (document.contains(this._eventEditComponent.getElement())) {
@@ -156,7 +157,11 @@ export default class PointController {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      this._replaceEditToEvent();
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyEvent, null);
+      } else {
+        this._replaceEditToEvent();
+      }
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
