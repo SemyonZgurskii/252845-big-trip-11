@@ -1,4 +1,5 @@
 import Event from "../models/event.js";
+import {nanoid} from "nanoid";
 
 const isOnline = () => {
   return window.navigator.onLine;
@@ -30,7 +31,13 @@ export default class Provider {
     if (isOnline()) {
       return this._api.getEvents()
         .then((events) => {
-          events.forEach((event) => this._store.setItem(event.id, event.toRAW()));
+          const items = events.reduce((acc, event) => {
+            return Object.assign({}, acc, {
+              [event.id]: event,
+            });
+          }, {});
+
+          this._store.setItems(items);
 
           return events;
         });
@@ -43,10 +50,18 @@ export default class Provider {
 
   createEvent(event) {
     if (isOnline()) {
-      return this._api.createEvent(event);
+      return this._api.createEvent(event)
+        .then((newEvent) => {
+          this._store.setItem(newEvent.id, newEvent.toRAW());
+
+          return newEvent;
+        });
     }
 
-    return Promise.reject(`offline logic is not implemented`);
+    const localNewEventId = nanoid();
+    const localNewEvent = Event.clone(Object.assign(event, {id: localNewEventId}));
+
+    return Promise.reject(localNewEvent);
   }
 
   updateEvent(id, event) {
