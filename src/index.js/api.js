@@ -64,6 +64,7 @@ export default class API {
       .then(Event.parseEvents);
   }
 
+
   updateEvent(id, data) {
     return this._load({
       url: `points/${id}`,

@@ -10,18 +10,22 @@ import PriceComponent from "./components/price.js";
 import Provider from "./api/provider.js";
 import RouteComponent from "./components/route.js";
 import StatistcsComponent from "./components/statistics.js";
+import Store from "./api/store.js";
 import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
+const STORE_PREFIX = `big-trip-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const optionsModel = new OptionsModel();
 const api = new API(END_POINT, AUTHORIZATION);
-const apiWithProvider = new Provider(api);
-
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const mainElement = document.querySelector(`.page-body__page-main`)
   .querySelector(`.page-body__container`);
