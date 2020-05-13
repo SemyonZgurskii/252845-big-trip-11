@@ -5,6 +5,19 @@ const isOnline = () => {
   return window.navigator.onLine;
 };
 
+const createStoreStructure = (items) => {
+  return items.reduce((acc, current) => {
+    return Object.assign({}, acc, {
+      [current.id]: current,
+    });
+  }, {});
+};
+
+const getSyncedEvents = (items) => {
+  return items.filter(({success}) => success)
+    .map(({payload}) => payload.event);
+};
+
 export default class Provider {
   constructor(api, store) {
     this._api = api;
@@ -31,13 +44,9 @@ export default class Provider {
     if (isOnline()) {
       return this._api.getEvents()
         .then((events) => {
-          const items = events.reduce((acc, event) => {
-            return Object.assign({}, acc, {
-              [event.id]: event,
-            });
-          }, {});
+          const newEvents = createStoreStructure(events.map((event) => event.toRAW()));
 
-          this._store.setItems(items);
+          this._store.setItems(newEvents);
 
           return events;
         });
@@ -90,5 +99,23 @@ export default class Provider {
     this._store.removeItem(id);
 
     return Promise.reject(`offline logic is not implemented`);
+  }
+
+  sync() {
+    if (isOnline()) {
+      const storeEvents = Object.values(this._store.getItems());
+
+      return this._api.sync(storeEvents)
+        .then((response) => {
+          const createdEvents = getSyncedEvents(response.created);
+          const updateEvents = getSyncedEvents(response.updated);
+
+          const loadedEvents = createStoreStructure(createdEvents.concat(updateEvents));
+
+          this._store.setItems(loadedEvents);
+        });
+    }
+
+    return Promise.reject(new Error(`Sync data failed`));
   }
 }
