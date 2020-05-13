@@ -16,13 +16,13 @@ const createPriceTemplate = (events) => {
 };
 
 export default class Price extends AbstractComponent {
-  constructor(events) {
+  constructor(eventsModel) {
     super();
 
-    this._events = events;
+    this._eventsModel = eventsModel;
   }
 
   getTemplate() {
-    return createPriceTemplate(this._events);
+    return createPriceTemplate(this._eventsModel.getAllEvents());
   }
 }
