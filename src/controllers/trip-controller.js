@@ -8,10 +8,9 @@ import {getDuration} from "../utils/common.js";
 
 const getSortedEvents = (events, sortType) => {
   let sortedEvents = [];
-
   switch (sortType) {
     case SortType.TIME_UP:
-      sortedEvents = events.slice().sort((a, b) => getDuration(b) - getDuration(a));
+      sortedEvents = events.slice().sort((a, b) => getDuration(b.start, b.end) - getDuration(a.start, a.end));
       break;
     case SortType.PRICE_UP:
       sortedEvents = events.slice().sort((a, b) => b.price - a.price);
