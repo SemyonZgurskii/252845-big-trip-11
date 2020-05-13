@@ -3,8 +3,6 @@ const EVENT_TYPES = {
   activity: [`check-in`, `sightseeing`, `restaurant`],
 };
 
-const CITIES = [`Boston`, `Bolonga`, `Geneva`, `Prague`, `London`, `Wellington`, `Paris`, `San Francisco`];
-
 const TypeToIcon = {
   "TAXI": `🚕`,
   "BUS": `🚌`,
@@ -29,7 +27,6 @@ const HIDDEN_CLASS = `visually-hidden`;
 export {
   HIDDEN_CLASS,
   EVENT_TYPES,
-  CITIES,
   FilterType,
   TypeToIcon,
 };
