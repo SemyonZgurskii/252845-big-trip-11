@@ -1,45 +1,48 @@
 export default class Store {
-  constructor(key, storage) {
-    this._storage = storage;
-    this._storeKey = key;
+  constructor(store) {
+    this._store = store;
   }
 
-  getItems() {
+  getItem(key) {
     try {
-      return JSON.parse(this._storage.getItem(this._storeKey)) || {};
+      return JSON.parse(this._store.getItem(key)) || {};
     } catch (err) {
       return {};
     }
   }
 
-  setItem(key, value) {
-    const store = this.getItems();
 
-    this._storage.setItem(
-        this._storeKey,
+  setItem(key, value) {
+    const item = this.getItem(key);
+    if (item === {}) {
+      this._store.setItem([key], JSON.stringify(value));
+    } else {
+      this._store.setItem(
+          key,
+          JSON.stringify(
+              Object.assign({}, item, value)
+          )
+      );
+    }
+  }
+
+  setItemProperty(key, property, value) {
+    const item = this.getItem(key);
+
+    this._store.setItem(
+        key,
         JSON.stringify(
-            Object.assign({}, store, {
-              [key]: value
+            Object.assign({}, item, {
+              [property]: value,
             })
         )
     );
   }
 
-  setItems(items) {
-    this._storage.setItem(
-        this._storeKey,
-        JSON.stringify(items),
-    );
-  }
+  removeItemProperty(key, property) {
+    const item = this.getItem(key);
+    delete item[property];
 
-  removeItem(key) {
-    const store = this.getItems();
-
-    delete store[key];
-
-    this._storage.setItem(
-        this._storeKey,
-        JSON.stringify(store)
-    );
+    this._store.setItem(key, item);
   }
 }
