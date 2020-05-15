@@ -43,6 +43,6 @@ export default class Store {
     const item = this.getItem(key);
     delete item[property];
 
-    this._store.setItem(key, item);
+    this._store.setItem(key, JSON.stringify(item));
   }
 }
