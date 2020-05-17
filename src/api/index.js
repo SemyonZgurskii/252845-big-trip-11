@@ -17,7 +17,7 @@ const checkStatus = (response) => {
 };
 
 const parseOptions = (options) => {
-  options.map(({type, offers}) => {
+  return options.map(({type, offers}) => {
     return {
       type,
       options: offers,

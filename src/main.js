@@ -5,7 +5,7 @@ import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
 import IfnoComponent from "./components/info.js";
 import MenuComponent, {MenuItem} from "./components/menu.js";
-import OptionsModel from "./models/all-options.js";
+import OptionsModel from "./models/options.js";
 import PriceComponent from "./components/price.js";
 import Provider from "./api/provider.js";
 import RouteComponent from "./components/route.js";

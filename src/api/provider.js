@@ -50,7 +50,6 @@ export default class Provider {
     if (isOnline()) {
       return this._api.getOptions()
         .then((options) => {
-
           this._store.setItem(StorageKey.OPTIONS, options);
 
           return options;
