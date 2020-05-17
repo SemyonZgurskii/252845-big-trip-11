@@ -10,6 +10,14 @@ const getFormatTime = (date) => {
   return hours + `:` + minutes;
 };
 
+const getMonthDate = (date) => {
+  return moment(date).format(`MMM DD`);
+};
+
+const getDateTime = (date) => {
+  return moment(date).format(`YYYY-MM-DD`);
+};
+
 const getFormatDate = (date, separator) => {
   const year = date.getFullYear().toString().slice(2);
   const month = castTimeFormat(date.getMonth());
@@ -57,6 +65,8 @@ export {
   getRandomBoolean,
   getMarkupFromArray,
   getDuration,
+  getDateTime,
   getFormatDuration,
+  getMonthDate,
   makeFirstLetterUppercase
 };

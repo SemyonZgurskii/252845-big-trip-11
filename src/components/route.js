@@ -17,7 +17,7 @@ const getRoute = (events) => {
 };
 
 const createRouteTemplate = (events) => {
-  if (!events || events.length === 0) {
+  if (!events || events.length < 2) {
     return ``;
   }
 

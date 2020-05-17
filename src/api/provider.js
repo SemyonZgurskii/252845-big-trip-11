@@ -1,6 +1,12 @@
 import Event from "../models/event.js";
 import {nanoid} from "nanoid";
 
+const StorageKey = {
+  EVENTS: `events`,
+  DESTINATIONS: `destinations`,
+  OPTIONS: `options`,
+};
+
 const isOnline = () => {
   return window.navigator.onLine;
 };
@@ -26,18 +32,34 @@ export default class Provider {
 
   getDestinations() {
     if (isOnline()) {
-      return this._api.getDestinations();
+      return this._api.getDestinations()
+        .then((destinations) => {
+
+          this._store.setItem(StorageKey.DESTINATIONS, destinations);
+
+          return destinations;
+        });
     }
 
-    return Promise.reject(`offline logic is not implemented`);
+    const storeDestinations = this._store.getItem(StorageKey.DESTINATIONS);
+
+    return Promise.resolve(Array.from(storeDestinations));
   }
 
   getOptions() {
     if (isOnline()) {
-      return this._api.getOptions();
+      return this._api.getOptions()
+        .then((options) => {
+
+          this._store.setItem(StorageKey.OPTIONS, options);
+
+          return options;
+        });
     }
 
-    return Promise.reject(`offline logic is not implemented`);
+    const storeOptions = this._store.getItem(StorageKey.OPTIONS);
+
+    return Promise.resolve(Array.from(storeOptions));
   }
 
   getEvents() {
@@ -46,22 +68,22 @@ export default class Provider {
         .then((events) => {
           const newEvents = createStoreStructure(events.map((event) => event.toRAW()));
 
-          this._store.setItems(newEvents);
+          this._store.setItem(StorageKey.EVENTS, newEvents);
 
           return events;
         });
     }
 
-    const storeEvents = Object.values(this._store.getItems());
+    const storeEvents = Object.values(this._store.getItem(StorageKey.EVENTS));
 
-    return Promise.reject(Event.parseEvents(storeEvents));
+    return Promise.resolve(Event.parseEvents(storeEvents));
   }
 
   createEvent(event) {
     if (isOnline()) {
       return this._api.createEvent(event)
         .then((newEvent) => {
-          this._store.setItem(newEvent.id, newEvent.toRAW());
+          this._store.setItemProperty(StorageKey.EVENTS, newEvent.id, newEvent.toRAW());
 
           return newEvent;
         });
@@ -70,14 +92,16 @@ export default class Provider {
     const localNewEventId = nanoid();
     const localNewEvent = Event.clone(Object.assign(event, {id: localNewEventId}));
 
-    return Promise.reject(localNewEvent);
+    this._store.setItemProperty(StorageKey.EVENTS, localNewEventId, localNewEvent);
+
+    return Promise.resolve(localNewEvent);
   }
 
   updateEvent(id, event) {
     if (isOnline()) {
       return this._api.updateEvent(id, event)
         .then((newEvent) => {
-          this._store.setItem(newEvent.id, newEvent.toRAW());
+          this._store.setItemProperty(StorageKey.EVENTS, newEvent.id, newEvent.toRAW());
 
           return newEvent;
         });
@@ -85,25 +109,25 @@ export default class Provider {
 
     const localEvent = Event.clone(Object.assign(event, {id}));
 
-    this._store.setItem(id, localEvent.toRAW());
+    this._store.setItemProperty(StorageKey.EVENTS, id, localEvent.toRAW());
 
-    return Promise.reject(localEvent);
+    return Promise.resolve(localEvent);
   }
 
   deleteEvent(id) {
     if (isOnline()) {
       return this._api.deleteEvent(id)
-        .then(() => this._store.removeItem(id));
+        .then(() => this._store.removeItemProperty(StorageKey.EVENTS, id));
     }
 
-    this._store.removeItem(id);
+    this._store.removeItemProperty(StorageKey.EVENTS, id);
 
-    return Promise.reject(`offline logic is not implemented`);
+    return Promise.resolve();
   }
 
   sync() {
     if (isOnline()) {
-      const storeEvents = Object.values(this._store.getItems());
+      const storeEvents = Object.values(this._store.getItem(StorageKey.EVENTS));
 
       return this._api.sync(storeEvents)
         .then((response) => {
@@ -112,7 +136,7 @@ export default class Provider {
 
           const loadedEvents = createStoreStructure(createdEvents.concat(updateEvents));
 
-          this._store.setItems(loadedEvents);
+          this._store.setItem(StorageKey.EVENTS, loadedEvents);
         });
     }
 

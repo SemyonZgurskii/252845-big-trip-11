@@ -10,21 +10,18 @@ import PriceComponent from "./components/price.js";
 import Provider from "./api/provider.js";
 import RouteComponent from "./components/route.js";
 import StatistcsComponent from "./components/statistics.js";
-import Store from "./api/store.js";
+import Store from "./api/store";
 import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
-const STORE_PREFIX = `big-trip-localstorage`;
-const STORE_VER = `v1`;
-const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const optionsModel = new OptionsModel();
 const api = new API(END_POINT, AUTHORIZATION);
-const store = new Store(STORE_NAME, window.localStorage);
+const store = new Store(window.localStorage);
 const apiWithProvider = new Provider(api, store);
 
 const mainElement = document.querySelector(`.page-body__page-main`)
@@ -41,7 +38,6 @@ render(mainHeaderElement, new IfnoComponent(), RenderPosition.AFTERBEGIN);
 
 const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 
-render(infoElement, new RouteComponent(), RenderPosition.BEFOREEND);
 render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 
 const filterController = new FilterController(mainControlsElement, eventsModel);
@@ -85,7 +81,17 @@ Promise.all([
     .then((trueEvents) => {
       eventsModel.setEvents(trueEvents);
       tripController.renderEvents();
-      render(infoElement, new PriceComponent(trueEvents), RenderPosition.BEFOREEND);
+      render(infoElement, new RouteComponent(eventsModel), RenderPosition.BEFOREEND);
+      render(infoElement, new PriceComponent(eventsModel), RenderPosition.BEFOREEND);
+    });
+});
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+    .then(() => {
+      console.log(`успешно зарегистрирован`);
+    }).catch(() => {
+    // Действие, в случае ошибки при регистрации ServiceWorker
     });
 });
 
