@@ -87,12 +87,12 @@ Promise.all([
 });
 
 window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/sw.js`)
-    .then(() => {
-      console.log(`успешно зарегистрирован`);
-    }).catch(() => {
-    // Действие, в случае ошибки при регистрации ServiceWorker
-    });
+  navigator.serviceWorker.register(`/sw.js`);
+  // .then(() => {
+  //   console.log(`успешно зарегистрирован`);
+  // }).catch(() => {
+  // // Действие, в случае ошибки при регистрации ServiceWorker
+  // });
 });
 
 window.addEventListener(`online`, () => {
