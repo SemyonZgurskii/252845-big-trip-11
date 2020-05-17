@@ -1,5 +1,4 @@
-import {castTimeFormat} from "../utils/common.js";
-import {MonthNumberToString} from "../const.js";
+import {getMonthDate, getDateTime} from "../utils/common.js";
 import AbstractComponent from "./abstract-component.js";
 
 const generateCounterMarkup = (counter) => {
@@ -12,11 +11,10 @@ const generateTimeMarkup = (event) => {
   }
 
   const eventDate = event.start;
-  const dateTime = eventDate.getFullYear() + `-` + eventDate.getMonth() + `-` + eventDate.getDate();
-  const month = MonthNumberToString[eventDate.getMonth()];
-  const date = castTimeFormat(eventDate.getDate());
+  const dateTime = getDateTime(eventDate);
+  const monthDate = getMonthDate(eventDate);
 
-  return `<time class="day__date" datetime="${dateTime}">${month}  ${date}</time>`;
+  return `<time class="day__date" datetime="${dateTime}">${monthDate}</time>`;
 };
 
 

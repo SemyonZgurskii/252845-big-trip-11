@@ -1,6 +1,5 @@
-import Event from "./models/event.js";
-import Destination from "./models/destination.js";
-import TypeOptions from "./models/type-options.js";
+import Event from "../models/event.js";
+import Destination from "../models/destination.js";
 
 const Method = {
   GET: `GET`,
@@ -15,6 +14,15 @@ const checkStatus = (response) => {
   }
 
   throw new Error(`${response.status} : ${response.statusText}`);
+};
+
+const parseOptions = (options) => {
+  options.map(({type, offers}) => {
+    return {
+      type,
+      options: offers,
+    };
+  });
 };
 
 export default class API {
@@ -54,7 +62,7 @@ export default class API {
       url: `offers`,
     })
       .then((response) => response.json())
-      .then((TypeOptions.parseTypesOptions));
+      .then((parseOptions));
   }
 
   getEvents() {
@@ -73,6 +81,16 @@ export default class API {
     })
       .then((response) => response.json())
       .then(Event.parseEvent);
+  }
+
+  sync(data) {
+    return this._load({
+      url: `task/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`}),
+    })
+      .then((response) => response.json());
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
