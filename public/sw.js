@@ -31,7 +31,7 @@ self.addEventListener(`install`, (evt) => {
         `/img/header-bg@2x.png`,
         `/img/logo.png`,
       ])
-    }).catch(err => console.log(err.message)))
+    }))
 });
 
 self.addEventListener(`activate`, (evt) => {
@@ -50,7 +50,6 @@ self.addEventListener(`activate`, (evt) => {
             .filter((key) => key !== null)
         )
       )
-      .catch(err => console.log(err.message))
   );
 });
 
@@ -62,24 +61,24 @@ self.addEventListener(`fetch`, (evt) => {
   evt.respondWith(
     caches.match(request)
       .then((cacheResponse) => {
-        if (cacheResponse) {
-          return cacheResponse;
-        }
+        // if (cacheResponse) {
+        //   return cacheResponse;
+        // }
+        //
+        // return fetch(request)
+        //   .then((response) => {
+        //     if (!response || response.status !== 200 || response.type !== `basic`) {
+        //       return response;
+        //     }
+        //
+        //     const clonedResponse = response.clone();
+        //
+        //     caches.open(CACHE_NAME)
+        //       .then((cache) => cache.put(request, clonedResponse));
 
-        return fetch(request)
-          .then((response) => {
-            if (!response || response.status !== 200 || response.type !== `basic`) {
-              return response;
-            }
-
-            const clonedResponse = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => cache.put(request, clonedResponse));
-
-            return response;
-          })
-          .catch(err => console.log(err.message))
+            return cacheResponse;
+          // })
       })
   );
 });
+

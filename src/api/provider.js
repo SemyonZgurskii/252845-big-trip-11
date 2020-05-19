@@ -1,10 +1,26 @@
 import Event from "../models/event.js";
 import {nanoid} from "nanoid";
 
+const PHOTOS_COUNT = 5;
+
 const StorageKey = {
   EVENTS: `events`,
   DESTINATIONS: `destinations`,
   OPTIONS: `options`,
+};
+
+const getPhotoUrl = () => {
+  return `/img/photos/${Math.ceil(Math.random() * PHOTOS_COUNT)}.jpg`;
+};
+
+const replaceUrls = (events) => {
+  for (const event of events) {
+    const eventPhotos = event.destination.pictures;
+    eventPhotos.forEach((photo) => {
+      photo.src = getPhotoUrl();
+    });
+  }
+  return events;
 };
 
 const isOnline = () => {
@@ -74,8 +90,9 @@ export default class Provider {
     }
 
     const storeEvents = Object.values(this._store.getItem(StorageKey.EVENTS));
+    const fakePhotoEvents = replaceUrls(storeEvents);
 
-    return Promise.resolve(Event.parseEvents(storeEvents));
+    return Promise.resolve(Event.parseEvents(fakePhotoEvents));
   }
 
   createEvent(event) {
