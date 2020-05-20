@@ -10,7 +10,7 @@ const calculatePeriod = (events) => {
 
 const getRoute = (events) => {
   const startPoint = events[0].destination.name;
-  const middlePoint = events[events.length / 2].destination.name;
+  const middlePoint = events[Math.round(events.length / 2)].destination.name;
   const endPoint = events[events.length - 1].destination.name;
 
   return `${startPoint}  &mdash; ${middlePoint} &mdash; ${endPoint}`;

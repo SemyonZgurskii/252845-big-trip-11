@@ -71,13 +71,11 @@ export default class TripControler {
 
   renderEvents() {
     const container = this._container.getElement();
-    const events = this._eventsModel.getEvents();
 
     if (this._eventsModel.getAllEvents().length < 1) {
       render(container, this._noEventsComponent, RenderPosition.BEFOREEND);
       return;
     }
-    events.slice().sort((a, b) => a.start.getTime() - b.start.getTime());
 
     render(container, this._sortComponent, RenderPosition.BEFOREEND);
     render(container, this._daysContainerComponent, RenderPosition.BEFOREEND);

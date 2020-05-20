@@ -14,7 +14,7 @@ import Store from "./api/store";
 import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
+const AUTHORIZATION = `Basic oeu30202asoe22u2122a22`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const eventsModel = new EventsModel();
@@ -30,7 +30,7 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
 const board = new Board();
-const tripController = new TripController(board, eventsModel, destinationsModel, optionsModel, apiWithProvider);
+const tripController = new TripController(board, eventsModel, destinationsModel, optionsModel, api);
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
@@ -41,7 +41,6 @@ const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
 render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 
 const filterController = new FilterController(mainControlsElement, eventsModel);
-filterController.render();
 
 const statisticsComponent = new StatistcsComponent(eventsModel);
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
@@ -68,38 +67,39 @@ menuComponent.setOnItemClickHandler((menuItem) => {
 });
 
 Promise.all([
-  apiWithProvider.getDestinations()
+  api.getDestinations()
     .then((destinations) => {
       destinationsModel.setDestinations(destinations);
     }),
-  apiWithProvider.getOptions()
+  api.getOptions()
     .then((offers) => {
       optionsModel.setOptions(offers);
     }),
 ]).then(() => {
-  apiWithProvider.getEvents()
+  api.getEvents()
     .then((trueEvents) => {
       eventsModel.setEvents(trueEvents);
+      filterController.render();
       tripController.renderEvents();
       render(infoElement, new RouteComponent(eventsModel), RenderPosition.BEFOREEND);
       render(infoElement, new PriceComponent(eventsModel), RenderPosition.BEFOREEND);
     });
 });
 
-window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/sw.js`);
-  // .then(() => {
-  //   console.log(`успешно зарегистрирован`);
-  // }).catch(() => {
-  // // Действие, в случае ошибки при регистрации ServiceWorker
-  // });
-});
-
-window.addEventListener(`online`, () => {
-  document.title = document.title.replace(` [offline]`, ``);
-  apiWithProvider.sync();
-});
-
-window.addEventListener(`offline`, () => {
-  document.title += ` [offline]`;
-});
+// window.addEventListener(`load`, () => {
+//   navigator.serviceWorker.register(`/sw.js`);
+//   // .then(() => {
+//   //   console.log(`успешно зарегистрирован`);
+//   // }).catch(() => {
+//   // // Действие, в случае ошибки при регистрации ServiceWorker
+//   // });
+// });
+//
+// window.addEventListener(`online`, () => {
+//   document.title = document.title.replace(` [offline]`, ``);
+//   apiWithProvider.sync();
+// });
+//
+// window.addEventListener(`offline`, () => {
+//   document.title += ` [offline]`;
+// });
