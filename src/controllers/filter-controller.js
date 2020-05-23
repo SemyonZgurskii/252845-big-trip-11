@@ -1,4 +1,6 @@
 import FilterComponent from '../components/filter.js';
+import RouteComponent from '../components/route.js';
+import PriceComponent from '../components/price.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {FilterType} from '../const.js';
 
@@ -23,10 +25,14 @@ const checkActualEvents = (events, filterType) => {
 
 export default class FilterController {
   constructor(container, eventsModel) {
-    this._container = container;
+    this._container = container; // mainHeaderElement
     this._eventsModel = eventsModel;
+    this._mainControlsElement = this._container.querySelector(`.trip-main__trip-controls`);
+    this._infoElement = this._container.querySelector(`.trip-main__trip-info`);
 
     this._filterComponent = null;
+    this._priceComponent = null;
+    this._routeComponent = null;
 
     this._onFilterChange = this._onFilterChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
@@ -45,15 +51,24 @@ export default class FilterController {
         checked: this._activeFilterType === filterType,
       };
     });
-    const oldComponent = this._filterComponent;
+    const oldFilterComponent = this._filterComponent;
+    const oldRouteComponent = this._routeComponent;
+    const oldPriceComponent = this._priceComponent;
 
     this._filterComponent = new FilterComponent(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
 
-    if (oldComponent) {
-      replace(this._filterComponent, oldComponent);
+    this._routeComponent = new RouteComponent(events);
+    this._priceComponent = new PriceComponent(events);
+
+    if (oldFilterComponent || oldRouteComponent || oldPriceComponent) {
+      replace(this._filterComponent, oldFilterComponent);
+      replace(this._routeComponent, oldRouteComponent);
+      replace(this._priceComponent, oldPriceComponent);
     } else {
-      render(this._container, this._filterComponent, RenderPosition.BEFOREEND);
+      render(this._mainControlsElement, this._filterComponent, RenderPosition.BEFOREEND);
+      render(this._infoElement, this._routeComponent, RenderPosition.BEFOREEND);
+      render(this._infoElement, this._priceComponent, RenderPosition.BEFOREEND);
     }
   }
 

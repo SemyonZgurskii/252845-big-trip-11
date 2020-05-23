@@ -2,7 +2,7 @@ import AbstractComponent from "./abstract-component.js";
 import {getFormatTime, getFormatDate, getFormatDuration, getDuration, makeFirstLetterUppercase} from "../utils/common.js";
 import {EVENT_TYPES} from "../const.js";
 
-const MAX_OPTIONS = 5;
+const MAX_OPTIONS = 3;
 
 const generateOptionsElement = (title, price) => {
   return (

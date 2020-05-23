@@ -3,18 +3,16 @@ import Board from "./components/board.js";
 import DestinationsModel from "./models/destinations.js";
 import EventsModel from "./models/events.js";
 import FilterController from "./controllers/filter-controller.js";
-import IfnoComponent from "./components/info.js";
+import InfoComponent from "./components/info.js";
 import MenuComponent, {MenuItem} from "./components/menu.js";
 import OptionsModel from "./models/options.js";
-import PriceComponent from "./components/price.js";
 import Provider from "./api/provider.js";
-import RouteComponent from "./components/route.js";
-import StatistcsComponent from "./components/statistics.js";
+import StatisticsComponent from "./components/statistics.js";
 import Store from "./api/store";
 import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-const AUTHORIZATION = `Basic oeu30202asoe22u2122a22`;
+const AUTHORIZATION = `Basic oeu302asoe22u2122a22`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const eventsModel = new EventsModel();
@@ -34,17 +32,17 @@ const tripController = new TripController(board, eventsModel, destinationsModel,
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
-render(mainHeaderElement, new IfnoComponent(), RenderPosition.AFTERBEGIN);
-
-const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
+render(mainHeaderElement, new InfoComponent(), RenderPosition.AFTERBEGIN);
 
 render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 
-const filterController = new FilterController(mainControlsElement, eventsModel);
+const filterController = new FilterController(mainHeaderElement, eventsModel);
 
-const statisticsComponent = new StatistcsComponent(eventsModel);
+const statisticsComponent = new StatisticsComponent(eventsModel);
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
+
+const newEventBtn = mainHeaderElement.querySelector(`.trip-main__event-add-btn`);
 
 mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
   .addEventListener(`click`, () => {
@@ -81,8 +79,6 @@ Promise.all([
       eventsModel.setEvents(trueEvents);
       filterController.render();
       tripController.renderEvents();
-      render(infoElement, new RouteComponent(eventsModel), RenderPosition.BEFOREEND);
-      render(infoElement, new PriceComponent(eventsModel), RenderPosition.BEFOREEND);
     });
 });
 

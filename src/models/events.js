@@ -1,4 +1,5 @@
 import {getFilteredEvents} from "../utils/filter";
+import {getByDateEvents} from "../utils/common";
 import {FilterType} from "../const.js";
 
 export default class Events {
@@ -8,7 +9,7 @@ export default class Events {
     this._activeFilterType = FilterType.EVERYTHING;
 
     this._filterChangeHandlers = [];
-    this._dataChangeHandler = null;
+    this._dataChangeHandlers = [];
   }
 
   getEvents() {
@@ -21,6 +22,7 @@ export default class Events {
 
   setEvents(events) {
     this._events = Array.from(events);
+    this._events = getByDateEvents(this._events);
   }
 
   setFilter(filterType) {
@@ -36,7 +38,7 @@ export default class Events {
     }
 
     this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
-    this._dataChangeHandler();
+    this._callHandlers(this._dataChangeHandlers);
 
     return true;
   }
@@ -49,14 +51,14 @@ export default class Events {
     }
 
     this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
-    this._dataChangeHandler();
+    this._callHandlers(this._dataChangeHandlers);
 
     return true;
   }
 
   addEvent(event) {
     this._events = [].concat(event, this._events);
-    this._dataChangeHandler();
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilterChangeHandler(handler) {
@@ -64,7 +66,7 @@ export default class Events {
   }
 
   setDataChangeHandlers(handler) {
-    this._dataChangeHandler = handler;
+    this._dataChangeHandlers.push(handler);
   }
 
   _callHandlers(handlers) {

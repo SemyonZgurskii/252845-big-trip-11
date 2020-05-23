@@ -57,8 +57,12 @@ const makeFirstLetterUppercase = (word) => {
   return word[0].toUpperCase() + word.slice(1);
 };
 
+const getByDateEvents = (events) => {
+  return events.slice().sort((a, b) => a.start.getTime() - b.start.getTime());
+};
 
 export {
+  getByDateEvents,
   castTimeFormat,
   getFormatTime,
   getFormatDate,
@@ -68,5 +72,5 @@ export {
   getDateTime,
   getFormatDuration,
   getMonthDate,
-  makeFirstLetterUppercase
+  makeFirstLetterUppercase,
 };

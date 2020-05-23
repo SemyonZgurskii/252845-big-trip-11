@@ -3,6 +3,7 @@ import EventModel from "../models/event.js";
 import {EVENT_TYPES} from "../const.js";
 import {getMarkupFromArray, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
 import flatpickr from "flatpickr";
+import moment from "moment";
 
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -427,6 +428,11 @@ export default class EventEdit extends AbstractSmartComponent {
       enableTime: true,
       allowInput: true,
       defaultDate: this._event.start,
+      disable: [
+        (date) => {
+          return new Date(date) > new Date(endDateElement.value);
+        }
+      ]
     });
 
     this._flatpickr = flatpickr(endDateElement, {
@@ -435,6 +441,11 @@ export default class EventEdit extends AbstractSmartComponent {
       altFormat: `y/m/d H:i`,
       allowInput: true,
       defaultDate: this._event.end,
+      disable: [
+        (date) => {
+          return new Date(date) < new Date(startDateElement.value);
+        }
+      ],
     });
   }
 }
