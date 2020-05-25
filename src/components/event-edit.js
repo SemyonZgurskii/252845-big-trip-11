@@ -216,6 +216,9 @@ export default class EventEdit extends AbstractSmartComponent {
     this._options = options;
     this._buttonsNames = DefaultButtonNames;
 
+    this._destanationName = event.destination.name;
+    this._type = event.type;
+
     this._isPriceValid = true;
     this._isDestinationValid = true;
 
@@ -246,6 +249,12 @@ export default class EventEdit extends AbstractSmartComponent {
     super.rerender();
 
     this._applyFlatpickr();
+  }
+
+  reset() {
+    this._event.destination.name = this._destanationName;
+    this._event.type = this._type;
+    this.rerender();
   }
 
   getData() {

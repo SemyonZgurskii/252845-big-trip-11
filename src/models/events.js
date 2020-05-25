@@ -45,7 +45,7 @@ export default class Events {
 
   updateEvent(id, event) {
     const index = this._events.findIndex((it) => it.id === id);
-
+    console.log(`update`);
     if (index === -1) {
       return false;
     }
