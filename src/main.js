@@ -84,7 +84,7 @@ Promise.all([
   eventsModel.setEvents(events);
 
   filterController.render();
-  tripController.renderEvents();
+  tripController.render();
 });
 
 // window.addEventListener(`load`, () => {

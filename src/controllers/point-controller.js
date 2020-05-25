@@ -145,7 +145,8 @@ export default class PointController {
   _replaceEditToEvent() {
     //TODO перерендерить
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._container.replaceChild(this._eventComponent.getElement(), this._eventEditComponent.getElement());
+    // this._container.replaceChild(this._eventComponent.getElement(), this._eventEditComponent.getElement());
+    this._eventEditComponent.rerender();
 
     if (document.contains(this._eventEditComponent.getElement())) {
       replace(this._eventComponent, this._eventEditComponent);

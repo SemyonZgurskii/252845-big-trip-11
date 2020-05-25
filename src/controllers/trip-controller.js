@@ -6,6 +6,11 @@ import PointController, {Mode as PointControllerMode, EmptyEvent} from "../contr
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
 
+const getEventsByDates = (events) => {
+  return Array.from(new Set(events.map(({start}) => start.getDate())),
+      (date) => events.filter((event) => event.start.getDate() === date));
+};
+
 const getSortedEvents = (events, sortType) => {
   let sortedEvents = [];
   switch (sortType) {
@@ -64,9 +69,6 @@ export default class TripController {
   createEvent() {
     if (this._creatingEvent) {
       return;
-      // this._creatingEvent.destroy();
-      // TODO обнулить createevent , убрать все обработчики, удалить вью
-      // удаляю ивент.
     }
     this._onViewChange();
     const destinations = this._destinationsModel.getDestinations();
@@ -77,7 +79,7 @@ export default class TripController {
     this._creatingEvent.renderEvent(EmptyEvent, destinations, options, PointControllerMode.ADDING);
   }
 
-  renderEvents() {
+  render() {
     const container = this._container.getElement();
 
     if (this._eventsModel.getAllEvents().length < 1) {
@@ -88,55 +90,53 @@ export default class TripController {
     render(container, this._sortComponent, RenderPosition.BEFOREEND);
     render(container, this._daysContainerComponent, RenderPosition.BEFOREEND);
 
-    this.renderDays();
+    this._onSortTypeChange(this._sortComponent.getCurrentSortType());
   }
 
-  renderDays() {
+  renderEventsByDays() {
     const events = this._eventsModel.getEvents();
-    const destinations = this._destinationsModel.getDestinations();
-    const options = this._optionsModel.getOptions();
+    const eventsByDates = getEventsByDates(events);
 
-    const days = Array.from(new Set(events.map(({start}) => start.getDate())),
-        (date) => events.filter((event) => event.start.getDate() === date));
-
-    days.forEach((day, i) => {
+    eventsByDates.forEach((day, i) => {
       render(this._daysContainerComponent.getElement(), new DayComponent(day[0], i + 1), RenderPosition.BEFOREEND);
     });
 
     const daysElements = this._daysContainerComponent.getElement().querySelectorAll(`.trip-events__list`);
+
     daysElements.forEach((dayElement, i) => {
-      days[i].forEach((event) => {
-        const newEvent = new PointController(dayElement, this._onDataChange, this._onViewChange);
-        this._pointControllers.push(newEvent);
-        newEvent.renderEvent(event, destinations, options, PointControllerMode.DEFAULT);
-      });
+      this._renderEvents(dayElement, eventsByDates[i]);
     });
   }
 
   _onSortTypeChange(sortType) {
     const daysContainerElement = this._daysContainerComponent.getElement();
-    const destinations = this._destinationsModel.getDestinations();
-    const options = this._optionsModel.getOptions();
 
     daysContainerElement.innerHTML = ``;
 
     if (sortType === SortType.DEFAULT) {
-      this.renderDays();
+      this.renderEventsByDays();
     } else {
       const sortEvents = getSortedEvents(this._eventsModel.getEvents(), sortType);
       render(daysContainerElement, new DayComponent(), RenderPosition.BEFOREEND);
       const eventsContainer = daysContainerElement.querySelector(`.trip-events__list`);
-      sortEvents.forEach((event) => {
-        const newEvent = new PointController(eventsContainer, this._onDataChange, this._onViewChange);
-        this._pointControllers.push(newEvent);
-        newEvent.renderEvent(event, destinations, options, PointControllerMode.DEFAULT);
-      });
+      this._renderEvents(eventsContainer, sortEvents);
     }
   }
 
   _updateEvents() {
     this._removeEvents();
-    this.renderEvents();
+    this.render();
+  }
+
+  _renderEvents(container, events) {
+    const destinations = this._destinationsModel.getDestinations();
+    const options = this._optionsModel.getOptions();
+
+    events.forEach((event) => {
+      const newEvent = new PointController(container, this._onDataChange, this._onViewChange);
+      this._pointControllers.push(newEvent);
+      newEvent.renderEvent(event, destinations, options, PointControllerMode.DEFAULT);
+    });
   }
 
   _removeEvents() {
