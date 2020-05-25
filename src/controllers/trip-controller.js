@@ -23,7 +23,7 @@ const getSortedEvents = (events, sortType) => {
   return sortedEvents;
 };
 
-export default class TripControler {
+export default class TripController {
   constructor(container, eventsModel, destinationsModel, optionsModel, api) {
     this._container = container;
     this._eventsModel = eventsModel;
@@ -38,6 +38,7 @@ export default class TripControler {
     this._sortComponent = new SortComponent();
     this._daysContainerComponent = new DaysContainerComponent();
 
+    this._onEventRemove = null;
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
@@ -56,9 +57,16 @@ export default class TripControler {
     this._container.show();
   }
 
+  setEventRemoveHandler(handler) {
+    this._onEventRemove = handler;
+  }
+
   createEvent() {
     if (this._creatingEvent) {
       return;
+      // this._creatingEvent.destroy();
+      // TODO обнулить createevent , убрать все обработчики, удалить вью
+      // удаляю ивент.
     }
     this._onViewChange();
     const destinations = this._destinationsModel.getDestinations();
@@ -144,6 +152,7 @@ export default class TripControler {
       this._creatingEvent = null;
       if (newData === null) {
         pointController.destroy();
+        this._onEventRemove();
         this._updateEvents();
       } else {
         this._api.createEvent(newData)

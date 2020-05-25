@@ -2,9 +2,10 @@ import API from "./api/index.js";
 import Board from "./components/board.js";
 import DestinationsModel from "./models/destinations.js";
 import EventsModel from "./models/events.js";
-import FilterController from "./controllers/filter-controller.js";
+import HeaderController from "./controllers/header-controller.js";
 import InfoComponent from "./components/info.js";
 import MenuComponent, {MenuItem} from "./components/menu.js";
+import NewEventButton from "./components/new-event-button";
 import OptionsModel from "./models/options.js";
 import Provider from "./api/provider.js";
 import StatisticsComponent from "./components/statistics.js";
@@ -36,21 +37,25 @@ render(mainHeaderElement, new InfoComponent(), RenderPosition.AFTERBEGIN);
 
 render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 
-const filterController = new FilterController(mainHeaderElement, eventsModel);
+const filterController = new HeaderController(mainHeaderElement, eventsModel);
 
 const statisticsComponent = new StatisticsComponent(eventsModel);
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 
-const newEventBtn = mainHeaderElement.querySelector(`.trip-main__event-add-btn`);
+const newEventBtn = new NewEventButton();
+render(mainHeaderElement, newEventBtn, RenderPosition.BEFOREEND);
 
-mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
-  .addEventListener(`click`, () => {
-    statisticsComponent.hide();
-    menuComponent.setDefault();
-    tripController.show();
-    tripController.createEvent();
-  });
+newEventBtn.setButtonClickHandler(() => {
+  statisticsComponent.hide();
+  menuComponent.setDefault();
+  tripController.show();
+  tripController.createEvent();
+});
+
+tripController.setEventRemoveHandler(() => {
+  newEventBtn.enable();
+});
 
 menuComponent.setOnItemClickHandler((menuItem) => {
   switch (menuItem) {
@@ -64,22 +69,22 @@ menuComponent.setOnItemClickHandler((menuItem) => {
   }
 });
 
+
+// TODO в начале запроса вставить заглушку , в конце убрать
+
 Promise.all([
-  api.getDestinations()
-    .then((destinations) => {
-      destinationsModel.setDestinations(destinations);
-    }),
-  api.getOptions()
-    .then((offers) => {
-      optionsModel.setOptions(offers);
-    }),
-]).then(() => {
+  api.getDestinations(),
+  api.getOptions(),
   api.getEvents()
-    .then((trueEvents) => {
-      eventsModel.setEvents(trueEvents);
-      filterController.render();
-      tripController.renderEvents();
-    });
+]).then((results) => {
+  const [destinations, options, events] = results;
+
+  destinationsModel.setDestinations(destinations);
+  optionsModel.setOptions(options);
+  eventsModel.setEvents(events);
+
+  filterController.render();
+  tripController.renderEvents();
 });
 
 // window.addEventListener(`load`, () => {

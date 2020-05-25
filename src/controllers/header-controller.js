@@ -23,7 +23,7 @@ const checkActualEvents = (events, filterType) => {
   return isEventsMatch;
 };
 
-export default class FilterController {
+export default class HeaderController {
   constructor(container, eventsModel) {
     this._container = container; // mainHeaderElement
     this._eventsModel = eventsModel;
