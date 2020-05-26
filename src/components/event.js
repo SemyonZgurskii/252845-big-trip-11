@@ -1,6 +1,7 @@
 import AbstractComponent from "./abstract-component.js";
 import {getFormatTime, getFormatDate, getFormatDuration, getDuration, makeFirstLetterUppercase} from "../utils/common.js";
 import {EVENT_TYPES} from "../const.js";
+import {encode} from "he";
 
 const MAX_OPTIONS = 3;
 
@@ -28,7 +29,7 @@ const generateOptionsMarkup = (options) => {
 const createEventTemplate = (event) => {
   const {type, destination, start, end, price, options} = event;
 
-  const city = destination ? destination.name : ``;
+  const city = destination ? encode(destination.name) : ``;
   const offersMarkup = city ? generateOptionsMarkup(options) : ``;
   const startDateTime = getFormatDate(start, `-`);
   const startTime = getFormatTime(start);

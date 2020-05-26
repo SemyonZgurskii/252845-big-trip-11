@@ -3,7 +3,7 @@ import EventModel from "../models/event.js";
 import {EVENT_TYPES} from "../const.js";
 import {getMarkupFromArray, getFormatTime, getFormatDate, makeFirstLetterUppercase} from "../utils/common.js";
 import flatpickr from "flatpickr";
-import moment from "moment";
+import {encode} from "he";
 
 import "flatpickr/dist/flatpickr.min.css";
 
@@ -107,7 +107,7 @@ const generateInfoElement = (destination) => {
 
 const createEventEditTemplate = (event, destinations, offers, buttonsNames) => {
   const {type, destination, price, options: activeOptions, start, end, isFavorite} = event;
-  const city = destination ? destination.name : ``;
+  const city = destination ? encode(destination.name) : ``;
   const cities = destinations.map(({name}) => name);
   const allOptions = offers.get(type);
   const transferTypesMarkup = getMarkupFromArray(EVENT_TYPES.transfer, generateEventTypeElement);
