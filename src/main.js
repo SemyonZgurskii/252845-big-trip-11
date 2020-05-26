@@ -13,7 +13,7 @@ import Store from "./api/store";
 import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-const AUTHORIZATION = `Basic oeu302aeeeeiiooo21122a22`;
+const AUTHORIZATION = `Basic oeu302aeee1122a22`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const eventsModel = new EventsModel();

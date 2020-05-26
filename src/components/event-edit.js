@@ -216,8 +216,8 @@ export default class EventEdit extends AbstractSmartComponent {
     this._options = options;
     this._buttonsNames = DefaultButtonNames;
 
-    this._destanationName = event.destination.name;
-    this._type = event.type;
+    this._destanationName = event.destination.name || null;
+    this._type = event.type || null;
 
     this._isPriceValid = true;
     this._isDestinationValid = true;
