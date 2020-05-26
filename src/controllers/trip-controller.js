@@ -90,7 +90,8 @@ export default class TripController {
     render(container, this._sortComponent, RenderPosition.BEFOREEND);
     render(container, this._daysContainerComponent, RenderPosition.BEFOREEND);
 
-    this._onSortTypeChange(this._sortComponent.getCurrentSortType());
+    const eventsListContainer = this._daysContainerComponent.getElement();
+    this._renderSortedEvents(eventsListContainer, this._sortComponent.getCurrentSortType());
   }
 
   renderEventsByDays() {
@@ -113,14 +114,7 @@ export default class TripController {
 
     daysContainerElement.innerHTML = ``;
 
-    if (sortType === SortType.DEFAULT) {
-      this.renderEventsByDays();
-    } else {
-      const sortEvents = getSortedEvents(this._eventsModel.getEvents(), sortType);
-      render(daysContainerElement, new DayComponent(), RenderPosition.BEFOREEND);
-      const eventsContainer = daysContainerElement.querySelector(`.trip-events__list`);
-      this._renderEvents(eventsContainer, sortEvents);
-    }
+    this._renderSortedEvents(daysContainerElement, sortType);
   }
 
   _updateEvents() {
@@ -137,6 +131,17 @@ export default class TripController {
       this._pointControllers.push(newEvent);
       newEvent.renderEvent(event, destinations, options, PointControllerMode.DEFAULT);
     });
+  }
+
+  _renderSortedEvents(daysContainer, sortType) {
+    if (sortType === SortType.DEFAULT) {
+      this.renderEventsByDays();
+    } else {
+      const sortEvents = getSortedEvents(this._eventsModel.getEvents(), sortType);
+      render(daysContainer, new DayComponent(), RenderPosition.BEFOREEND);
+      const eventsContainer = daysContainer.querySelector(`.trip-events__list`);
+      this._renderEvents(eventsContainer, sortEvents);
+    }
   }
 
   _removeEvents() {
