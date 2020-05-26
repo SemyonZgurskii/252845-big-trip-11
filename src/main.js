@@ -1,4 +1,4 @@
-import API from "./api/index.js";
+import API from "./api/api.js";
 import Board from "./components/board.js";
 import DestinationsModel from "./models/destinations.js";
 import EventsModel from "./models/events.js";
@@ -13,7 +13,7 @@ import Store from "./api/store";
 import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-const AUTHORIZATION = `Basic oeu302asoe22u2122a22`;
+const AUTHORIZATION = `Basic oeu302aeeeeiiooo21122a22`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const eventsModel = new EventsModel();
@@ -29,7 +29,7 @@ const mainHeaderElement = document.querySelector(`.trip-main`);
 const mainControlsElement = mainHeaderElement.querySelector(`.trip-main__trip-controls`);
 
 const board = new Board();
-const tripController = new TripController(board, eventsModel, destinationsModel, optionsModel, api);
+const tripController = new TripController(board, eventsModel, destinationsModel, optionsModel, apiWithProvider);
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
@@ -69,15 +69,16 @@ menuComponent.setOnItemClickHandler((menuItem) => {
   }
 });
 
-
-// TODO в начале запроса вставить заглушку , в конце убрать
+board.loadingStatusOn();
 
 Promise.all([
-  api.getDestinations(),
-  api.getOptions(),
-  api.getEvents()
+  apiWithProvider.getDestinations(),
+  apiWithProvider.getOptions(),
+  apiWithProvider.getEvents()
 ]).then((results) => {
+  // debugger;
   const [destinations, options, events] = results;
+  board.loadingStatusOff();
 
   destinationsModel.setDestinations(destinations);
   optionsModel.setOptions(options);
@@ -87,20 +88,15 @@ Promise.all([
   tripController.render();
 });
 
-// window.addEventListener(`load`, () => {
-//   navigator.serviceWorker.register(`/sw.js`);
-//   // .then(() => {
-//   //   console.log(`успешно зарегистрирован`);
-//   // }).catch(() => {
-//   // // Действие, в случае ошибки при регистрации ServiceWorker
-//   // });
-// });
-//
-// window.addEventListener(`online`, () => {
-//   document.title = document.title.replace(` [offline]`, ``);
-//   apiWithProvider.sync();
-// });
-//
-// window.addEventListener(`offline`, () => {
-//   document.title += ` [offline]`;
-// });
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

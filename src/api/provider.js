@@ -37,7 +37,7 @@ const createStoreStructure = (items) => {
 
 const getSyncedEvents = (items) => {
   return items.filter(({success}) => success)
-    .map(({payload}) => payload.event);
+    .map(({payload}) => payload.point);
 };
 
 export default class Provider {
@@ -59,7 +59,7 @@ export default class Provider {
 
     const storeDestinations = this._store.getItem(StorageKey.DESTINATIONS);
 
-    return Promise.resolve(Array.from(storeDestinations));
+    return Promise.resolve(Object.values(storeDestinations));
   }
 
   getOptions() {
@@ -74,7 +74,7 @@ export default class Provider {
 
     const storeOptions = this._store.getItem(StorageKey.OPTIONS);
 
-    return Promise.resolve(Array.from(storeOptions));
+    return Promise.resolve(Object.values(storeOptions));
   }
 
   getEvents() {
@@ -144,12 +144,10 @@ export default class Provider {
   sync() {
     if (isOnline()) {
       const storeEvents = Object.values(this._store.getItem(StorageKey.EVENTS));
-
       return this._api.sync(storeEvents)
         .then((response) => {
           const createdEvents = getSyncedEvents(response.created);
           const updateEvents = getSyncedEvents(response.updated);
-
           const loadedEvents = createStoreStructure(createdEvents.concat(updateEvents));
 
           this._store.setItem(StorageKey.EVENTS, loadedEvents);
