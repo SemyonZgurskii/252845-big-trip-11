@@ -37,7 +37,7 @@ render(mainHeaderElement, new InfoComponent(), RenderPosition.AFTERBEGIN);
 
 render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 
-const filterController = new HeaderController(mainHeaderElement, eventsModel);
+const headerController = new HeaderController(mainHeaderElement, eventsModel);
 
 const statisticsComponent = new StatisticsComponent(eventsModel);
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
@@ -55,6 +55,10 @@ newEventBtn.setButtonClickHandler(() => {
 
 tripController.setEventRemoveHandler(() => {
   newEventBtn.enable();
+});
+
+tripController.setEventCreateHandler(() => {
+  headerController.resetFilter();
 });
 
 menuComponent.setOnItemClickHandler((menuItem) => {
@@ -83,7 +87,7 @@ Promise.all([
   optionsModel.setOptions(options);
   eventsModel.setEvents(events);
 
-  filterController.render();
+  headerController.render();
   tripController.render();
 });
 

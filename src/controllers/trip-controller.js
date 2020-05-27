@@ -5,7 +5,6 @@ import NoEventsComponent from "../components/no-events.js";
 import PointController, {Mode as PointControllerMode, EmptyEvent} from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
-import {FilterType} from "../const.js";
 
 const getEventsByDates = (events) => {
   return Array.from(new Set(events.map(({start}) => start.getDate())),
@@ -45,6 +44,7 @@ export default class TripController {
     this._daysContainerComponent = new DaysContainerComponent();
 
     this._onEventRemove = null;
+    this._onEventCreate = null;
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
@@ -67,11 +67,16 @@ export default class TripController {
     this._onEventRemove = handler;
   }
 
+  setEventCreateHandler(handler) {
+    this._onEventCreate = handler;
+  }
+
   createEvent() {
     if (this._creatingEvent) {
       return;
     }
     this._onViewChange();
+    this._onEventCreate();
     this._sortComponent.setDefaultSortHandler(this._onSortTypeChange);
 
     const destinations = this._destinationsModel.getDestinations();

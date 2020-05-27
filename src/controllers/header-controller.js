@@ -72,6 +72,11 @@ export default class HeaderController {
     }
   }
 
+  resetFilter() {
+    this._onFilterChange(FilterType.EVERYTHING);
+    this._filterComponent.setDefaultFilter();
+  }
+
   _onFilterChange(filterType) {
     this._eventsModel.setFilter(filterType);
     this._activeFilterType = filterType;
