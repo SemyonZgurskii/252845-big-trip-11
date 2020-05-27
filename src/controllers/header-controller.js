@@ -25,7 +25,7 @@ const checkActualEvents = (events, filterType) => {
 
 export default class HeaderController {
   constructor(container, eventsModel) {
-    this._container = container; // mainHeaderElement
+    this._container = container;
     this._eventsModel = eventsModel;
     this._mainControlsElement = this._container.querySelector(`.trip-main__trip-controls`);
     this._infoElement = this._container.querySelector(`.trip-main__trip-info`);

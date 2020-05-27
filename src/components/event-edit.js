@@ -46,11 +46,10 @@ const generateOptionsElement = (activeOptions = [], allOptions) => {
   if (!allOptions || allOptions.length < 1) {
     return ``;
   }
-  const optionsMarkup = ``;
-  allOptions.forEach((option) => {
+  const optionsMarkup = allOptions.map((option) => {
     const isChecked = activeOptions.some(({title}) => option.title === title);
-    optionsMarkup += generateOptionMarkup(option, isChecked);
-  });
+    return generateOptionMarkup(option, isChecked);
+  }).join(`\n`);
 
   return (
     `<section class="event__details">

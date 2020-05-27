@@ -5,6 +5,7 @@ import NoEventsComponent from "../components/no-events.js";
 import PointController, {Mode as PointControllerMode, EmptyEvent} from "../controllers/point-controller.js";
 import {render, RenderPosition} from "../utils/render.js";
 import {getDuration} from "../utils/common.js";
+import {FilterType} from "../const.js";
 
 const getEventsByDates = (events) => {
   return Array.from(new Set(events.map(({start}) => start.getDate())),
@@ -71,6 +72,8 @@ export default class TripController {
       return;
     }
     this._onViewChange();
+    this._sortComponent.setDefaultSortHandler(this._onSortTypeChange);
+
     const destinations = this._destinationsModel.getDestinations();
     const options = this._optionsModel.getOptions();
 
