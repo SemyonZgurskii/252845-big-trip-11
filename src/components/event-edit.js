@@ -46,10 +46,10 @@ const generateOptionsElement = (activeOptions = [], allOptions) => {
   if (!allOptions || allOptions.length < 1) {
     return ``;
   }
-  const optionsMarkup = [];
+  const optionsMarkup = ``;
   allOptions.forEach((option) => {
     const isChecked = activeOptions.some(({title}) => option.title === title);
-    optionsMarkup.push(generateOptionMarkup(option, isChecked));
+    optionsMarkup += generateOptionMarkup(option, isChecked);
   });
 
   return (
