@@ -10,14 +10,33 @@ const calculatePeriod = (events) => {
 
 const getRoute = (events) => {
   const startPoint = events[0].destination.name;
-  const middlePoint = events[events.length / 2].destination.name;
+  const middlePoint = events[Math.round(events.length / 2)].destination.name;
   const endPoint = events[events.length - 1].destination.name;
+  let routeText = ``;
 
-  return `${startPoint}  &mdash; ${middlePoint} &mdash; ${endPoint}`;
+  switch (events.length) {
+    case 0:
+      routeText = ``;
+      break;
+    case 1:
+      routeText = `${startPoint}`;
+      break;
+    case 2:
+      routeText = `${startPoint}  &mdash; ${endPoint}`;
+      break;
+    case 3:
+      routeText = `${startPoint}  &mdash; ${middlePoint} &mdash; ${endPoint}`;
+      break;
+    default:
+      routeText = `${startPoint}  &mdash; ... &mdash; ${endPoint}`;
+      break;
+  }
+
+  return routeText;
 };
 
 const createRouteTemplate = (events) => {
-  if (!events || events.length < 2) {
+  if (!events) {
     return ``;
   }
 
@@ -34,13 +53,13 @@ const createRouteTemplate = (events) => {
 };
 
 export default class Route extends AbstractComponent {
-  constructor(eventsModel) {
+  constructor(events) {
     super();
 
-    this._eventsModel = eventsModel;
+    this._events = events;
   }
 
   getTemplate() {
-    return createRouteTemplate(this._eventsModel.getAllEvents());
+    return createRouteTemplate(this._events);
   }
 }

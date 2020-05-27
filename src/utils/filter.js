@@ -5,7 +5,7 @@ const getFutureEvents = (events) => {
 };
 
 const getPastEvents = (events) => {
-  return events.filter(({start}) => start.getTime() < Date.now());
+  return events.filter(({end}) => end.getTime() < Date.now());
 };
 
 const getFilteredEvents = (events, filterType) => {

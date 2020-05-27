@@ -1,10 +1,26 @@
 import Event from "../models/event.js";
 import {nanoid} from "nanoid";
 
+const PHOTOS_COUNT = 5;
+
 const StorageKey = {
   EVENTS: `events`,
   DESTINATIONS: `destinations`,
   OPTIONS: `options`,
+};
+
+const getPhotoUrl = () => {
+  return `/img/photos/${Math.ceil(Math.random() * PHOTOS_COUNT)}.jpg`;
+};
+
+const replaceUrls = (events) => {
+  for (const event of events) {
+    const eventPhotos = event.destination.pictures;
+    eventPhotos.forEach((photo) => {
+      photo.src = getPhotoUrl();
+    });
+  }
+  return events;
 };
 
 const isOnline = () => {
@@ -21,7 +37,7 @@ const createStoreStructure = (items) => {
 
 const getSyncedEvents = (items) => {
   return items.filter(({success}) => success)
-    .map(({payload}) => payload.event);
+    .map(({payload}) => payload.point);
 };
 
 export default class Provider {
@@ -43,14 +59,13 @@ export default class Provider {
 
     const storeDestinations = this._store.getItem(StorageKey.DESTINATIONS);
 
-    return Promise.resolve(Array.from(storeDestinations));
+    return Promise.resolve(Object.values(storeDestinations));
   }
 
   getOptions() {
     if (isOnline()) {
       return this._api.getOptions()
         .then((options) => {
-
           this._store.setItem(StorageKey.OPTIONS, options);
 
           return options;
@@ -59,7 +74,7 @@ export default class Provider {
 
     const storeOptions = this._store.getItem(StorageKey.OPTIONS);
 
-    return Promise.resolve(Array.from(storeOptions));
+    return Promise.resolve(Object.values(storeOptions));
   }
 
   getEvents() {
@@ -75,8 +90,9 @@ export default class Provider {
     }
 
     const storeEvents = Object.values(this._store.getItem(StorageKey.EVENTS));
+    const fakePhotoEvents = replaceUrls(storeEvents);
 
-    return Promise.resolve(Event.parseEvents(storeEvents));
+    return Promise.resolve(Event.parseEvents(fakePhotoEvents));
   }
 
   createEvent(event) {
@@ -128,12 +144,10 @@ export default class Provider {
   sync() {
     if (isOnline()) {
       const storeEvents = Object.values(this._store.getItem(StorageKey.EVENTS));
-
       return this._api.sync(storeEvents)
         .then((response) => {
           const createdEvents = getSyncedEvents(response.created);
           const updateEvents = getSyncedEvents(response.updated);
-
           const loadedEvents = createStoreStructure(createdEvents.concat(updateEvents));
 
           this._store.setItem(StorageKey.EVENTS, loadedEvents);

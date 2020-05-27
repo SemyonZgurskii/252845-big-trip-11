@@ -14,6 +14,7 @@ const Mode = {
 const EmptyEvent = {
   type: `flight`,
   price: ``,
+  destination: ``,
   start: new Date(),
   end: new Date(),
   isFavorite: false,
@@ -111,6 +112,7 @@ export default class PointController {
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+      this._eventEditComponent.reset();
       this._replaceEditToEvent();
     }
   }
@@ -144,7 +146,6 @@ export default class PointController {
 
   _replaceEditToEvent() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._container.replaceChild(this._eventComponent.getElement(), this._eventEditComponent.getElement());
 
     if (document.contains(this._eventEditComponent.getElement())) {
       replace(this._eventComponent, this._eventEditComponent);
@@ -160,6 +161,7 @@ export default class PointController {
       if (this._mode === Mode.ADDING) {
         this._onDataChange(this, EmptyEvent, null);
       } else {
+        this._eventEditComponent.reset();
         this._replaceEditToEvent();
       }
       document.removeEventListener(`keydown`, this._onEscKeyDown);

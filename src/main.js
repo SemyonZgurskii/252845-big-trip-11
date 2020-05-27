@@ -1,20 +1,19 @@
-import API from "./api/index.js";
+import API from "./api/api.js";
 import Board from "./components/board.js";
 import DestinationsModel from "./models/destinations.js";
 import EventsModel from "./models/events.js";
-import FilterController from "./controllers/filter-controller.js";
-import IfnoComponent from "./components/info.js";
+import HeaderController from "./controllers/header-controller.js";
+import InfoComponent from "./components/info.js";
 import MenuComponent, {MenuItem} from "./components/menu.js";
-import OptionsModel from "./models/all-options.js";
-import PriceComponent from "./components/price.js";
+import NewEventButton from "./components/new-event-button";
+import OptionsModel from "./models/options.js";
 import Provider from "./api/provider.js";
-import RouteComponent from "./components/route.js";
-import StatistcsComponent from "./components/statistics.js";
+import StatisticsComponent from "./components/statistics.js";
 import Store from "./api/store";
 import TripController from "./controllers/trip-controller.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-const AUTHORIZATION = `Basic oeu30202asoeu21a22`;
+const AUTHORIZATION = `Basic oeu302aeee1122a22`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const eventsModel = new EventsModel();
@@ -34,26 +33,29 @@ const tripController = new TripController(board, eventsModel, destinationsModel,
 const menuComponent = new MenuComponent();
 
 render(mainElement, board, RenderPosition.BEFOREEND);
-render(mainHeaderElement, new IfnoComponent(), RenderPosition.AFTERBEGIN);
-
-const infoElement = mainHeaderElement.querySelector(`.trip-main__trip-info`);
+render(mainHeaderElement, new InfoComponent(), RenderPosition.AFTERBEGIN);
 
 render(mainControlsElement, menuComponent, RenderPosition.BEFOREEND);
 
-const filterController = new FilterController(mainControlsElement, eventsModel);
-filterController.render();
+const filterController = new HeaderController(mainHeaderElement, eventsModel);
 
-const statisticsComponent = new StatistcsComponent(eventsModel);
+const statisticsComponent = new StatisticsComponent(eventsModel);
 render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 
-mainHeaderElement.querySelector(`.trip-main__event-add-btn`)
-  .addEventListener(`click`, () => {
-    statisticsComponent.hide();
-    menuComponent.setDefault();
-    tripController.show();
-    tripController.createEvent();
-  });
+const newEventBtn = new NewEventButton();
+render(mainHeaderElement, newEventBtn, RenderPosition.BEFOREEND);
+
+newEventBtn.setButtonClickHandler(() => {
+  statisticsComponent.hide();
+  menuComponent.setDefault();
+  tripController.show();
+  tripController.createEvent();
+});
+
+tripController.setEventRemoveHandler(() => {
+  newEventBtn.enable();
+});
 
 menuComponent.setOnItemClickHandler((menuItem) => {
   switch (menuItem) {
@@ -67,32 +69,27 @@ menuComponent.setOnItemClickHandler((menuItem) => {
   }
 });
 
+board.loadingStatusOn();
+
 Promise.all([
-  apiWithProvider.getDestinations()
-    .then((destinations) => {
-      destinationsModel.setDestinations(destinations);
-    }),
-  apiWithProvider.getOptions()
-    .then((offers) => {
-      optionsModel.setOptions(offers);
-    }),
-]).then(() => {
+  apiWithProvider.getDestinations(),
+  apiWithProvider.getOptions(),
   apiWithProvider.getEvents()
-    .then((trueEvents) => {
-      eventsModel.setEvents(trueEvents);
-      tripController.renderEvents();
-      render(infoElement, new RouteComponent(eventsModel), RenderPosition.BEFOREEND);
-      render(infoElement, new PriceComponent(eventsModel), RenderPosition.BEFOREEND);
-    });
+]).then((results) => {
+  // debugger;
+  const [destinations, options, events] = results;
+  board.loadingStatusOff();
+
+  destinationsModel.setDestinations(destinations);
+  optionsModel.setOptions(options);
+  eventsModel.setEvents(events);
+
+  filterController.render();
+  tripController.render();
 });
 
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`);
-  // .then(() => {
-  //   console.log(`успешно зарегистрирован`);
-  // }).catch(() => {
-  // // Действие, в случае ошибки при регистрации ServiceWorker
-  // });
 });
 
 window.addEventListener(`online`, () => {

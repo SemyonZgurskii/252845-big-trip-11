@@ -52,6 +52,10 @@ export default class Sort extends AbstractComponent {
     return createSortElement();
   }
 
+  getCurrentSortType() {
+    return this._currentSortType;
+  }
+
   setDefaultSortHandler(handler) {
     this._currentSortType = SortType.DEFAULT;
 
