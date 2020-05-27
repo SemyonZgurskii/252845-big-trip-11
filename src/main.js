@@ -76,7 +76,6 @@ Promise.all([
   apiWithProvider.getOptions(),
   apiWithProvider.getEvents()
 ]).then((results) => {
-  // debugger;
   const [destinations, options, events] = results;
   board.loadingStatusOff();
 

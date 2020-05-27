@@ -9,7 +9,6 @@ self.addEventListener(`install`, (evt) => {
         return cache.addAll([
           `/`,
           `/index.html`,
-          `/sw.js`,
           `/bundle.js`,
           `/css/style.css`,
           `/img/icons/bus.png`,

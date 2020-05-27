@@ -131,11 +131,11 @@ const renderMoneyChart = (moneyCtx, statistics, types) => {
 
 
 const renderTransportChart = (transportCtx, statistics, transportTypes) => {
-  const usesCount = [];
+  const numbersOfUses = [];
   const transportTypesWithIcon = [];
 
   transportTypes.forEach((type) => {
-    usesCount.push(statistics[type].transport);
+    numbersOfUses.push(statistics[type].transport);
     transportTypesWithIcon.push(addTypeIcon(type));
   });
 
@@ -145,7 +145,7 @@ const renderTransportChart = (transportCtx, statistics, transportTypes) => {
     data: {
       labels: transportTypesWithIcon,
       datasets: [{
-        data: usesCount,
+        data: numbersOfUses,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
         anchor: `start`,
