@@ -52,14 +52,14 @@ export default class Filter extends AbstractComponent {
     return createFilterTemplate(this._filters);
   }
 
-  setFilterChangeHandler(handler) {
+  setModeChangeHandler(handler) {
     this.getElement().addEventListener(`change`, (evt) => {
       const filterName = getFilterNameById(evt.target.id);
       handler(filterName);
     });
   }
 
-  setDefaultFilter() {
+  setDefaultMode() {
     this.getElement().querySelector(`#filter-everything`)
       .checked = true;
   }

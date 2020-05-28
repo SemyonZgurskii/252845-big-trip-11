@@ -56,7 +56,7 @@ export default class HeaderController {
     const oldPriceComponent = this._priceComponent;
 
     this._filterComponent = new FilterComponent(filters);
-    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+    this._filterComponent.setModeChangeHandler(this._onFilterChange);
 
     this._routeComponent = new RouteComponent(events);
     this._priceComponent = new PriceComponent(events);
@@ -74,7 +74,7 @@ export default class HeaderController {
 
   resetFilter() {
     this._onFilterChange(FilterType.EVERYTHING);
-    this._filterComponent.setDefaultFilter();
+    this._filterComponent.setDefaultMode();
   }
 
   _onFilterChange(filterType) {
